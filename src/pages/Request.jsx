@@ -1978,8 +1978,8 @@ function Request() {
             <div className="p-6 space-y-6 bg-gray-50">
               <div className="flex flex-col items-center gap-4">
                 <div className="text-sm text-gray-500">Preview report layout</div>
-                <div className="bg-white border border-gray-200 rounded-[28px] p-4 shadow-inner">
-                  <div className="bg-white border border-gray-300 rounded-xl w-[210px] h-[300px] shadow flex flex-col text-[9px] text-gray-700">
+                <div className="bg-white border border-gray-200 rounded p-4 shadow-inner">
+                  <div className="bg-white border border-gray-300 rounded-sm w-[210px] h-[300px] shadow flex flex-col text-[9px] text-gray-700">
                     <div className="text-center border-b border-gray-200 px-3 py-2">
                       <p className="text-[8px] font-semibold tracking-[0.3em] text-gray-600">GLOBAL COMFORT GROUP</p>
                       <p className="text-[8px] text-gray-500">ICT Department</p>
@@ -2035,7 +2035,7 @@ function Request() {
               <div className="flex justify-end gap-3">
                 <button className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-100" onClick={closeReportModal}>Cancel</button>
                 <button className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-semibold shadow-sm hover:shadow-md flex items-center gap-2" onClick={exportReport}>
-                  <span>⬇️</span>
+                  <span></span>
                   Export PDF
                 </button>
               </div>
