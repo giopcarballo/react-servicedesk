@@ -208,6 +208,7 @@ function Request() {
   const [replyDrafts, setReplyDrafts] = useState({})
   const [workLogToDelete, setWorkLogToDelete] = useState(null)
   const [showWorkLogDeleteModal, setShowWorkLogDeleteModal] = useState(false)
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false)
   // Checklist modal & input state -------------------------------
   const [showAddItemModal, setShowAddItemModal] = useState(false)
   const [itemName, setItemName] = useState('')
@@ -300,6 +301,21 @@ function Request() {
         setSelectedRequest({ ...selectedRequest })
       }
     }
+  }
+
+  const openReportModal = () => {
+    if (selectedRequest) {
+      setIsReportModalOpen(true)
+    }
+  }
+
+  const closeReportModal = () => {
+    setIsReportModalOpen(false)
+  }
+
+  const exportReport = () => {
+    showSuccessNotification('Report exported successfully', 'Report Ready')
+    setIsReportModalOpen(false)
   }
 
   const formatDateTime = (date) => {
@@ -845,15 +861,21 @@ function Request() {
       <div className={`flex min-h-screen bg-[#0b1020] transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
         <div className="flex-1 flex flex-col bg-gray-50">
           {/* Header */}
-          <div className="bg-gradient-to-br from-[#0a163a] via-[#0f2f74] to-[#1c64f2] text-white shadow-[0_20px_60px_rgba(10,22,58,0.45)]">
-            <div className="max-w-7xl mx-auto px-4 pt-6 pb-10 sm:px-6 lg:px-8">
-              <div className="flex flex-wrap items-center justify-between gap-6">
+          <div className="relative overflow-hidden bg-gradient-to-r from-[#071330] via-[#102a63] to-[#1f63f3] text-white shadow-[0_25px_65px_rgba(6,16,53,0.6)]">
+            <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.35),_transparent_55%)] pointer-events-none" aria-hidden="true"></div>
+            <div className="max-w-7xl mx-auto px-4 pt-8 pb-10 sm:px-6 lg:px-8 relative">
+              <div className="flex flex-wrap items-start justify-between gap-8">
                 <div>
-                  <p className="text-sm uppercase tracking-[0.4em] text-white/60 font-semibold">Global Comfort Group</p>
-                  <h1 className="text-3xl sm:text-4xl font-semibold mt-2">IT Service Management Platform</h1>
-                  <p className="text-white/80 mt-2">Control every request lifecycle with a single view designed for the helpdesk floor.</p>
+                  <p className="text-sm uppercase tracking-[0.5em] text-white/70 font-semibold">Global Comfort Group</p>
+                  <h1 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight">
+                    <span className="relative inline-block pb-2">
+                      Global Comfort Group
+                      <span className="absolute left-0 bottom-0 w-full h-1 bg-white/85 rounded-full"></span>
+                    </span>
+                  </h1>
+                  <p className="text-white/80 mt-2 text-lg">IT Service Management Platform</p>
                 </div>
-                <div className="flex items-center gap-4 bg-white/10 px-5 py-3 rounded-2xl border border-white/20 shadow-lg cursor-pointer transition-all hover:bg-white/15">
+                <div className="flex items-center gap-4 bg-white/15 px-6 py-3 rounded-[22px] border border-white/30 shadow-2xl">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-white to-blue-100 text-[#0f3285] font-bold flex items-center justify-center border border-white/50 relative">
                     JD
                     <span className="absolute -top-1 -right-1 bg-emerald-400 text-[#0b204c] text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">5</span>
@@ -870,20 +892,22 @@ function Request() {
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
                 {[
-                  { label: 'Total Requests', value: '167', icon: '📋', accent: 'from-sky-400/30 to-sky-200/10' },
-                  { label: 'Open Problems', value: '4', icon: '⚡', accent: 'from-amber-400/30 to-amber-200/10' },
-                  { label: 'Pending Changes', value: '94.2', icon: '🌀', accent: 'from-cyan-400/30 to-cyan-200/10' },
-                  { label: 'Received Today', value: '22', icon: '✅', accent: 'from-emerald-400/30 to-emerald-200/10' }
+                  { label: 'Total Requests', value: '167', icon: '📋' },
+                  { label: 'Open Problems', value: '4', icon: '⚡' },
+                  { label: 'Pending Changes', value: '94.2', icon: '🌀' },
+                  { label: 'Received Today', value: '22', icon: '✅' }
                 ].map((card, index) => (
                   <div
                     key={card.label}
-                    className={`bg-white/95 text-gray-900 rounded-2xl p-4 shadow-lg border border-white/40 flex items-center gap-4 animate-fadeInUp`}
+                    className="bg-gradient-to-r from-[#1c44d7] to-[#2b77f6] rounded-[18px] p-4 flex items-center gap-4 shadow-lg border border-white/15"
                     style={{ animationDelay: `${0.1 * (index + 1)}s` }}
                   >
-                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${card.accent} flex items-center justify-center text-xl`}>{card.icon}</div>
+                    <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center text-2xl border border-white/20">
+                      {card.icon}
+                    </div>
                     <div>
-                      <p className="text-xs uppercase tracking-wide text-gray-500 font-semibold">{card.label}</p>
-                      <p className="text-2xl font-bold text-gray-900">{card.value}</p>
+                      <p className="text-xs uppercase tracking-wide text-white/80 font-semibold">{card.label}</p>
+                      <p className="text-2xl font-bold text-white">{card.value}</p>
                     </div>
                   </div>
                 ))}
@@ -998,29 +1022,28 @@ function Request() {
             {/* Requests View */}
         {currentView === 'requests' && (
           <div id="requestsView" className="space-y-6">
-            <div className="bg-white rounded-[26px] shadow-xl border border-gray-100/80 overflow-hidden">
-              <div className="bg-gradient-to-r from-[#162c91] via-[#1c4ecf] to-[#1f7cf5] p-6 md:p-8">
-                <div className="flex flex-wrap items-center justify-between gap-6">
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-[20px] bg-white/20 flex items-center justify-center text-3xl border border-white/30">🧾</div>
-                    <div>
-                      <p className="text-sm uppercase tracking-[0.4em] text-white/70 font-semibold">Job Order Requests</p>
-                      <h2 className="text-3xl font-semibold text-white mt-1">Job Order Requests</h2>
-                      <p className="text-white/75 text-sm mt-1 max-w-xl">Prioritize assigned tickets, act on overdue requests, and keep intake aligned with SLAs.</p>
+            <div className="relative overflow-hidden rounded-[28px] shadow-2xl border border-[#0d255f]/40 bg-gradient-to-r from-[#071536] via-[#102e6f] to-[#1f63f3]">
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-60" aria-hidden="true"></div>
+              <div className="px-6 md:px-8 py-7 flex flex-wrap items-center justify-between gap-6 text-white relative">
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-[22px] bg-white/15 flex items-center justify-center text-3xl border border-white/20">📋</div>
+                  <div>
+                    <p className="text-sm uppercase tracking-[0.4em] text-white/80 font-semibold">Job Order Requests</p>
+                    <h2 className="text-3xl font-semibold mt-1">Job Order Requests</h2>
+                    <p className="text-white/80 text-sm mt-1">Monitor all assignments, due dates, and escalations in one console.</p>
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-3">
+                  {[
+                    { label: 'Assigned', value: '8' },
+                    { label: 'Due Today', value: '5' },
+                    { label: 'Overdue', value: '2' }
+                  ].map((stat) => (
+                    <div key={stat.label} className="bg-white/90 text-gray-800 px-6 py-3 rounded-2xl border border-white/70 shadow-md min-w-[120px] text-center">
+                      <p className="text-2xl font-bold leading-none">{stat.value}</p>
+                      <p className="text-xs uppercase tracking-wide text-gray-500 mt-1">{stat.label}</p>
                     </div>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    {[
-                      { label: 'Assigned', value: '8' },
-                      { label: 'Due Today', value: '5' },
-                      { label: 'Overdue', value: '2' }
-                    ].map((stat) => (
-                      <div key={stat.label} className="bg-white/15 text-white px-6 py-4 rounded-2xl border border-white/20 min-w-[110px] text-center shadow-lg">
-                        <p className="text-3xl font-semibold leading-none">{stat.value}</p>
-                        <p className="text-xs uppercase tracking-wide text-white/80 mt-1">{stat.label}</p>
-                      </div>
-                    ))}
-                  </div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -1085,7 +1108,7 @@ function Request() {
                         </td>
                         <td className="p-4 font-semibold text-[#1a3bb5]">
                           <div className="flex items-center gap-2">
-                            <span className="text-lg">📄</span>
+                            <span className="text-lg"></span>
                             <span className="hover:underline">{req.id}</span>
                           </div>
                         </td>
@@ -1225,6 +1248,12 @@ function Request() {
                   onClick={() => switchTab('history')}
                 >
                   History
+                </button>
+                <button 
+                  className={`px-4 py-3 text-sm font-medium ${activeTab === 'report' ? 'text-blue-600 border-b-2 border-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                  onClick={() => switchTab('report')}
+                >
+                  Generate Report
                 </button>
             </div>
 
@@ -1709,6 +1738,126 @@ function Request() {
                   </div>
                 </div>
               )}
+
+              {/* Generate Report Tab */}
+              {activeTab === 'report' && (
+                <div id="reportTab">
+                  <div className="bg-white border border-gray-200 rounded-lg p-6">
+                    <div className="flex flex-col lg:flex-row gap-8">
+                      <div className="flex-1 space-y-4">
+                        <div>
+                          <p className="text-sm uppercase tracking-[0.4em] text-gray-400 font-semibold">Export</p>
+                          <h3 className="text-2xl font-bold text-gray-800">Generate Job Order Report</h3>
+                          <p className="text-sm text-gray-600 mt-2">Review the auto-filled job order summary below and export it as a PDF for routing or approval.</p>
+                        </div>
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                            <p className="text-[11px] uppercase text-gray-500">Ticket ID</p>
+                            <p className="text-lg font-semibold text-gray-800">{selectedRequest.id}</p>
+                          </div>
+                          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                            <p className="text-[11px] uppercase text-gray-500">Due By</p>
+                            <p className="text-lg font-semibold text-gray-800">{selectedRequest.dueBy}</p>
+                          </div>
+                          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                            <p className="text-[11px] uppercase text-gray-500">Requester</p>
+                            <p className="text-lg font-semibold text-gray-800">{selectedRequest.requester}</p>
+                          </div>
+                          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                            <p className="text-[11px] uppercase text-gray-500">Assigned To</p>
+                            <p className="text-lg font-semibold text-gray-800">{selectedRequest.assignedTo || 'Unassigned'}</p>
+                          </div>
+                        </div>
+                        <button
+                          className="inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 shadow-sm hover:shadow-md gap-2"
+                          onClick={openReportModal}
+                        >
+                          <span>📄</span>
+                          Generate Report
+                        </button>
+                      </div>
+                      <div className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl shadow-inner p-4">
+                        <div className="bg-white border border-gray-300 rounded-md mx-auto max-w-md shadow relative">
+                          <div className="text-center border-b border-gray-200 px-4 py-3">
+                            <p className="text-xs font-semibold tracking-[0.3em] text-gray-600">GLOBAL COMFORT GROUP</p>
+                            <p className="text-[11px] text-gray-500">Information & Communication Technology Department</p>
+                            <p className="text-[11px] text-gray-500 mt-1">Job Order Request • {selectedRequest.dueBy}</p>
+                          </div>
+                          <div className="p-4 text-[11px] text-gray-700 space-y-3">
+                            <div className="grid grid-cols-2 border border-gray-200 divide-x rounded-md overflow-hidden">
+                              <div className="p-3 bg-gray-50">
+                                <p className="text-gray-500 uppercase text-[10px]">Ticket ID</p>
+                                <p className="font-semibold text-gray-800">{selectedRequest.id}</p>
+                              </div>
+                              <div className="p-3">
+                                <p className="text-gray-500 uppercase text-[10px]">Requester</p>
+                                <p className="font-semibold text-gray-800">{selectedRequest.requester}</p>
+                              </div>
+                            </div>
+                            <div className="border border-gray-200 rounded-md">
+                              <div className="grid grid-cols-2 border-b border-gray-200">
+                                <div className="p-3">
+                                  <p className="text-gray-500 uppercase text-[10px]">Assigned To</p>
+                                  <p className="font-semibold">{selectedRequest.assignedTo || 'Unassigned'}</p>
+                                </div>
+                                <div className="p-3 border-l border-gray-200">
+                                  <p className="text-gray-500 uppercase text-[10px]">Priority</p>
+                                  <p className="font-semibold">{selectedRequest.priority || 'Medium'}</p>
+                                </div>
+                              </div>
+                              <div className="p-3 border-b border-gray-200">
+                                <p className="text-gray-500 uppercase text-[10px]">Subject</p>
+                                <p className="font-semibold text-gray-800">{selectedRequest.subject}</p>
+                              </div>
+                              <div className="p-3">
+                                <p className="text-gray-500 uppercase text-[10px]">Summary</p>
+                                <p className="text-gray-700 leading-relaxed">{selectedRequest.description}</p>
+                              </div>
+                            </div>
+                            <div className="border border-gray-200 rounded-md">
+                              <div className="grid grid-cols-3 text-center text-[10px] font-semibold uppercase text-gray-500 border-b border-gray-200 bg-gray-50">
+                                <div className="py-2">Issue</div>
+                                <div className="py-2 border-l border-gray-200">Work Notes</div>
+                                <div className="py-2 border-l border-gray-200">Action Taken</div>
+                              </div>
+                              <div className="grid grid-cols-3 text-[11px] min-h-[100px]">
+                                <div className="p-3 border-r border-gray-200">
+                                  <p className="font-semibold text-gray-800 mb-2">Current Status</p>
+                                  <p className="text-gray-600">{selectedRequest.status || 'Open'} request awaiting closure.</p>
+                                </div>
+                                <div className="p-3 border-r border-gray-200">
+                                  <p className="font-semibold text-gray-800 mb-2">Technician Notes</p>
+                                  <p className="text-gray-600">Progress recorded in work logs. Ready for validation.</p>
+                                </div>
+                                <div className="p-3">
+                                  <p className="font-semibold text-gray-800 mb-2">Next Actions</p>
+                                  <ul className="list-disc list-inside text-gray-600 space-y-1">
+                                    <li>Confirm completion</li>
+                                    <li>Attach approval</li>
+                                    <li>Close request</li>
+                                  </ul>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div className="border border-gray-200 rounded-md p-3">
+                                <p className="text-gray-500 uppercase text-[10px]">Requested By</p>
+                                <p className="font-semibold">{selectedRequest.requester}</p>
+                                <p className="text-[10px] text-gray-500 mt-4">Signature / Date</p>
+                              </div>
+                              <div className="border border-gray-200 rounded-md p-3">
+                                <p className="text-gray-500 uppercase text-[10px]">Approved By</p>
+                                <p className="font-semibold">John Doe</p>
+                                <p className="text-[10px] text-gray-500 mt-4">Signature / Date</p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
                         </div>
                     </div>
@@ -1866,6 +2015,104 @@ function Request() {
               >
                 Save
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {isReportModalOpen && selectedRequest && (
+        <div className="fixed inset-0 z-[1200] flex justify-center items-start bg-black/60 backdrop-blur-sm pt-12 px-4" onClick={closeReportModal}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+              <h3 className="text-lg font-semibold text-gray-800">Generate Report: #{selectedRequest.id}</h3>
+              <button className="text-gray-400 hover:text-gray-600 text-2xl leading-none" onClick={closeReportModal}>×</button>
+            </div>
+            <div className="p-6 space-y-6 bg-gray-50">
+              <div className="bg-white rounded-2xl border border-gray-200 shadow-inner p-4 flex justify-center">
+                <div className="bg-white border border-gray-300 rounded-md w-full max-w-xl shadow-md">
+                  <div className="text-center border-b border-gray-200 px-4 py-3">
+                    <p className="text-xs font-semibold tracking-[0.3em] text-gray-600">GLOBAL COMFORT GROUP</p>
+                    <p className="text-[11px] text-gray-500">Information & Communication Technology Department</p>
+                    <p className="text-[11px] text-gray-500 mt-1">Job Order Request • {selectedRequest.dueBy}</p>
+                  </div>
+                  <div className="p-5 text-[11px] text-gray-700 space-y-3">
+                    <div className="grid grid-cols-2 border border-gray-200 divide-x rounded-md overflow-hidden">
+                      <div className="p-3 bg-gray-50">
+                        <p className="text-gray-500 uppercase text-[10px]">Ticket ID</p>
+                        <p className="font-semibold text-gray-800">{selectedRequest.id}</p>
+                      </div>
+                      <div className="p-3">
+                        <p className="text-gray-500 uppercase text-[10px]">Requester</p>
+                        <p className="font-semibold text-gray-800">{selectedRequest.requester}</p>
+                      </div>
+                    </div>
+                    <div className="border border-gray-200 rounded-md">
+                      <div className="grid grid-cols-2 border-b border-gray-200">
+                        <div className="p-3">
+                          <p className="text-gray-500 uppercase text-[10px]">Assigned To</p>
+                          <p className="font-semibold">{selectedRequest.assignedTo || 'Unassigned'}</p>
+                        </div>
+                        <div className="p-3 border-l border-gray-200">
+                          <p className="text-gray-500 uppercase text-[10px]">Priority</p>
+                          <p className="font-semibold">{selectedRequest.priority || 'Medium'}</p>
+                        </div>
+                      </div>
+                      <div className="p-3 border-b border-gray-200">
+                        <p className="text-gray-500 uppercase text-[10px]">Subject</p>
+                        <p className="font-semibold text-gray-800">{selectedRequest.subject}</p>
+                      </div>
+                      <div className="p-3">
+                        <p className="text-gray-500 uppercase text-[10px]">Summary</p>
+                        <p className="text-gray-700 leading-relaxed">{selectedRequest.description}</p>
+                      </div>
+                    </div>
+                    <div className="border border-gray-200 rounded-md">
+                      <div className="grid grid-cols-3 text-center text-[10px] font-semibold uppercase text-gray-500 border-b border-gray-200 bg-gray-50">
+                        <div className="py-2">Issue</div>
+                        <div className="py-2 border-l border-gray-200">Work Notes</div>
+                        <div className="py-2 border-l border-gray-200">Action Taken</div>
+                      </div>
+                      <div className="grid grid-cols-3 text-[11px] min-h-[120px]">
+                        <div className="p-3 border-r border-gray-200">
+                          <p className="font-semibold text-gray-800 mb-2">Current Status</p>
+                          <p className="text-gray-600">{selectedRequest.status || 'Open'} request. Awaiting final confirmation.</p>
+                        </div>
+                        <div className="p-3 border-r border-gray-200">
+                          <p className="font-semibold text-gray-800 mb-2">Technician Notes</p>
+                          <p className="text-gray-600">Walkthrough completed for affected assets. Pending resolution steps.</p>
+                        </div>
+                        <div className="p-3">
+                          <p className="font-semibold text-gray-800 mb-2">Next Actions</p>
+                          <ul className="list-disc list-inside text-gray-600 space-y-1">
+                            <li>Coordinate with requester</li>
+                            <li>Document resolution</li>
+                            <li>Log final sign-off</li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="border border-gray-200 rounded-md p-3">
+                        <p className="text-gray-500 uppercase text-[10px]">Requested By</p>
+                        <p className="font-semibold">{selectedRequest.requester}</p>
+                        <p className="text-[10px] text-gray-500 mt-4">Signature / Date</p>
+                      </div>
+                      <div className="border border-gray-200 rounded-md p-3">
+                        <p className="text-gray-500 uppercase text-[10px]">Approved By</p>
+                        <p className="font-semibold">John Doe</p>
+                        <p className="text-[10px] text-gray-500 mt-4">Signature / Date</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-end gap-3">
+                <button className="px-5 py-2.5 rounded-lg border border-gray-300 text-gray-700 text-sm font-medium hover:bg-gray-100" onClick={closeReportModal}>Cancel</button>
+                <button className="px-5 py-2.5 rounded-lg bg-gradient-to-r from-blue-600 to-blue-500 text-white text-sm font-semibold shadow-sm hover:shadow-md flex items-center gap-2" onClick={exportReport}>
+                  <span>⬇️</span>
+                  Export PDF
+                </button>
+              </div>
             </div>
           </div>
         </div>
