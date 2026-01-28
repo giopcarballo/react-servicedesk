@@ -876,10 +876,10 @@ function Request() {
                   <h1 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight">
                     <span className="relative inline-block pb-2">
                       Global Comfort Group
-                      <span className="absolute left-0 bottom-0 w-full h-1 bg-white/85 rounded-full"></span>
+                      {/* <span className="absolute left-0 bottom-0 w-full h-1 bg-white/85 rounded-full"></span> */}
                     </span>
                   </h1>
-                  <p className="text-white/80 mt-2 text-lg">IT Service Management Platform</p>
+                  <p className="text-white/80 mt-2 text-lg italic">IT Service Management Platform</p>
                 </div>
                 <div className="flex items-center gap-4 bg-white/15 px-6 py-3 rounded-[22px] border border-white/30 shadow-2xl">
                   <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-white to-blue-100 text-[#0f3285] font-bold flex items-center justify-center border border-white/50 relative">
