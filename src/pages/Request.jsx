@@ -1142,7 +1142,7 @@ function Request() {
                           <td className="p-4">
                             {!req.assignedTo ? (
                               <button
-                                className="px-3 py-1.5 text-xs font-semibold text-white bg-[#1f5cf4] rounded-full shadow-sm hover:bg-[#1844b0]"
+                                className="px-3 py-1.5 text-xs font-semibold text-white bg-[#1f5cf4] rounded-md shadow-sm hover:bg-[#1844b0]"
                                 onClick={(e) => {
                                   e.stopPropagation()
                                   openAssignModal(req)
