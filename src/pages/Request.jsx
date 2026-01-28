@@ -384,7 +384,10 @@ function Request() {
     setEditMode(!editMode)
   }
 
-  const openAssignModal = () => {
+  const openAssignModal = (request = null) => {
+    if (request) {
+      setSelectedRequest(request)
+    }
     setShowAssignModal(true)
   }
 
@@ -394,6 +397,9 @@ function Request() {
     setSelectedTechnician(null)
     setScheduledStartDate('')
     setScheduledEndDate('')
+    if (!showRequestModal) {
+      setSelectedRequest(null)
+    }
   }
 
   const confirmAssignment = () => {
@@ -1039,9 +1045,9 @@ function Request() {
                     { label: 'Due Today', value: '5' },
                     { label: 'Overdue', value: '2' }
                   ].map((stat) => (
-                    <div key={stat.label} className="bg-white/90 text-gray-800 px-6 py-3 rounded-2xl border border-white/70 shadow-md min-w-[120px] text-center">
+                    <div key={stat.label} className="bg-[#5e667c] text-white px-6 py-3 rounded-2xl border border-white/10 shadow-md min-w-[120px] text-center">
                       <p className="text-2xl font-bold leading-none">{stat.value}</p>
-                      <p className="text-xs uppercase tracking-wide text-gray-500 mt-1">{stat.label}</p>
+                      <p className="text-xs uppercase tracking-wide text-white/90 mt-1">{stat.label}</p>
                     </div>
                   ))}
                 </div>
@@ -1092,6 +1098,9 @@ function Request() {
                       <th className="text-left p-4">Due By</th>
                       <th className="text-left p-4">Status</th>
                       <th className="text-left p-4">Priority</th>
+                      {filter !== 'assigned' && (
+                        <th className="text-left p-4">Assign</th>
+                      )}
                     </tr>
                   </thead>
                   <tbody>
@@ -1106,9 +1115,9 @@ function Request() {
                         <td className="p-4">
                           <input type="checkbox" className="w-4 h-4 accent-[#1f5cf4]" onClick={(e) => e.stopPropagation()} />
                         </td>
-                        <td className="p-4 font-semibold text-[#1a3bb5]">
+                        <td className="p-4 font-semibold text-[#1a3bb5] whitespace-nowrap">
                           <div className="flex items-center gap-2">
-                            <span className="text-lg"></span>
+                            {/* <span className="text-lg"></span> */}
                             <span className="hover:underline">{req.id}</span>
                           </div>
                         </td>
@@ -1129,6 +1138,23 @@ function Request() {
                           <span className="inline-flex px-4 py-1.5 rounded-full text-xs font-bold uppercase bg-[#e9fbef] text-[#1e9b4c] border border-[#c3f1d2]">Open</span>
                         </td>
                         <td className="p-4">{getPriorityBadge(req.priority) || '-'}</td>
+                        {filter !== 'assigned' && (
+                          <td className="p-4">
+                            {!req.assignedTo ? (
+                              <button
+                                className="px-3 py-1.5 text-xs font-semibold text-white bg-[#1f5cf4] rounded-full shadow-sm hover:bg-[#1844b0]"
+                                onClick={(e) => {
+                                  e.stopPropagation()
+                                  openAssignModal(req)
+                                }}
+                              >
+                                Assign
+                              </button>
+                            ) : (
+                              <span className="text-gray-400 text-xs font-semibold uppercase tracking-wide">Assigned</span>
+                            )}
+                          </td>
+                        )}
                       </tr>
                     ))}
                   </tbody>
@@ -1743,117 +1769,39 @@ function Request() {
               {activeTab === 'report' && (
                 <div id="reportTab">
                   <div className="bg-white border border-gray-200 rounded-lg p-6">
-                    <div className="flex flex-col lg:flex-row gap-8">
-                      <div className="flex-1 space-y-4">
-                        <div>
-                          <p className="text-sm uppercase tracking-[0.4em] text-gray-400 font-semibold">Export</p>
-                          <h3 className="text-2xl font-bold text-gray-800">Generate Job Order Report</h3>
-                          <p className="text-sm text-gray-600 mt-2">Review the auto-filled job order summary below and export it as a PDF for routing or approval.</p>
-                        </div>
-                        <div className="grid grid-cols-2 gap-3">
-                          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                            <p className="text-[11px] uppercase text-gray-500">Ticket ID</p>
-                            <p className="text-lg font-semibold text-gray-800">{selectedRequest.id}</p>
-                          </div>
-                          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                            <p className="text-[11px] uppercase text-gray-500">Due By</p>
-                            <p className="text-lg font-semibold text-gray-800">{selectedRequest.dueBy}</p>
-                          </div>
-                          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                            <p className="text-[11px] uppercase text-gray-500">Requester</p>
-                            <p className="text-lg font-semibold text-gray-800">{selectedRequest.requester}</p>
-                          </div>
-                          <div className="bg-gray-50 border border-gray-200 rounded-lg p-3">
-                            <p className="text-[11px] uppercase text-gray-500">Assigned To</p>
-                            <p className="text-lg font-semibold text-gray-800">{selectedRequest.assignedTo || 'Unassigned'}</p>
-                          </div>
-                        </div>
-                        <button
-                          className="inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 shadow-sm hover:shadow-md gap-2"
-                          onClick={openReportModal}
-                        >
-                          <span>📄</span>
-                          Generate Report
-                        </button>
+                    <div className="space-y-4 max-w-3xl">
+                      <div>
+                        <p className="text-sm uppercase tracking-[0.4em] text-gray-400 font-semibold">Export</p>
+                        <h3 className="text-2xl font-bold text-gray-800">Generate Job Order Report</h3>
+                        <p className="text-sm text-gray-600 mt-2">Confirm the key ticket details and click generate to preview the printable report.</p>
                       </div>
-                      <div className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl shadow-inner p-4">
-                        <div className="bg-white border border-gray-300 rounded-md mx-auto max-w-md shadow relative">
-                          <div className="text-center border-b border-gray-200 px-4 py-3">
-                            <p className="text-xs font-semibold tracking-[0.3em] text-gray-600">GLOBAL COMFORT GROUP</p>
-                            <p className="text-[11px] text-gray-500">Information & Communication Technology Department</p>
-                            <p className="text-[11px] text-gray-500 mt-1">Job Order Request • {selectedRequest.dueBy}</p>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                        {[{
+                          label: 'Ticket ID',
+                          value: selectedRequest.id
+                        }, {
+                          label: 'Due By',
+                          value: selectedRequest.dueBy
+                        }, {
+                          label: 'Requester',
+                          value: selectedRequest.requester
+                        }, {
+                          label: 'Assigned To',
+                          value: selectedRequest.assignedTo || 'Unassigned'
+                        }].map((stat) => (
+                          <div key={stat.label} className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                            <p className="text-[10px] uppercase text-gray-500">{stat.label}</p>
+                            <p className="text-lg font-semibold text-gray-800 truncate">{stat.value}</p>
                           </div>
-                          <div className="p-4 text-[11px] text-gray-700 space-y-3">
-                            <div className="grid grid-cols-2 border border-gray-200 divide-x rounded-md overflow-hidden">
-                              <div className="p-3 bg-gray-50">
-                                <p className="text-gray-500 uppercase text-[10px]">Ticket ID</p>
-                                <p className="font-semibold text-gray-800">{selectedRequest.id}</p>
-                              </div>
-                              <div className="p-3">
-                                <p className="text-gray-500 uppercase text-[10px]">Requester</p>
-                                <p className="font-semibold text-gray-800">{selectedRequest.requester}</p>
-                              </div>
-                            </div>
-                            <div className="border border-gray-200 rounded-md">
-                              <div className="grid grid-cols-2 border-b border-gray-200">
-                                <div className="p-3">
-                                  <p className="text-gray-500 uppercase text-[10px]">Assigned To</p>
-                                  <p className="font-semibold">{selectedRequest.assignedTo || 'Unassigned'}</p>
-                                </div>
-                                <div className="p-3 border-l border-gray-200">
-                                  <p className="text-gray-500 uppercase text-[10px]">Priority</p>
-                                  <p className="font-semibold">{selectedRequest.priority || 'Medium'}</p>
-                                </div>
-                              </div>
-                              <div className="p-3 border-b border-gray-200">
-                                <p className="text-gray-500 uppercase text-[10px]">Subject</p>
-                                <p className="font-semibold text-gray-800">{selectedRequest.subject}</p>
-                              </div>
-                              <div className="p-3">
-                                <p className="text-gray-500 uppercase text-[10px]">Summary</p>
-                                <p className="text-gray-700 leading-relaxed">{selectedRequest.description}</p>
-                              </div>
-                            </div>
-                            <div className="border border-gray-200 rounded-md">
-                              <div className="grid grid-cols-3 text-center text-[10px] font-semibold uppercase text-gray-500 border-b border-gray-200 bg-gray-50">
-                                <div className="py-2">Issue</div>
-                                <div className="py-2 border-l border-gray-200">Work Notes</div>
-                                <div className="py-2 border-l border-gray-200">Action Taken</div>
-                              </div>
-                              <div className="grid grid-cols-3 text-[11px] min-h-[100px]">
-                                <div className="p-3 border-r border-gray-200">
-                                  <p className="font-semibold text-gray-800 mb-2">Current Status</p>
-                                  <p className="text-gray-600">{selectedRequest.status || 'Open'} request awaiting closure.</p>
-                                </div>
-                                <div className="p-3 border-r border-gray-200">
-                                  <p className="font-semibold text-gray-800 mb-2">Technician Notes</p>
-                                  <p className="text-gray-600">Progress recorded in work logs. Ready for validation.</p>
-                                </div>
-                                <div className="p-3">
-                                  <p className="font-semibold text-gray-800 mb-2">Next Actions</p>
-                                  <ul className="list-disc list-inside text-gray-600 space-y-1">
-                                    <li>Confirm completion</li>
-                                    <li>Attach approval</li>
-                                    <li>Close request</li>
-                                  </ul>
-                                </div>
-                              </div>
-                            </div>
-                            <div className="grid grid-cols-2 gap-3">
-                              <div className="border border-gray-200 rounded-md p-3">
-                                <p className="text-gray-500 uppercase text-[10px]">Requested By</p>
-                                <p className="font-semibold">{selectedRequest.requester}</p>
-                                <p className="text-[10px] text-gray-500 mt-4">Signature / Date</p>
-                              </div>
-                              <div className="border border-gray-200 rounded-md p-3">
-                                <p className="text-gray-500 uppercase text-[10px]">Approved By</p>
-                                <p className="font-semibold">John Doe</p>
-                                <p className="text-[10px] text-gray-500 mt-4">Signature / Date</p>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
+                        ))}
                       </div>
+                      <button
+                        className="inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 shadow-sm hover:shadow-md gap-2"
+                        onClick={openReportModal}
+                      >
+                        <span>📄</span>
+                        Generate Report
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -2021,86 +1969,64 @@ function Request() {
       )}
 
       {isReportModalOpen && selectedRequest && (
-        <div className="fixed inset-0 z-[1200] flex justify-center items-start bg-black/60 backdrop-blur-sm pt-12 px-4" onClick={closeReportModal}>
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 z-[1200] flex items-center justify-center bg-black/60 backdrop-blur-sm px-4" onClick={closeReportModal}>
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-xl overflow-hidden" onClick={(e) => e.stopPropagation()}>
             <div className="flex justify-between items-center px-6 py-4 border-b border-gray-200">
               <h3 className="text-lg font-semibold text-gray-800">Generate Report: #{selectedRequest.id}</h3>
               <button className="text-gray-400 hover:text-gray-600 text-2xl leading-none" onClick={closeReportModal}>×</button>
             </div>
             <div className="p-6 space-y-6 bg-gray-50">
-              <div className="bg-white rounded-2xl border border-gray-200 shadow-inner p-4 flex justify-center">
-                <div className="bg-white border border-gray-300 rounded-md w-full max-w-xl shadow-md">
-                  <div className="text-center border-b border-gray-200 px-4 py-3">
-                    <p className="text-xs font-semibold tracking-[0.3em] text-gray-600">GLOBAL COMFORT GROUP</p>
-                    <p className="text-[11px] text-gray-500">Information & Communication Technology Department</p>
-                    <p className="text-[11px] text-gray-500 mt-1">Job Order Request • {selectedRequest.dueBy}</p>
-                  </div>
-                  <div className="p-5 text-[11px] text-gray-700 space-y-3">
-                    <div className="grid grid-cols-2 border border-gray-200 divide-x rounded-md overflow-hidden">
-                      <div className="p-3 bg-gray-50">
-                        <p className="text-gray-500 uppercase text-[10px]">Ticket ID</p>
-                        <p className="font-semibold text-gray-800">{selectedRequest.id}</p>
-                      </div>
-                      <div className="p-3">
-                        <p className="text-gray-500 uppercase text-[10px]">Requester</p>
-                        <p className="font-semibold text-gray-800">{selectedRequest.requester}</p>
-                      </div>
+              <div className="flex flex-col items-center gap-4">
+                <div className="text-sm text-gray-500">Preview report layout</div>
+                <div className="bg-white border border-gray-200 rounded-[28px] p-4 shadow-inner">
+                  <div className="bg-white border border-gray-300 rounded-xl w-[210px] h-[300px] shadow flex flex-col text-[9px] text-gray-700">
+                    <div className="text-center border-b border-gray-200 px-3 py-2">
+                      <p className="text-[8px] font-semibold tracking-[0.3em] text-gray-600">GLOBAL COMFORT GROUP</p>
+                      <p className="text-[8px] text-gray-500">ICT Department</p>
+                      <p className="text-[8px] text-gray-500 mt-0.5">JOR #{selectedRequest.id}</p>
                     </div>
-                    <div className="border border-gray-200 rounded-md">
-                      <div className="grid grid-cols-2 border-b border-gray-200">
-                        <div className="p-3">
-                          <p className="text-gray-500 uppercase text-[10px]">Assigned To</p>
-                          <p className="font-semibold">{selectedRequest.assignedTo || 'Unassigned'}</p>
+                    <div className="flex-1 p-3 space-y-2">
+                      <div className="border border-gray-200 rounded-md">
+                        <div className="flex justify-between px-2 py-1 bg-gray-50">
+                          <span className="uppercase text-[7px] text-gray-500">Requester</span>
+                          <span className="text-[7px] font-semibold text-gray-700">{selectedRequest.requester}</span>
                         </div>
-                        <div className="p-3 border-l border-gray-200">
-                          <p className="text-gray-500 uppercase text-[10px]">Priority</p>
-                          <p className="font-semibold">{selectedRequest.priority || 'Medium'}</p>
-                        </div>
-                      </div>
-                      <div className="p-3 border-b border-gray-200">
-                        <p className="text-gray-500 uppercase text-[10px]">Subject</p>
-                        <p className="font-semibold text-gray-800">{selectedRequest.subject}</p>
-                      </div>
-                      <div className="p-3">
-                        <p className="text-gray-500 uppercase text-[10px]">Summary</p>
-                        <p className="text-gray-700 leading-relaxed">{selectedRequest.description}</p>
-                      </div>
-                    </div>
-                    <div className="border border-gray-200 rounded-md">
-                      <div className="grid grid-cols-3 text-center text-[10px] font-semibold uppercase text-gray-500 border-b border-gray-200 bg-gray-50">
-                        <div className="py-2">Issue</div>
-                        <div className="py-2 border-l border-gray-200">Work Notes</div>
-                        <div className="py-2 border-l border-gray-200">Action Taken</div>
-                      </div>
-                      <div className="grid grid-cols-3 text-[11px] min-h-[120px]">
-                        <div className="p-3 border-r border-gray-200">
-                          <p className="font-semibold text-gray-800 mb-2">Current Status</p>
-                          <p className="text-gray-600">{selectedRequest.status || 'Open'} request. Awaiting final confirmation.</p>
-                        </div>
-                        <div className="p-3 border-r border-gray-200">
-                          <p className="font-semibold text-gray-800 mb-2">Technician Notes</p>
-                          <p className="text-gray-600">Walkthrough completed for affected assets. Pending resolution steps.</p>
-                        </div>
-                        <div className="p-3">
-                          <p className="font-semibold text-gray-800 mb-2">Next Actions</p>
-                          <ul className="list-disc list-inside text-gray-600 space-y-1">
-                            <li>Coordinate with requester</li>
-                            <li>Document resolution</li>
-                            <li>Log final sign-off</li>
-                          </ul>
+                        <div className="flex justify-between px-2 py-1">
+                          <span className="uppercase text-[7px] text-gray-500">Assigned</span>
+                          <span className="text-[7px] font-semibold text-gray-700">{selectedRequest.assignedTo || 'Unassigned'}</span>
                         </div>
                       </div>
-                    </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div className="border border-gray-200 rounded-md p-3">
-                        <p className="text-gray-500 uppercase text-[10px]">Requested By</p>
-                        <p className="font-semibold">{selectedRequest.requester}</p>
-                        <p className="text-[10px] text-gray-500 mt-4">Signature / Date</p>
+                      <div className="border border-gray-200 rounded-md">
+                        <div className="px-2 py-1 bg-gray-50 text-[7px] uppercase text-gray-500">Job Description</div>
+                        <div className="px-2 py-1 text-[8px] text-gray-700 overflow-hidden text-ellipsis">{selectedRequest.subject}</div>
                       </div>
-                      <div className="border border-gray-200 rounded-md p-3">
-                        <p className="text-gray-500 uppercase text-[10px]">Approved By</p>
-                        <p className="font-semibold">John Doe</p>
-                        <p className="text-[10px] text-gray-500 mt-4">Signature / Date</p>
+                      <div className="grid grid-cols-3 gap-1 text-[7px] text-gray-600">
+                        <div className="border border-gray-200 rounded-md p-1 text-center">
+                          <p className="uppercase text-gray-400">Issue</p>
+                          <p className="font-semibold text-gray-700">{selectedRequest.status || 'Open'}</p>
+                        </div>
+                        <div className="border border-gray-200 rounded-md p-1 text-center">
+                          <p className="uppercase text-gray-400">Tech</p>
+                          <p className="font-semibold text-gray-700">{selectedRequest.technician || 'John Doe'}</p>
+                        </div>
+                        <div className="border border-gray-200 rounded-md p-1 text-center">
+                          <p className="uppercase text-gray-400">Due</p>
+                          <p className="font-semibold text-gray-700">{selectedRequest.dueBy}</p>
+                        </div>
+                      </div>
+                      <div className="border border-gray-200 rounded-md px-2 py-1">
+                        <p className="uppercase text-[7px] text-gray-400">Action Taken</p>
+                        <p className="text-[8px] text-gray-700">Pending technician confirmation.</p>
+                      </div>
+                      <div className="grid grid-cols-2 gap-1 text-[7px]">
+                        <div className="border border-gray-200 rounded-md px-2 py-2">
+                          <p className="uppercase text-gray-400 mb-1">Requested By</p>
+                          <p className="font-semibold text-gray-700">{selectedRequest.requester}</p>
+                        </div>
+                        <div className="border border-gray-200 rounded-md px-2 py-2">
+                          <p className="uppercase text-gray-400 mb-1">Approved By</p>
+                          <p className="font-semibold text-gray-700">John Doe</p>
+                        </div>
                       </div>
                     </div>
                   </div>
