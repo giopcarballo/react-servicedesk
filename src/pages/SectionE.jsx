@@ -178,8 +178,184 @@ const servicesData = [
   },
 ]
 
+const collectionRecords = [
+  {
+    id: 'COL-001',
+    ticket: '#134842',
+    branch: 'EDSA Cubao',
+    department: 'Engineering',
+    service: 'Major HVAC Repair',
+    amountDue: 50000,
+    amountPaid: 50000,
+    balance: 0,
+    status: 'Collected',
+    date: '2025-01-15',
+  },
+  {
+    id: 'COL-002',
+    ticket: '#134856',
+    branch: 'Pasay Rotonda',
+    department: 'Engineering',
+    service: 'Electrical System Upgrade',
+    amountDue: 25000,
+    amountPaid: 0,
+    balance: 25000,
+    status: 'Pending',
+    date: '2025-01-18',
+  },
+  {
+    id: 'COL-003',
+    ticket: '#134821',
+    branch: 'EDSA Cubao',
+    department: 'Housekeeping',
+    service: 'Deep Cleaning Service',
+    amountDue: 5000,
+    amountPaid: 5000,
+    balance: 0,
+    status: 'Collected',
+    date: '2025-01-12',
+  },
+  {
+    id: 'COL-004',
+    ticket: '#134878',
+    branch: 'Fairview',
+    department: 'Housekeeping',
+    service: 'Carpet & Upholstery Cleaning',
+    amountDue: 8000,
+    amountPaid: 5000,
+    balance: 3000,
+    status: 'Partial',
+    date: '2025-01-20',
+  },
+  {
+    id: 'COL-005',
+    ticket: '#134798',
+    branch: 'Makati Avenue',
+    department: 'Front Office',
+    service: 'Guest Complaint Resolution',
+    amountDue: 2500,
+    amountPaid: 2500,
+    balance: 0,
+    status: 'Collected',
+    date: '2025-01-10',
+  },
+  {
+    id: 'COL-006',
+    ticket: '#134756',
+    branch: 'Alabang',
+    department: 'Front Office',
+    service: 'VIP Guest Setup',
+    amountDue: 10000,
+    amountPaid: 0,
+    balance: 10000,
+    status: 'Overdue',
+    date: '2025-01-05',
+  },
+  {
+    id: 'COL-007',
+    ticket: '#134834',
+    branch: 'EDSA Cubao',
+    department: 'F&B',
+    service: 'Kitchen Equipment Repair',
+    amountDue: 12000,
+    amountPaid: 12000,
+    balance: 0,
+    status: 'Collected',
+    date: '2025-01-14',
+  },
+  {
+    id: 'COL-008',
+    ticket: '#134892',
+    branch: 'Pasay Rotonda',
+    department: 'F&B',
+    service: 'Banquet Setup Service',
+    amountDue: 20000,
+    amountPaid: 0,
+    balance: 20000,
+    status: 'Pending',
+    date: '2025-01-22',
+  },
+  {
+    id: 'COL-009',
+    ticket: '#134845',
+    branch: 'North EDSA',
+    department: 'IT',
+    service: 'Network Infrastructure Setup',
+    amountDue: 35000,
+    amountPaid: 35000,
+    balance: 0,
+    status: 'Collected',
+    date: '2025-01-16',
+  },
+  {
+    id: 'COL-010',
+    ticket: '#134867',
+    branch: 'Makati Avenue',
+    department: 'IT',
+    service: 'POS System Maintenance',
+    amountDue: 8000,
+    amountPaid: 4000,
+    balance: 4000,
+    status: 'Partial',
+    date: '2025-01-19',
+  },
+  {
+    id: 'COL-011',
+    ticket: '#134812',
+    branch: 'Fairview',
+    department: 'Security',
+    service: 'Access Control System Install',
+    amountDue: 18000,
+    amountPaid: 18000,
+    balance: 0,
+    status: 'Collected',
+    date: '2025-01-11',
+  },
+  {
+    id: 'COL-012',
+    ticket: '#134889',
+    branch: 'Bagong Barrio',
+    department: 'Security',
+    service: 'Emergency Response Training',
+    amountDue: 5500,
+    amountPaid: 0,
+    balance: 5500,
+    status: 'Pending',
+    date: '2025-01-21',
+  },
+]
+
 const departmentOptions = ['All Departments', ...new Set(servicesData.map((s) => s.department))]
 const branchOptions = ['All Branches', ...new Set(servicesData.map((s) => s.branch))]
+const collectionBranchOptions = ['', ...new Set(collectionRecords.map((c) => c.branch))]
+const collectionDeptOptions = ['', ...new Set(collectionRecords.map((c) => c.department))]
+
+const statusBadgeClasses = {
+  Collected: 'bg-emerald-100 text-emerald-700',
+  Pending: 'bg-amber-100 text-amber-700',
+  Partial: 'bg-sky-100 text-sky-700',
+  Overdue: 'bg-rose-100 text-rose-700',
+}
+
+const branchColorMap = {
+  'EDSA Cubao': 'from-sky-500 to-blue-600',
+  'Pasay Rotonda': 'from-indigo-500 to-purple-600',
+  'Sta. Mesa': 'from-teal-500 to-emerald-600',
+  'Bagong Barrio': 'from-amber-500 to-orange-600',
+  Fairview: 'from-pink-500 to-rose-600',
+  'North EDSA': 'from-cyan-500 to-blue-600',
+  Alabang: 'from-lime-500 to-green-600',
+  'Makati Avenue': 'from-fuchsia-500 to-purple-600',
+}
+
+const deptGradientMap = {
+  Engineering: 'from-amber-400 to-orange-500',
+  IT: 'from-cyan-400 to-sky-500',
+  Housekeeping: 'from-emerald-400 to-green-500',
+  'F&B': 'from-pink-400 to-rose-500',
+  Security: 'from-rose-500 to-red-600',
+  'Front Office': 'from-violet-500 to-indigo-500',
+}
 
 const deptBadgeClasses = {
   Engineering: 'bg-amber-100 text-amber-700',
@@ -190,8 +366,21 @@ const deptBadgeClasses = {
   'Front Office': 'bg-violet-100 text-violet-700',
 }
 
+const deptIconMap = {
+  Engineering: '🛠️',
+  IT: '💻',
+  Housekeeping: '🧹',
+  'F&B': '🍽️',
+  Security: '🔒',
+  'Front Office': '🛎️',
+}
+
 function formatCurrency(value) {
   return `₱${value.toLocaleString('en-PH')}`
+}
+
+function formatDateLabel(value) {
+  return new Date(value).toLocaleDateString('en-US', { month: 'short', day: '2-digit', year: 'numeric' })
 }
 
 function SectionE() {
@@ -205,6 +394,13 @@ function SectionE() {
   const [severity, setSeverity] = useState('1.0')
   const [pricingNotes, setPricingNotes] = useState('')
   const [attachmentLabel, setAttachmentLabel] = useState('Click to upload supporting documents')
+  const [collectionBranchFilter, setCollectionBranchFilter] = useState('')
+  const [collectionDeptFilter, setCollectionDeptFilter] = useState('')
+  const [collectionStatusFilter, setCollectionStatusFilter] = useState('')
+  const [collectionDateFrom, setCollectionDateFrom] = useState('')
+  const [collectionDateTo, setCollectionDateTo] = useState('')
+  const [showCollectionDetail, setShowCollectionDetail] = useState(false)
+  const [selectedCollection, setSelectedCollection] = useState(null)
   const fileInputRef = useRef(null)
 
   const filteredServices = useMemo(() => {
@@ -214,6 +410,82 @@ function SectionE() {
       return byDept && byBranch
     })
   }, [deptFilter, branchFilter])
+
+  const filteredCollections = useMemo(() => {
+    return collectionRecords.filter((record) => {
+      const byBranch = !collectionBranchFilter || record.branch === collectionBranchFilter
+      const byDept = !collectionDeptFilter || record.department === collectionDeptFilter
+      const byStatus = !collectionStatusFilter || record.status === collectionStatusFilter
+
+      const recordDate = new Date(record.date)
+      const from = collectionDateFrom ? new Date(collectionDateFrom) : null
+      const to = collectionDateTo ? new Date(collectionDateTo) : null
+
+      const byDateFrom = !from || recordDate >= from
+      const byDateTo = !to || recordDate <= to
+
+      return byBranch && byDept && byStatus && byDateFrom && byDateTo
+    })
+  }, [collectionBranchFilter, collectionDeptFilter, collectionStatusFilter, collectionDateFrom, collectionDateTo])
+
+  const branchSummary = useMemo(() => {
+    const map = new Map()
+    filteredCollections.forEach((record) => {
+      if (!map.has(record.branch)) {
+        map.set(record.branch, { branch: record.branch, transactions: 0, collected: 0, due: 0 })
+      }
+      const item = map.get(record.branch)
+      item.transactions += 1
+      item.collected += record.amountPaid
+      item.due += record.balance
+    })
+    return Array.from(map.values())
+  }, [filteredCollections])
+
+  const deptSummary = useMemo(() => {
+    const map = new Map()
+    filteredCollections.forEach((record) => {
+      if (!map.has(record.department)) {
+        map.set(record.department, { department: record.department, transactions: 0, collected: 0, due: 0 })
+      }
+      const item = map.get(record.department)
+      item.transactions += 1
+      item.collected += record.amountPaid
+      item.due += record.balance
+    })
+    return Array.from(map.values())
+  }, [filteredCollections])
+
+  const collectionStats = useMemo(() => {
+    const base = {
+      Collected: { count: 0, amount: 0 },
+      Pending: { count: 0, amount: 0 },
+      Partial: { count: 0, amount: 0 },
+      Overdue: { count: 0, amount: 0 },
+    }
+    filteredCollections.forEach((record) => {
+      const bucket = base[record.status]
+      if (!bucket) return
+      bucket.count += 1
+      if (record.status === 'Collected') bucket.amount += record.amountPaid
+      if (record.status === 'Pending') bucket.amount += record.balance
+      if (record.status === 'Partial') bucket.amount += record.balance
+      if (record.status === 'Overdue') bucket.amount += record.balance
+    })
+    return base
+  }, [filteredCollections])
+
+  const branchTotals = useMemo(() => {
+    const tickets = branchSummary.reduce((sum, item) => sum + item.transactions, 0)
+    const collected = branchSummary.reduce((sum, item) => sum + item.collected, 0)
+    return { tickets, collected }
+  }, [branchSummary])
+
+  const deptTotals = useMemo(() => {
+    const tickets = deptSummary.reduce((sum, item) => sum + item.transactions, 0)
+    const collected = deptSummary.reduce((sum, item) => sum + item.collected, 0)
+    return { tickets, collected }
+  }, [deptSummary])
 
   const grandTotalTickets = branchCards.reduce((sum, card) => sum + card.tickets, 0)
   const grandTotalAmount = branchCards.reduce((sum, card) => sum + card.amount, 0)
@@ -242,10 +514,22 @@ function SectionE() {
 
   const closePricing = () => setShowPricingModal(false)
   const closeDetail = () => setShowDetailModal(false)
+  const closeCollectionDetail = () => {
+    setShowCollectionDetail(false)
+    setSelectedCollection(null)
+  }
 
   const resetFilters = () => {
     setDeptFilter('All Departments')
     setBranchFilter('All Branches')
+  }
+
+  const resetCollectionFilters = () => {
+    setCollectionBranchFilter('')
+    setCollectionDeptFilter('')
+    setCollectionStatusFilter('')
+    setCollectionDateFrom('')
+    setCollectionDateTo('')
   }
 
   const handleAttachmentClick = () => {
@@ -506,16 +790,493 @@ function SectionE() {
           )}
 
           {activeTab === 'collection' && (
-            <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8 text-center text-gray-600">
-              Collection per branch & department view coming soon.
+            <div className="space-y-6">
+              <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 space-y-5">
+                <div className="flex flex-wrap items-center gap-3 justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="h-11 w-11 rounded-xl bg-[#0ea5e9]/15 text-[#0ea5e9] flex items-center justify-center text-xl">💳</div>
+                    <div>
+                      <h3 className="text-2xl font-bold text-gray-900">Collection Summary</h3>
+                      <p className="text-sm text-gray-500">Overview of collections per branch and department</p>
+                    </div>
+                  </div>
+                  <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100">UPDATED</span>
+                </div>
+
+                <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 shadow-[0_6px_18px_-12px_rgba(0,0,0,0.15)]">
+                  <div className="flex items-center gap-3">
+                    <div className="h-9 w-9 rounded-lg bg-white text-blue-600 flex items-center justify-center text-lg border border-blue-100">🏨</div>
+                    <div>
+                      <p className="text-sm font-semibold text-blue-900">Collection by Branch</p>
+                      <p className="text-xs text-blue-800/80">Summary of total collections grouped by Hotel SOGO branch location.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {branchSummary.length === 0 && (
+                    <div className="col-span-full text-center text-sm text-gray-500 border border-dashed border-slate-200 rounded-xl py-6">
+                      No branch collections match your filters.
+                    </div>
+                  )}
+                  {branchSummary.map((item) => {
+                    const gradient = branchColorMap[item.branch] || 'from-slate-400 to-slate-600'
+                    return (
+                      <div key={item.branch} className="rounded-2xl border border-gray-200 bg-white shadow-sm px-5 py-4 flex flex-col gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className={`h-10 w-10 rounded-lg bg-gradient-to-br ${gradient} text-white flex items-center justify-center text-xl shadow-sm`}>🏢</div>
+                          <div>
+                            <p className="text-base font-semibold text-gray-900">{item.branch}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-gray-600">
+                          <span>Tickets</span>
+                          <span className="text-base font-semibold text-gray-900">{item.transactions}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-gray-600">
+                          <span>Collected</span>
+                          <span className="text-base font-bold text-emerald-600">{formatCurrency(item.collected)}</span>
+                        </div>
+                      </div>
+                    )
+                  })}
+
+                  {branchSummary.length > 0 && (
+                    <div className="rounded-2xl bg-[#5346e8] text-white shadow-lg px-5 py-4 flex flex-col gap-2">
+                      <div className="flex items-center gap-2 text-sm font-semibold">
+                        <span>💰</span>
+                        <span>Branch Total</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm text-white/90">
+                        <span>Total Tickets</span>
+                        <span className="text-base font-semibold">{branchTotals.tickets}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm text-white/90">
+                        <span>Total Collected</span>
+                        <span className="text-2xl font-black">{formatCurrency(branchTotals.collected)}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 shadow-[0_6px_18px_-12px_rgba(0,0,0,0.15)]">
+                  <div className="flex items-center gap-3">
+                    <div className="h-9 w-9 rounded-lg bg-white text-blue-600 flex items-center justify-center text-lg border border-blue-100">📊</div>
+                    <div>
+                      <p className="text-sm font-semibold text-blue-900">Collection by Department</p>
+                      <p className="text-xs text-blue-800/80">Summary of total collections grouped by department.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                  {deptSummary.length === 0 && (
+                    <div className="col-span-full text-center text-sm text-gray-500 border border-dashed border-slate-200 rounded-xl py-6">
+                      No department collections match your filters.
+                    </div>
+                  )}
+                  {deptSummary.map((item) => {
+                    const gradient = deptGradientMap[item.department] || 'from-slate-400 to-slate-600'
+                    return (
+                      <div key={item.department} className="rounded-2xl border border-gray-200 bg-white shadow-sm px-5 py-4 flex flex-col gap-3">
+                        <div className="flex items-center gap-3">
+                          <div className={`h-10 w-10 rounded-lg bg-gradient-to-br ${gradient} text-white flex items-center justify-center text-xl shadow-sm`}>
+                            {deptIconMap[item.department] || '🏢'}
+                          </div>
+                          <div>
+                            <p className="text-base font-semibold text-gray-900">{item.department}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-gray-600">
+                          <span>Tickets</span>
+                          <span className="text-base font-semibold text-gray-900">{item.transactions}</span>
+                        </div>
+                        <div className="flex items-center justify-between text-sm text-gray-600">
+                          <span>Collected</span>
+                          <span className="text-base font-bold text-emerald-600">{formatCurrency(item.collected)}</span>
+                        </div>
+                      </div>
+                    )
+                  })}
+
+                  {deptSummary.length > 0 && (
+                    <div className="rounded-2xl bg-[#5346e8] text-white shadow-lg px-5 py-4 flex flex-col gap-2">
+                      <div className="flex items-center gap-2 text-sm font-semibold">
+                        <span>💳</span>
+                        <span>Dept Total</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm text-white/90">
+                        <span>Total Tickets</span>
+                        <span className="text-base font-semibold">{deptTotals.tickets}</span>
+                      </div>
+                      <div className="flex items-center justify-between text-sm text-white/90">
+                        <span>Total Collected</span>
+                        <span className="text-2xl font-black">{formatCurrency(deptTotals.collected)}</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="flex items-center gap-3">
+                    <span className="text-xl">📊</span>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">Collection Records</h3>
+                      <p className="text-sm text-gray-500">Detailed list of all collection transactions</p>
+                    </div>
+                  </div>
+                  <button className="px-4 py-2 text-sm font-semibold rounded-lg bg-[#1f3c8e] text-white shadow-sm hover:bg-[#17306f]">
+                    ➕ Add Collection
+                  </button>
+                </div>
+
+                <div className="flex flex-wrap items-end gap-4 bg-slate-50/60 border border-slate-100 rounded-xl p-4">
+                  <div className="min-w-[200px] flex-1">
+                    <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Branch</label>
+                    <select
+                      className="mt-2 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      value={collectionBranchFilter}
+                      onChange={(event) => setCollectionBranchFilter(event.target.value)}
+                    >
+                      <option value="">All Branches</option>
+                      {collectionBranchOptions
+                        .filter((branch) => branch)
+                        .map((branch) => (
+                          <option key={branch} value={branch}>
+                            {branch}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                  <div className="min-w-[200px] flex-1">
+                    <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Department</label>
+                    <select
+                      className="mt-2 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      value={collectionDeptFilter}
+                      onChange={(event) => setCollectionDeptFilter(event.target.value)}
+                    >
+                      <option value="">All Departments</option>
+                      {collectionDeptOptions
+                        .filter((dept) => dept)
+                        .map((dept) => (
+                          <option key={dept} value={dept}>
+                            {dept}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                  <div className="min-w-[160px]">
+                    <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Status</label>
+                    <select
+                      className="mt-2 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      value={collectionStatusFilter}
+                      onChange={(event) => setCollectionStatusFilter(event.target.value)}
+                    >
+                      <option value="">All Status</option>
+                      {['Collected', 'Pending', 'Partial', 'Overdue'].map((status) => (
+                        <option key={status} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="min-w-[160px]">
+                    <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">Date From</label>
+                    <input
+                      type="date"
+                      className="mt-2 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      value={collectionDateFrom}
+                      onChange={(event) => setCollectionDateFrom(event.target.value)}
+                    />
+                  </div>
+                  <div className="min-w-[160px]">
+                    <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide">To</label>
+                    <input
+                      type="date"
+                      className="mt-2 w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
+                      value={collectionDateTo}
+                      onChange={(event) => setCollectionDateTo(event.target.value)}
+                    />
+                  </div>
+                  <button
+                    className="h-10 px-4 rounded-lg border border-gray-200 text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50"
+                    onClick={resetCollectionFilters}
+                  >
+                    🔄 Reset
+                  </button>
+                  <div className="ml-auto text-xs text-gray-500">
+                    Showing <strong>{filteredCollections.length}</strong> of <strong>{collectionRecords.length}</strong> records
+                  </div>
+                </div>
+
+                <div className="overflow-x-auto">
+                  <table className="min-w-[1024px] w-full text-sm">
+                    <thead className="bg-gray-50 text-gray-600 uppercase text-[11px] tracking-[0.2em]">
+                      <tr>
+                        <th className="text-left px-4 py-3">Collection ID</th>
+                        <th className="text-left px-4 py-3">Ticket #</th>
+                        <th className="text-left px-4 py-3">Branch</th>
+                        <th className="text-left px-4 py-3">Department</th>
+                        <th className="text-left px-4 py-3">Service</th>
+                        <th className="text-left px-4 py-3">Amount Due</th>
+                        <th className="text-left px-4 py-3">Amount Paid</th>
+                        <th className="text-left px-4 py-3">Balance</th>
+                        <th className="text-left px-4 py-3">Status</th>
+                        <th className="text-left px-4 py-3">Date</th>
+                        <th className="text-center px-4 py-3">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredCollections.map((record) => (
+                        <tr key={record.id} className="border-t border-gray-100 hover:bg-gray-50">
+                          <td className="px-4 py-3">
+                            <span className="px-3 py-1 rounded-md bg-emerald-50 text-emerald-700 font-semibold text-xs">{record.id}</span>
+                          </td>
+                          <td className="px-4 py-3 font-semibold text-gray-900">{record.ticket}</td>
+                          <td className="px-4 py-3 text-sm text-gray-700">
+                            <span className="px-3 py-1 rounded-md bg-slate-100 text-slate-800 text-xs font-semibold">{record.branch}</span>
+                          </td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                deptBadgeClasses[record.department] || 'bg-gray-100 text-gray-600'
+                              }`}
+                            >
+                              {record.department}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-700">{record.service}</td>
+                          <td className="px-4 py-3 font-semibold text-gray-900">{formatCurrency(record.amountDue)}</td>
+                          <td className="px-4 py-3 font-semibold text-emerald-600">{formatCurrency(record.amountPaid)}</td>
+                          <td
+                            className={`px-4 py-3 font-semibold ${
+                              record.balance === 0 ? 'text-gray-900' : 'text-rose-600'
+                            }`}
+                          >
+                            {formatCurrency(record.balance)}
+                          </td>
+                          <td className="px-4 py-3">
+                            <span
+                              className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                                statusBadgeClasses[record.status] || 'bg-gray-100 text-gray-700'
+                              }`}
+                            >
+                              {record.status}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3 text-sm text-gray-700">{formatDateLabel(record.date)}</td>
+                          <td className="px-4 py-3 text-center">
+                            <button
+                              className="px-3 py-1.5 text-xs font-semibold rounded-md border border-gray-200 text-gray-700 hover:bg-gray-100"
+                              onClick={() => {
+                                setSelectedCollection(record)
+                                setShowCollectionDetail(true)
+                              }}
+                            >
+                              👁 View
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+
+                {filteredCollections.length === 0 && (
+                  <div className="text-center text-gray-500 text-sm py-8 border border-dashed border-gray-200 rounded-xl">
+                    <div className="text-2xl mb-2">🔍</div>
+                    <p>No collection records found matching your filters.</p>
+                    <button
+                      className="mt-3 px-4 py-2 text-sm font-semibold rounded-lg border border-gray-200 text-gray-700 bg-white hover:bg-gray-50"
+                      onClick={resetCollectionFilters}
+                    >
+                      Reset Filters
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6 space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 rounded-xl bg-[#22c55e]/15 text-[#22c55e] flex items-center justify-center text-xl">📈</div>
+                  <div>
+                    <h3 className="text-2xl font-bold text-gray-900">Collection Statistics</h3>
+                    <p className="text-sm text-gray-500">Overall collection performance metrics</p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+                  <div className="rounded-2xl border border-emerald-200 bg-white shadow-sm p-5 space-y-3 relative overflow-hidden">
+                    <div className="absolute inset-y-0 left-0 w-[6px] bg-emerald-500 rounded-l-2xl" />
+                    <div className="flex items-center gap-2 text-emerald-700">
+                      <span className="text-xl">✅</span>
+                      <p className="text-base font-semibold">Total Collected</p>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-gray-700">
+                      <span>Transactions</span>
+                      <span className="font-bold">{collectionStats.Collected.count}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-gray-700">
+                      <span>Amount</span>
+                      <span className="text-xl font-bold text-emerald-600">{formatCurrency(collectionStats.Collected.amount)}</span>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-amber-200 bg-white shadow-sm p-5 space-y-3 relative overflow-hidden">
+                    <div className="absolute inset-y-0 left-0 w-[6px] bg-amber-400 rounded-l-2xl" />
+                    <div className="flex items-center gap-2 text-amber-700">
+                      <span className="text-xl">⏳</span>
+                      <p className="text-base font-semibold">Pending Collection</p>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-gray-700">
+                      <span>Transactions</span>
+                      <span className="font-bold">{collectionStats.Pending.count}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-gray-700">
+                      <span>Amount</span>
+                      <span className="text-xl font-bold text-amber-500">{formatCurrency(collectionStats.Pending.amount)}</span>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-blue-200 bg-white shadow-sm p-5 space-y-3 relative overflow-hidden">
+                    <div className="absolute inset-y-0 left-0 w-[6px] bg-blue-500 rounded-l-2xl" />
+                    <div className="flex items-center gap-2 text-blue-700">
+                      <span className="text-xl">📊</span>
+                      <p className="text-base font-semibold">Partial Payments</p>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-gray-700">
+                      <span>Transactions</span>
+                      <span className="font-bold">{collectionStats.Partial.count}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-gray-700">
+                      <span>Balance Due</span>
+                      <span className="text-xl font-bold text-blue-600">{formatCurrency(collectionStats.Partial.amount)}</span>
+                    </div>
+                  </div>
+
+                  <div className="rounded-2xl border border-rose-200 bg-white shadow-sm p-5 space-y-3 relative overflow-hidden">
+                    <div className="absolute inset-y-0 left-0 w-[6px] bg-rose-500 rounded-l-2xl" />
+                    <div className="flex items-center gap-2 text-rose-700">
+                      <span className="text-xl">⚠️</span>
+                      <p className="text-base font-semibold">Overdue</p>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-gray-700">
+                      <span>Transactions</span>
+                      <span className="font-bold">{collectionStats.Overdue.count}</span>
+                    </div>
+                    <div className="flex items-center justify-between text-sm text-gray-700">
+                      <span>Amount</span>
+                      <span className="text-xl font-bold text-rose-600">{formatCurrency(collectionStats.Overdue.amount)}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
         </main>
 
+        {/* Collection Detail Modal */}
+        {showCollectionDetail && selectedCollection && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
+            <div className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl overflow-hidden animate-[fadeIn_0.18s_ease]">
+              <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-[#e0f2fe] via-white to-white border-b border-slate-200">
+                <div className="flex items-center gap-3">
+                  <div className="h-11 w-11 rounded-xl bg-[#0ea5e9]/15 text-[#0ea5e9] flex items-center justify-center text-xl">👁</div>
+                  <div>
+                    <p className="text-[11px] uppercase tracking-[0.2em] text-slate-500">Collection Details</p>
+                    <h3 className="text-lg font-bold text-gray-900">{selectedCollection.id}</h3>
+                  </div>
+                </div>
+                <button
+                  className="w-10 h-10 rounded-xl bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+                  onClick={closeCollectionDetail}
+                  aria-label="Close collection details"
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="p-6 space-y-5 bg-gray-50/80">
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="px-3 py-1 rounded-md bg-slate-100 text-slate-800 text-xs font-semibold">Ticket: {selectedCollection.ticket}</div>
+                  <div className="px-3 py-1 rounded-md bg-white border border-gray-200 text-xs font-semibold text-gray-700">Service: {selectedCollection.service}</div>
+                  <span
+                    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                      statusBadgeClasses[selectedCollection.status] || 'bg-gray-100 text-gray-700'
+                    }`}
+                  >
+                    {selectedCollection.status}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div className="rounded-xl border border-gray-200 bg-white px-4 py-3 flex items-center justify-between">
+                    <div className="text-xs uppercase tracking-[0.18em] text-gray-500">Branch</div>
+                    <div className="text-sm font-semibold text-gray-900">{selectedCollection.branch}</div>
+                  </div>
+                  <div className="rounded-xl border border-gray-200 bg-white px-4 py-3 flex items-center justify-between">
+                    <div className="text-xs uppercase tracking-[0.18em] text-gray-500">Department</div>
+                    <div className="text-sm font-semibold text-gray-900">{selectedCollection.department}</div>
+                  </div>
+                  <div className="rounded-xl border border-gray-200 bg-white px-4 py-3 flex items-center justify-between">
+                    <div className="text-xs uppercase tracking-[0.18em] text-gray-500">Date</div>
+                    <div className="text-sm font-semibold text-gray-900">{formatDateLabel(selectedCollection.date)}</div>
+                  </div>
+                  <div className="rounded-xl border border-gray-200 bg-white px-4 py-3 flex items-center justify-between">
+                    <div className="text-xs uppercase tracking-[0.18em] text-gray-500">ID</div>
+                    <div className="text-sm font-semibold text-gray-900">{selectedCollection.id}</div>
+                  </div>
+                </div>
+
+                <div className="rounded-2xl border border-gray-200 bg-white shadow-sm p-5 space-y-4">
+                  <div className="flex items-center gap-2 text-gray-800">
+                    <span className="text-lg">💳</span>
+                    <p className="text-sm font-semibold">Payment Breakdown</p>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div className="rounded-xl bg-amber-50 border border-amber-100 px-4 py-3">
+                      <p className="text-xs text-amber-700 font-semibold">Amount Due</p>
+                      <p className="text-xl font-bold text-amber-800 mt-1">{formatCurrency(selectedCollection.amountDue)}</p>
+                    </div>
+                    <div className="rounded-xl bg-emerald-50 border border-emerald-100 px-4 py-3">
+                      <p className="text-xs text-emerald-700 font-semibold">Amount Paid</p>
+                      <p className="text-xl font-bold text-emerald-800 mt-1">{formatCurrency(selectedCollection.amountPaid)}</p>
+                    </div>
+                    <div className="rounded-xl bg-rose-50 border border-rose-100 px-4 py-3">
+                      <p className="text-xs text-rose-700 font-semibold">Balance</p>
+                      <p
+                        className={`text-xl font-bold mt-1 ${
+                          selectedCollection.balance === 0 ? 'text-gray-900' : 'text-rose-600'
+                        }`}
+                      >
+                        {formatCurrency(selectedCollection.balance)}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-3 pt-1">
+                  <button
+                    className="px-4 py-2 text-sm font-semibold rounded-xl border border-slate-200 text-slate-700 bg-white hover:bg-slate-50"
+                    onClick={closeCollectionDetail}
+                  >
+                    Close
+                  </button>
+                  <button className="px-4 py-2 text-sm font-semibold rounded-xl bg-[#2563eb] text-white hover:bg-[#1d4ed8] shadow">
+                    Download Receipt
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Pricing Modal */}
         {showPricingModal && selectedService && (
           <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 px-4">
-            <div className="w-full max-w-3xl rounded-3xl bg-white shadow-[0_24px_60px_-25px_rgba(0,0,0,0.55)] overflow-hidden animate-[fadeIn_0.2s_ease]">
+            <div className="w-full max-w-3xl rounded-xl bg-white shadow-[0_24px_60px_-25px_rgba(0,0,0,0.55)] overflow-hidden animate-[fadeIn_0.2s_ease]">
               <div className="bg-gradient-to-r from-[#e7f1ff] via-[#eff6ff] to-white px-6 sm:px-8 py-5 flex items-start justify-between">
                 <div className="flex gap-3">
                   <div className="text-4xl leading-none">💰</div>
@@ -534,7 +1295,7 @@ function SectionE() {
               </div>
 
               <div className="bg-[#f7f9fc] px-5 sm:px-8 py-6 space-y-5 max-h-[70vh] overflow-y-auto">
-                <div className="bg-white border border-slate-100 rounded-2xl shadow-sm divide-y divide-slate-100">
+                <div className="bg-white border border-slate-100 rounded-2xl shadow-sm divide-y divide-slate-200">
                   <div className="flex items-center justify-between px-5 py-4">
                     <span className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Service Code</span>
                     <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">{selectedService.code}</span>
@@ -576,13 +1337,13 @@ function SectionE() {
                 <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#5c63ff] via-[#5b56f5] to-[#7e6bff] text-white shadow-xl">
                   <div className="absolute inset-0 bg-white/5" />
                   <div className="relative px-6 py-7">
-                    <p className="text-xs uppercase tracking-[0.22em] text-white/80">Total Cost</p>
-                    <p className="mt-2 text-4xl sm:text-5xl font-black drop-shadow-sm">{formatCurrency(Math.round(pricingTotal))}</p>
+                    <p className="text-xs text-center uppercase tracking-[0.22em] text-white/80">Total Cost</p>
+                    <p className="mt-2 text-4xl sm:text-5xl text-center font-black drop-shadow-sm">{formatCurrency(Math.round(pricingTotal))}</p>
                   </div>
                 </div>
 
-                <div className="bg-white border border-slate-100 rounded-2xl shadow-sm p-5 space-y-3">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+                <div className="p-0 space-y-3">
+                  <div className="flex items-center gap-2 mt-2 text-sm font-semibold text-slate-800">
                     <span className="text-lg">📎</span>
                     <span>Attachments</span>
                   </div>
@@ -603,8 +1364,8 @@ function SectionE() {
                   </div>
                 </div>
 
-                <div className="bg-white border border-slate-100 rounded-2xl shadow-sm p-5 space-y-2">
-                  <label className="text-sm font-semibold text-slate-800">Additional Notes</label>
+              <div className="space-y-2">
+                  <label className="text-sm mt-2 font-semibold text-slate-800">Additional Notes</label>
                   <textarea
                     className="w-full min-h-[110px] rounded-xl border border-slate-200 px-3 py-2 text-sm shadow-inner focus:border-[#5c63ff] focus:ring-2 focus:ring-[#5c63ff]/40 outline-none"
                     placeholder="Enter any special requirements or notes for this service request..."
