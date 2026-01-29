@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import SidebarToggle from '../components/SidebarToggle'
 
@@ -204,6 +204,8 @@ function SectionE() {
   const [selectedService, setSelectedService] = useState(null)
   const [severity, setSeverity] = useState('1.0')
   const [pricingNotes, setPricingNotes] = useState('')
+  const [attachmentLabel, setAttachmentLabel] = useState('Click to upload supporting documents')
+  const fileInputRef = useRef(null)
 
   const filteredServices = useMemo(() => {
     return servicesData.filter((service) => {
@@ -217,10 +219,11 @@ function SectionE() {
   const grandTotalAmount = branchCards.reduce((sum, card) => sum + card.amount, 0)
 
   const severityOptions = [
-    { label: 'Standard Impact (1.0x)', value: '1.0' },
-    { label: 'High Impact (1.25x)', value: '1.25' },
-    { label: 'Critical Impact (1.5x)', value: '1.5' },
-    { label: 'Executive Override (1.8x)', value: '1.8' },
+    { label: 'Normal (No adjustment)', value: '1.0' },
+    { label: 'High (+25%)', value: '1.25' },
+    { label: 'Critical (+50%)', value: '1.5' },
+    { label: 'Emergency (+100%)', value: '2.0' },
+    { label: 'Low Priority (-10%)', value: '0.9' },
   ]
 
   const pricingTotal = selectedService ? selectedService.baseRate * parseFloat(severity) : 0
@@ -243,6 +246,22 @@ function SectionE() {
   const resetFilters = () => {
     setDeptFilter('All Departments')
     setBranchFilter('All Branches')
+  }
+
+  const handleAttachmentClick = () => {
+    if (fileInputRef.current) fileInputRef.current.click()
+  }
+
+  const handleAttachmentChange = (event) => {
+    const file = event.target.files && event.target.files[0]
+    if (!file) {
+      setAttachmentLabel('Click to upload supporting documents')
+      return
+    }
+
+    const sizeInMb = file.size / (1024 * 1024)
+    const prettySize = sizeInMb >= 1 ? `${sizeInMb.toFixed(1)} MB` : `${Math.round(file.size / 1024)} KB`
+    setAttachmentLabel(`${file.name} (${prettySize})`)
   }
 
   const metrics = [
@@ -332,12 +351,12 @@ function SectionE() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 px-6 py-4">
                   {branchCards.map((card) => (
                     <div key={card.name} className="border border-gray-200 rounded-xl p-4 bg-white shadow-[0_6px_18px_-10px_rgba(0,0,0,0.25)]">
-                      <p className="text-sm font-semibold text-gray-900">{card.name}</p>
-                      <div className="mt-3 flex items-center justify-between text-sm text-gray-500">
+                      <p className="text-md font-semibold text-gray-900">🏨 {card.name}</p>
+                      <div className="mt-3 flex items-center justify-between text-md text-gray-500">
                         <span>Tickets</span>
                         <span className="font-semibold text-[#1f3c8e]">{card.tickets}</span>
                       </div>
-                      <div className="mt-1 flex items-center justify-between text-sm text-gray-500">
+                      <div className="mt-1 flex items-center justify-between text-md text-gray-500">
                         <span>Total Amount</span>
                         <span className="font-semibold text-[#1f3c8e]">{formatCurrency(card.amount)}</span>
                       </div>
@@ -347,14 +366,14 @@ function SectionE() {
                   <div className="border border-[#5b6ef5] rounded-xl p-4 bg-gradient-to-br from-[#4f46e5] to-[#6366f1] text-white shadow-lg">
                     <div className="flex items-center justify-between">
                       <div>
-                        <p className="text-sm font-semibold">Grand Total</p>
-                        <p className="text-xs text-white/80">Total Tickets</p>
-                        <p className="text-xl font-bold mt-1">{grandTotalTickets}</p>
+                        <p className="text-md font-semibold">Grand Total</p>
+                        <p className="text-sm text-white/80">Total Tickets</p>
+                        <p className="text-2xl font-bold mt-1">{grandTotalTickets}</p>
                       </div>
                       <div className="text-3xl"></div>
                     </div>
                     <div className="mt-3">
-                      <p className="text-xs text-white/80">Combined Total</p>
+                      <p className="text-sm text-white/80">Combined Total</p>
                       <p className="text-2xl font-bold">{formatCurrency(grandTotalAmount)}</p>
                     </div>
                   </div>
@@ -496,17 +515,17 @@ function SectionE() {
         {/* Pricing Modal */}
         {showPricingModal && selectedService && (
           <div className="fixed inset-0 z-40 flex items-center justify-center bg-black/50 px-4">
-            <div className="bg-white w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease]">
-              <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gradient-to-r from-[#eff6ff] to-[#dbeafe]">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl">💳</span>
+            <div className="w-full max-w-3xl rounded-3xl bg-white shadow-[0_24px_60px_-25px_rgba(0,0,0,0.55)] overflow-hidden animate-[fadeIn_0.2s_ease]">
+              <div className="bg-gradient-to-r from-[#e7f1ff] via-[#eff6ff] to-white px-6 sm:px-8 py-5 flex items-start justify-between">
+                <div className="flex gap-3">
+                  <div className="text-4xl leading-none">💰</div>
                   <div>
-                    <p className="text-xs font-semibold text-gray-500">Pricing Worksheet</p>
-                    <h3 className="text-lg font-bold text-gray-900">{selectedService.name}</h3>
+                    <h3 className="text-2xl font-bold text-slate-900">Service Pricing</h3>
+                    <p className="text-sm text-slate-600">Pricing breakdown for selected service</p>
                   </div>
                 </div>
                 <button
-                  className="w-9 h-9 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+                  className="w-10 h-10 rounded-2xl bg-white/80 border border-slate-200 text-slate-600 hover:bg-white shadow-sm"
                   onClick={closePricing}
                   aria-label="Close pricing modal"
                 >
@@ -514,77 +533,99 @@ function SectionE() {
                 </button>
               </div>
 
-              <div className="px-6 py-5 space-y-4 max-h-[70vh] overflow-y-auto">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 border border-gray-200 rounded-xl">
-                  <div className="p-4 border-b sm:border-b-0 sm:border-r border-gray-200">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Service Code</p>
-                    <p className="mt-1 text-base font-mono text-emerald-700 bg-emerald-50 inline-block px-3 py-1 rounded-md">
-                      {selectedService.code}
-                    </p>
+              <div className="bg-[#f7f9fc] px-5 sm:px-8 py-6 space-y-5 max-h-[70vh] overflow-y-auto">
+                <div className="bg-white border border-slate-100 rounded-2xl shadow-sm divide-y divide-slate-100">
+                  <div className="flex items-center justify-between px-5 py-4">
+                    <span className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Service Code</span>
+                    <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full">{selectedService.code}</span>
                   </div>
-                  <div className="p-4 border-b sm:border-b-0 sm:border-r border-gray-200">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Department</p>
-                    <p className="mt-1 text-sm font-semibold text-gray-900">{selectedService.department}</p>
+                  <div className="flex items-center justify-between px-5 py-4">
+                    <span className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Department</span>
+                    <span className="text-xs font-semibold text-purple-700 bg-purple-50 px-3 py-1 rounded-full">{selectedService.department}</span>
                   </div>
-                  <div className="p-4 border-b sm:border-b-0 sm:border-r border-gray-200">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Branch</p>
-                    <p className="mt-1 text-sm font-semibold text-gray-900">{selectedService.branch}</p>
+                  <div className="flex items-center justify-between px-5 py-4">
+                    <span className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Hotel Sogo Branch</span>
+                    <span className="text-sm font-semibold text-slate-900">{selectedService.branch}</span>
                   </div>
-                  <div className="p-4">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide">SLA</p>
-                    <p className="mt-1 text-sm font-semibold text-blue-700 bg-blue-50 inline-block px-3 py-1 rounded-md">
-                      {selectedService.sla}
-                    </p>
+                  <div className="flex items-center justify-between px-5 py-4">
+                    <span className="text-[11px] uppercase tracking-[0.18em] text-slate-500">SLA</span>
+                    <span className="text-xs font-semibold text-sky-700 bg-sky-50 px-3 py-1 rounded-full">{selectedService.sla}</span>
                   </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-gray-700">Severity Multiplier</label>
-                    <select
-                      className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
-                      value={severity}
-                      onChange={(event) => setSeverity(event.target.value)}
-                    >
-                      {severityOptions.map((option) => (
-                        <option key={option.value} value={option.value}>
-                          {option.label}
-                        </option>
-                      ))}
-                    </select>
-                    <p className="text-xs text-gray-500">Adjust base rate based on incident impact.</p>
+                  <div className="flex items-center justify-between px-5 py-4">
+                    <span className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Base Rate</span>
+                    <span className="text-xl font-bold text-slate-900">{formatCurrency(selectedService.baseRate)}</span>
                   </div>
-                  <div className="bg-gradient-to-br from-[#4f46e5] to-[#6366f1] text-white rounded-xl p-4 shadow-md">
-                    <p className="text-xs uppercase tracking-wide text-white/80">Total (with multiplier)</p>
-                    <p className="text-3xl font-extrabold mt-1">{formatCurrency(Math.round(pricingTotal))}</p>
-                    <p className="text-xs text-white/80 mt-1">Base rate {formatCurrency(selectedService.baseRate)}</p>
+                  <div className="flex items-center justify-between px-5 py-4">
+                    <span className="text-[11px] uppercase tracking-[0.18em] text-slate-500">Severity Adjustment</span>
+                    <div className="min-w-[220px]">
+                      <select
+                        className="w-full text-sm font-semibold bg-white border border-slate-200 rounded-xl px-3 py-2 shadow-inner focus:ring-2 focus:ring-[#5c63ff]/50 focus:border-[#5c63ff] outline-none"
+                        value={severity}
+                        onChange={(event) => setSeverity(event.target.value)}
+                      >
+                        {severityOptions.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <label className="text-sm font-semibold text-gray-700">Add Notes</label>
+                <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#5c63ff] via-[#5b56f5] to-[#7e6bff] text-white shadow-xl">
+                  <div className="absolute inset-0 bg-white/5" />
+                  <div className="relative px-6 py-7">
+                    <p className="text-xs uppercase tracking-[0.22em] text-white/80">Total Cost</p>
+                    <p className="mt-2 text-4xl sm:text-5xl font-black drop-shadow-sm">{formatCurrency(Math.round(pricingTotal))}</p>
+                  </div>
+                </div>
+
+                <div className="bg-white border border-slate-100 rounded-2xl shadow-sm p-5 space-y-3">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-slate-800">
+                    <span className="text-lg">📎</span>
+                    <span>Attachments</span>
+                  </div>
+                  <div
+                    className="group cursor-pointer rounded-2xl border-2 border-dashed border-[#9aa7ff] bg-[#f7f8ff] hover:border-[#7d8bff] transition p-6 text-center"
+                    onClick={handleAttachmentClick}
+                  >
+                    <div className="text-3xl mb-2">📄</div>
+                    <p className="text-sm font-semibold text-slate-800">{attachmentLabel}</p>
+                    <p className="text-xs text-slate-500">JPG, PNG, PDF, DOC (Max 10MB total)</p>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      className="hidden"
+                      accept=".jpg,.jpeg,.png,.pdf,.doc,.docx"
+                      onChange={handleAttachmentChange}
+                    />
+                  </div>
+                </div>
+
+                <div className="bg-white border border-slate-100 rounded-2xl shadow-sm p-5 space-y-2">
+                  <label className="text-sm font-semibold text-slate-800">Additional Notes</label>
                   <textarea
-                    className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm min-h-[96px]"
-                    placeholder="Add work order notes, scope clarifications, or attachments context."
+                    className="w-full min-h-[110px] rounded-xl border border-slate-200 px-3 py-2 text-sm shadow-inner focus:border-[#5c63ff] focus:ring-2 focus:ring-[#5c63ff]/40 outline-none"
+                    placeholder="Enter any special requirements or notes for this service request..."
                     value={pricingNotes}
                     onChange={(event) => setPricingNotes(event.target.value)}
                   />
-                  <p className="text-xs text-gray-500">Notes are saved with the pricing worksheet.</p>
                 </div>
               </div>
 
-              <div className="px-6 py-4 border-t border-gray-200 bg-gray-50 flex flex-wrap gap-3 justify-end">
+              <div className="px-5 sm:px-8 py-4 bg-white border-t border-slate-200 flex flex-wrap gap-3 justify-end">
                 <button
-                  className="px-4 py-2 text-sm font-semibold rounded-lg border border-gray-200 text-gray-700 hover:bg-white"
+                  className="px-4 py-2 text-sm font-semibold rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50"
                   onClick={closePricing}
                 >
-                  Close
+                  Cancel
                 </button>
-                <button className="px-4 py-2 text-sm font-semibold rounded-lg bg-emerald-500 text-white hover:bg-emerald-600">
-                  Confirm Service Request
-                </button>
-                <button className="px-4 py-2 text-sm font-semibold rounded-lg bg-[#1f3c8e] text-white hover:bg-[#17306f]">
+                <button className="px-4 py-2 text-sm font-semibold rounded-xl bg-[#2563eb] text-white hover:bg-[#1d4ed8] shadow-md">
                   Submit for Approval
+                </button>
+                <button className="px-4 py-2 text-sm font-semibold rounded-xl bg-[#10b981] text-white hover:bg-[#0f9d74] shadow-md">
+                  Confirm Request
                 </button>
               </div>
             </div>
