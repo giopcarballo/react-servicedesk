@@ -401,6 +401,8 @@ function SectionE() {
   const [collectionDateTo, setCollectionDateTo] = useState('')
   const [showCollectionDetail, setShowCollectionDetail] = useState(false)
   const [selectedCollection, setSelectedCollection] = useState(null)
+  const [serviceDetailTab, setServiceDetailTab] = useState('details')
+  const [showServiceReportModal, setShowServiceReportModal] = useState(false)
   const fileInputRef = useRef(null)
 
   const filteredServices = useMemo(() => {
@@ -509,6 +511,7 @@ function SectionE() {
 
   const openDetail = (service) => {
     setSelectedService(service)
+    setServiceDetailTab('details')
     setShowDetailModal(true)
   }
 
@@ -518,6 +521,7 @@ function SectionE() {
     setShowCollectionDetail(false)
     setSelectedCollection(null)
   }
+  const closeServiceReport = () => setShowServiceReportModal(false)
 
   const resetFilters = () => {
     setDeptFilter('All Departments')
@@ -629,7 +633,7 @@ function SectionE() {
                     <h2 className="text-lg font-semibold text-gray-900">Service Pricing History</h2>
                     <p className="text-sm text-gray-500">List of service pricing records per ticket</p>
                   </div>
-                  <button className="px-4 py-2 text-xs font-semibold bg-[#1f3c8e] text-white rounded-lg shadow-sm">ACTIVE</button>
+                  <button className="px-4 py-2 text-sm font-semibold bg-blue-300/50 text-blue-900 rounded-lg shadow-sm">ACTIVE</button>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 px-6 py-4">
@@ -721,7 +725,6 @@ function SectionE() {
                         <th className="text-left px-4 py-3">SLA</th>
                         <th className="text-left px-4 py-3">Base Rate</th>
                         <th className="text-center px-4 py-3">Details</th>
-                        <th className="text-center px-4 py-3">Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -759,14 +762,14 @@ function SectionE() {
                               View
                             </button>
                           </td>
-                          <td className="px-4 py-4 text-center">
+                          {/* <td className="px-4 py-4 text-center">
                             <button
                               className="px-3 py-1.5 text-xs font-semibold rounded-md bg-[#1f3c8e] text-white hover:bg-[#17306f]"
                               onClick={() => openPricing(service)}
                             >
                               Select
                             </button>
-                          </td>
+                          </td> */}
                         </tr>
                       ))}
                     </tbody>
@@ -774,18 +777,7 @@ function SectionE() {
                 </div>
               </div>
 
-              <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-6">
-                <div className="flex items-center gap-3">
-                  <span className="text-xl">📝</span>
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-900">Recent Service Requests</h3>
-                    <p className="text-xs text-gray-500">Service request history for this ticket</p>
-                  </div>
-                </div>
-                <div className="mt-6 text-center text-gray-500 text-sm py-10 border border-dashed border-gray-200 rounded-xl">
-                  No service requests recorded yet
-                </div>
-              </div>
+              
             </div>
           )}
 
@@ -800,7 +792,7 @@ function SectionE() {
                       <p className="text-sm text-gray-500">Overview of collections per branch and department</p>
                     </div>
                   </div>
-                  <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 text-xs font-semibold border border-emerald-100">UPDATED</span>
+                  <span className="px-3 py-1 rounded-md bg-emerald-50 text-emerald-700 text-sm font-semibold border border-emerald-100">UPDATED</span>
                 </div>
 
                 <div className="rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 shadow-[0_6px_18px_-12px_rgba(0,0,0,0.15)]">
@@ -824,7 +816,7 @@ function SectionE() {
                     return (
                       <div key={item.branch} className="rounded-2xl border border-gray-200 bg-white shadow-sm px-5 py-4 flex flex-col gap-3">
                         <div className="flex items-center gap-3">
-                          <div className={`h-10 w-10 rounded-lg bg-gradient-to-br ${gradient} text-white flex items-center justify-center text-xl shadow-sm`}>🏢</div>
+                          <div className={`h-10 w-10 text-white flex items-center justify-center text-xl`}>🏨</div>
                           <div>
                             <p className="text-base font-semibold text-gray-900">{item.branch}</p>
                           </div>
@@ -1402,9 +1394,6 @@ function SectionE() {
                   <button className="px-3 py-1.5 text-xs font-semibold rounded-md border border-gray-200 text-gray-700 hover:bg-white">← Back</button>
                   <button className="px-3 py-1.5 text-xs font-semibold rounded-md border border-gray-200 text-gray-700 hover:bg-white">Edit</button>
                   <button className="px-3 py-1.5 text-xs font-semibold rounded-md border border-gray-200 text-gray-700 hover:bg-white">Assign</button>
-                  <button className="px-3 py-1.5 text-xs font-semibold rounded-md border border-gray-200 text-gray-700 hover:bg-white">Actions ▾</button>
-                  <button className="px-3 py-1.5 text-xs font-semibold rounded-md border border-gray-200 text-gray-700 hover:bg-white">Reply ▾</button>
-                  <button className="px-3 py-1.5 text-xs font-semibold rounded-md bg-[#2563eb] text-white shadow hover:bg-[#1d4ed8]">⏱ Timer</button>
                 </div>
                 <div className="flex items-center gap-2">
                   <button className="w-9 h-9 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50">⚙</button>
@@ -1433,179 +1422,184 @@ function SectionE() {
                   </div>
 
                   <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-2">
-                    {['Details', 'Resolution', 'Tasks', 'Checklist', 'Work Logs', 'Time Analysis', 'History'].map((tab, index) => (
+                    {[
+                      { id: 'details', label: 'Details' },
+                      { id: 'resolution', label: 'Resolution' },
+                      { id: 'tasks', label: 'Tasks' },
+                      { id: 'checklist', label: 'Checklist' },
+                      { id: 'workLogs', label: 'Work Logs' },
+                      { id: 'timeAnalysis', label: 'Time Analysis' },
+                      { id: 'history', label: 'History' },
+                      { id: 'report', label: 'Generate Report' },
+                    ].map((tab) => (
                       <button
-                        key={tab}
+                        key={tab.id}
                         className={`px-3 py-2 text-sm font-semibold rounded-md ${
-                          index === 0
-                            ? 'text-[#1f3c8e] border-b-2 border-[#1f3c8e] bg-white'
+                          serviceDetailTab === tab.id
+                            ? 'text-[#1f3c8e]  border-[#1f3c8e] bg-white'
                             : 'text-gray-600 hover:text-[#1f3c8e]'
                         }`}
+                        onClick={() => setServiceDetailTab(tab.id)}
                       >
-                        {tab}
+                        {tab.label}
                       </button>
                     ))}
                   </div>
 
                   <div className="space-y-5">
-                    <div className="border border-gray-200 rounded-xl">
-                      <div className="px-4 py-3 border-b border-gray-100 text-sm font-semibold text-gray-800">Description</div>
-                      <div className="px-4 py-4 space-y-3 text-sm text-gray-700">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          <div><span className="font-semibold">Service: </span>{selectedService.name}</div>
-                          <div><span className="font-semibold">Service Code: </span>{selectedService.code}</div>
-                          <div><span className="font-semibold">Base Rate: </span>{formatCurrency(selectedService.baseRate)}</div>
-                          <div><span className="font-semibold">SLA: </span>{selectedService.sla}</div>
-                        </div>
-                        <p className="leading-relaxed">{selectedService.description}</p>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <span className="text-base">📎</span>
-                          <span className="text-[#1f3c8e] font-semibold">Browse Files</span>
-                          <span className="text-gray-400">or Drag files here [ Max size: 50 MB. ]</span>
-                        </div>
-                        <div className="flex gap-3">
-                          <button className="px-4 py-2 rounded-md border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50">Reply</button>
-                          <button className="px-4 py-2 rounded-md border border-gray-200 text-sm font-semibold text-gray-700 hover:bg-gray-50">Forward</button>
+                    {serviceDetailTab === 'details' && (
+                      <div className="border border-gray-200 rounded-xl">
+                        <div className="px-4 py-3 border-b border-gray-100 text-sm font-semibold text-gray-800">Description</div>
+                        <div className="px-4 py-4 space-y-3 text-sm text-gray-700">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div><span className="font-semibold">Service: </span>{selectedService.name}</div>
+                            <div><span className="font-semibold">Service Code: </span>{selectedService.code}</div>
+                            <div><span className="font-semibold">Base Rate: </span>{formatCurrency(selectedService.baseRate)}</div>
+                            <div><span className="font-semibold">SLA: </span>{selectedService.sla}</div>
+                          </div>
+                          <p className="leading-relaxed">{selectedService.description}</p>
+                          <div className="flex items-center gap-2 text-sm text-gray-600">
+                            <span className="text-base">📎</span>
+                            <span className="text-[#1f3c8e] font-semibold">Browse Files</span>
+                            <span className="text-gray-400">or Drag files here [ Max size: 50 MB. ]</span>
+                          </div>
                         </div>
                       </div>
+                    )}
+
+                    {serviceDetailTab === 'report' && (
+                      <div className="border border-gray-200 rounded-xl p-5 text-sm text-gray-700 bg-white">
+                        <div className="space-y-4 max-w-3xl">
+                          <div>
+                            <p className="text-xs uppercase tracking-[0.4em] text-gray-400 font-semibold">Export</p>
+                            <h3 className="text-2xl font-bold text-gray-800">Generate Service Report</h3>
+                            <p className="text-sm text-gray-600 mt-2">Confirm the key service details and click generate to preview the printable report.</p>
+                          </div>
+
+                          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            {[
+                              { label: 'Service Code', value: selectedService.code },
+                              { label: 'Branch', value: selectedService.branch },
+                              { label: 'Department', value: selectedService.department },
+                              { label: 'SLA', value: selectedService.sla },
+                            ].map((stat) => (
+                              <div key={stat.label} className="bg-gray-50 border border-gray-200 rounded-lg p-3">
+                                <p className="text-[10px] uppercase text-gray-500">{stat.label}</p>
+                                <p className="text-lg font-semibold text-gray-800 truncate">{stat.value}</p>
+                              </div>
+                            ))}
+                          </div>
+
+                          <button
+                            className="inline-flex items-center justify-center px-6 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-blue-600 to-blue-500 shadow-sm hover:shadow-md gap-2"
+                            onClick={() => setShowServiceReportModal(true)}
+                          >
+                            <span>📄</span>
+                            Generate Report
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {serviceDetailTab !== 'details' && serviceDetailTab !== 'report' && (
+                      <div className="border border-gray-200 rounded-xl p-5 text-sm text-gray-600 bg-white">
+                        <p className="font-semibold text-gray-800 mb-2 capitalize">{serviceDetailTab.replace(/([A-Z])/g, ' $1')}</p>
+                        <p>No data available for this section.</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {showServiceReportModal && selectedService && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 px-4">
+            <div className="w-full max-w-3xl bg-white rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease]">
+              <div className="flex items-center justify-between px-5 py-4 border-b border-gray-200 bg-gray-50">
+                <div>
+                  <h3 className="text-xl font-bold text-[#1f2a44]">Generate Report: #{selectedService.code}</h3>
+                  <p className="text-sm text-gray-500">Preview report layout</p>
+                </div>
+                <button
+                  className="w-10 h-10 rounded-xl bg-white border border-gray-200 text-gray-600 hover:bg-gray-100"
+                  onClick={closeServiceReport}
+                >
+                  ✕
+                </button>
+              </div>
+
+              <div className="p-8 bg-white">
+                <div className="flex justify-center">
+                  <div className="w-[320px] border border-gray-200 rounded-xl shadow-sm bg-white p-5 space-y-4">
+                    <div className="text-center text-xs text-gray-600 space-y-1">
+                      <p className="font-bold tracking-[0.2em] text-gray-800">GLOBAL COMFORT GROUP</p>
+                      <p className="uppercase text-gray-500">{selectedService.department} Department</p>
+                      <p className="text-gray-500">JOR #{selectedService.code}</p>
                     </div>
 
-                    <div className="border border-gray-200 rounded-xl">
-                      <div className="px-4 py-3 border-b border-gray-100 text-sm font-semibold text-gray-800 flex items-center justify-between">
-                        <span>Conversations</span>
-                        <button className="text-sm font-semibold text-[#1f3c8e]">Add Notes</button>
-                      </div>
-                      <div className="px-4 py-4 space-y-3">
-                        <div className="flex flex-wrap gap-4 text-sm text-gray-700">
-                          <label className="flex items-center gap-2"><input type="checkbox" defaultChecked /> E-mail</label>
-                          <label className="flex items-center gap-2"><input type="checkbox" /> System Notifications</label>
-                          <label className="flex items-center gap-2"><input type="checkbox" defaultChecked /> Notes</label>
+                    <div className="space-y-2 text-[11px] text-gray-600">
+                      <div className="grid grid-cols-2 gap-1">
+                        <div className="border border-gray-200 rounded-lg p-2">
+                          <p className="uppercase text-[10px] text-gray-500">Requester</p>
+                          <p className="text-xs font-semibold text-gray-800">{selectedService.branch}</p>
                         </div>
-                        <div className="text-gray-500 text-sm">No Conversations</div>
+                        <div className="border border-gray-200 rounded-lg p-2">
+                          <p className="uppercase text-[10px] text-gray-500">Assigned</p>
+                          <p className="text-xs font-semibold text-gray-800">John Doe</p>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="border border-gray-200 rounded-xl">
-                      <div className="px-4 py-3 border-b border-gray-100 text-sm font-semibold text-gray-800 flex items-center justify-between">
-                        <span>Properties</span>
-                        <button className="text-sm font-semibold text-[#1f3c8e]">✏ Edit</button>
+                      <div className="border border-gray-200 rounded-lg p-2">
+                        <p className="uppercase text-[10px] text-gray-500">Job Description</p>
+                        <p className="text-xs font-semibold text-gray-800">{selectedService.name}</p>
                       </div>
-                      <div className="px-4 py-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-sm text-gray-700">
-                        <div className="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
-                          <span className="text-gray-500">Request Type</span>
-                          <span className="font-semibold">Service</span>
+
+                      <div className="grid grid-cols-3 gap-1">
+                        <div className="border border-gray-200 rounded-lg p-2 text-center">
+                          <p className="uppercase text-[10px] text-gray-500">Issue</p>
+                          <p className="text-xs font-semibold text-gray-800">Open</p>
                         </div>
-                        <div className="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
-                          <span className="text-gray-500">Impact</span>
-                          <span className="font-semibold">2. Significant</span>
+                        <div className="border border-gray-200 rounded-lg p-2 text-center">
+                          <p className="uppercase text-[10px] text-gray-500">Tech</p>
+                          <p className="text-xs font-semibold text-gray-800">John Doe</p>
                         </div>
-                        <div className="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
-                          <span className="text-gray-500">Status</span>
-                          <span className="font-semibold text-[#2563eb]">Open</span>
+                        <div className="border border-gray-200 rounded-lg p-2 text-center">
+                          <p className="uppercase text-[10px] text-gray-500">Due</p>
+                          <p className="text-xs font-semibold text-gray-800">{selectedService.sla}</p>
                         </div>
-                        <div className="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
-                          <span className="text-gray-500">Impact Details</span>
-                          <span className="font-semibold">-</span>
+                      </div>
+
+                      <div className="border border-gray-200 rounded-lg p-2">
+                        <p className="uppercase text-[10px] text-gray-500">Action Taken</p>
+                        <p className="text-xs text-gray-800 leading-snug">{selectedService.description}</p>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-1">
+                        <div className="border border-gray-200 rounded-lg p-2">
+                          <p className="uppercase text-[10px] text-gray-500">Requested By</p>
+                          <p className="text-xs font-semibold text-gray-800">{selectedService.branch}</p>
                         </div>
-                        <div className="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
-                          <span className="text-gray-500">Mode</span>
-                          <span className="font-semibold">Web Form</span>
-                        </div>
-                        <div className="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
-                          <span className="text-gray-500">Urgency</span>
-                          <span className="font-semibold text-amber-600">4. Low</span>
-                        </div>
-                        <div className="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
-                          <span className="text-gray-500">Level</span>
-                          <span className="font-semibold">Not Assigned</span>
-                        </div>
-                        <div className="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
-                          <span className="text-gray-500">Priority</span>
-                          <span className="font-semibold">P4</span>
-                        </div>
-                        <div className="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
-                          <span className="text-gray-500">Group</span>
-                          <span className="font-semibold">{selectedService.department}</span>
-                        </div>
-                        <div className="flex items-center justify-between border border-gray-100 rounded-lg px-3 py-2">
-                          <span className="text-gray-500">Category</span>
-                          <span className="font-semibold">{selectedService.branch}</span>
+                        <div className="border border-gray-200 rounded-lg p-2">
+                          <p className="uppercase text-[10px] text-gray-500">Approved By</p>
+                          <p className="text-xs font-semibold text-gray-800">John Doe</p>
                         </div>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <div className="w-full md:w-[340px] border-t md:border-t-0 md:border-l border-gray-200 p-5 sm:p-6 space-y-5 bg-gray-50 overflow-y-auto max-h-[82vh]">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-semibold text-gray-700">Status</span>
-                      <span className="px-3 py-1 rounded-md bg-blue-50 text-[#1f3c8e] text-xs font-bold">OPEN</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm text-gray-700">
-                      <span className="text-gray-500">Priority</span>
-                      <span>: Open</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm text-gray-700">
-                      <span className="text-gray-500">Response DueBy Time</span>
-                      <span>: Feb 5, 2026, 10:01 AM</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm text-gray-700">
-                      <span className="text-gray-500">Technician</span>
-                      <span>: John Doe</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm text-gray-700">
-                      <span className="text-gray-500">Group</span>
-                      <span>: {selectedService.department}</span>
-                    </div>
-                    <div className="flex items-center justify-between text-sm text-gray-700">
-                      <span className="text-gray-500">Site</span>
-                      <span>: {selectedService.branch}</span>
-                    </div>
-                    <button className="text-sm font-semibold text-[#1f3c8e]">More Properties</button>
-                  </div>
-
-                  <div className="space-y-2">
-                    <p className="text-sm font-semibold text-gray-700">Share</p>
-                    <button className="text-sm font-semibold text-[#1f3c8e] flex items-center gap-2">
-                      <span>👥</span> Share Request
-                    </button>
-                  </div>
-
-                  <div className="space-y-2">
-                    <button className="text-sm font-semibold text-[#1f3c8e] block">+ Associate Problem</button>
-                    <div>
-                      <button className="text-sm font-semibold text-[#1f3c8e] block">+ Associate Change</button>
-                      <p className="text-xs text-gray-500">Change initiated due to this Request</p>
-                      <p className="text-xs text-gray-500">Request caused by Change</p>
-                    </div>
-                    <button className="text-sm font-semibold text-[#1f3c8e] block">+ Associate Project</button>
-                  </div>
-
-                  <div className="space-y-2">
-                    <p className="text-sm font-semibold text-gray-700">Tags</p>
-                    <div className="text-sm text-gray-400">No tags added</div>
-                  </div>
-
-                  <div className="border border-gray-200 rounded-xl bg-white p-4 space-y-3">
-                    <div className="flex items-center gap-3">
-                      <div className="w-12 h-12 rounded-full bg-[#1f3c8e] text-white flex items-center justify-center text-xl font-bold">
-                        {selectedService.branch.slice(0, 1)}
-                      </div>
-                      <div>
-                        <p className="text-sm font-semibold text-gray-900">{selectedService.branch} Request</p>
-                        <p className="text-xs text-gray-500">{selectedService.branch.toLowerCase().replace(/ /g, '')}@hotelsogo.com</p>
-                      </div>
-                    </div>
-                    <div className="flex gap-3 text-sm text-[#1f3c8e]">
-                      <span className="font-semibold">Requests (21)</span>
-                      <span className="text-gray-400">Assets</span>
-                    </div>
-                    <div className="space-y-1 text-sm text-gray-700">
-                      <div className="flex items-center justify-between"><span>Employee ID</span><span>-</span></div>
-                      <div className="flex items-center justify-between"><span>Department Name</span><span>-</span></div>
-                    </div>
-                  </div>
+                <div className="mt-8 flex justify-end gap-3">
+                  <button
+                    className="px-4 py-2 text-sm font-semibold rounded-xl border border-gray-200 text-gray-700 bg-white hover:bg-gray-50"
+                    onClick={closeServiceReport}
+                  >
+                    Cancel
+                  </button>
+                  <button className="px-5 py-2.5 text-sm font-semibold rounded-xl text-white bg-gradient-to-r from-blue-600 to-blue-500 shadow hover:shadow-md">
+                    Export PDF
+                  </button>
                 </div>
               </div>
             </div>
