@@ -403,6 +403,60 @@ function SectionE() {
   const [selectedCollection, setSelectedCollection] = useState(null)
   const [serviceDetailTab, setServiceDetailTab] = useState('details')
   const [showServiceReportModal, setShowServiceReportModal] = useState(false)
+  const [editMode, setEditMode] = useState(false)
+  const [showAssignModal, setShowAssignModal] = useState(false)
+  const [selectedTechnician, setSelectedTechnician] = useState(null)
+  
+  // Resolution state
+  const [resolutionState, setResolutionState] = useState('empty')
+  const [resolutionNotes, setResolutionNotes] = useState('')
+  const [currentResolution, setCurrentResolution] = useState(null)
+  
+  // Tasks state
+  const [serviceTasks, setServiceTasks] = useState([
+    { id: 1, title: 'Initial diagnostics', description: 'Check equipment and diagnose issue', assignedTo: 'John Doe', due: 'Feb 2, 2026', completed: false },
+    { id: 2, title: 'Order replacement parts', description: 'Order necessary parts from vendor', assignedTo: 'Jane Smith', due: 'Feb 4, 2026', completed: true },
+  ])
+  const [showTaskModal, setShowTaskModal] = useState(false)
+  const [editingTask, setEditingTask] = useState(null)
+  const [taskTitle, setTaskTitle] = useState('')
+  const [taskDescription, setTaskDescription] = useState('')
+  
+  // Checklist state
+  const [serviceChecklist, setServiceChecklist] = useState([
+    { id: 1, name: 'System', title: 'Validate issue with requester', completed: true },
+    { id: 2, name: 'Technician', title: 'Capture photos of affected area', completed: false },
+    { id: 3, name: 'Vendor', title: 'Confirm parts availability', completed: false },
+  ])
+  const [showChecklistModal, setShowChecklistModal] = useState(false)
+  const [editingChecklistItem, setEditingChecklistItem] = useState(null)
+  const [checklistName, setChecklistName] = useState('')
+  const [checklistTitle, setChecklistTitle] = useState('')
+  const [checklistDescription, setChecklistDescription] = useState('')
+  
+  // Work Logs state
+  const [serviceWorkLogs, setServiceWorkLogs] = useState([
+    { id: 1, author: 'John Doe', authorInitials: 'JD', timestamp: 'Jan 28, 2026 10:15 AM', title: 'Initial Review', description: 'Reviewed ticket details and reached out to requester.', replies: [] },
+    { id: 2, author: 'Jane Smith', authorInitials: 'JS', timestamp: 'Jan 28, 2026 4:10 PM', title: 'Vendor Contact', description: 'Coordinated with vendor for part numbers and lead times.', replies: [] },
+  ])
+  const [showWorkLogModal, setShowWorkLogModal] = useState(false)
+  const [workLogTitle, setWorkLogTitle] = useState('')
+  const [workLogDescription, setWorkLogDescription] = useState('')
+  
+  // History state
+  const [serviceHistory] = useState([
+    { id: 1, user: 'System', initials: 'SY', action: 'created this service request', timestamp: 'Jan 28, 2026 at 9:58 AM' },
+    { id: 2, user: 'John Doe', initials: 'JD', action: 'was assigned to this request', timestamp: 'Jan 28, 2026 at 10:20 AM' },
+    { id: 3, user: 'Jane Smith', initials: 'JS', action: 'added a work log entry', timestamp: 'Jan 28, 2026 at 4:10 PM' },
+  ])
+  
+  // Technicians for assign modal
+  const techniciansData = [
+    { id: 1, name: 'John Doe', role: 'Senior Technician', department: 'Engineering', openTasks: 3, status: 'online' },
+    { id: 2, name: 'Jane Smith', role: 'Systems Engineer', department: 'IT', openTasks: 2, status: 'online' },
+    { id: 3, name: 'Mike Johnson', role: 'Maintenance Lead', department: 'Housekeeping', openTasks: 1, status: 'offline' },
+  ]
+  
   const fileInputRef = useRef(null)
 
   const filteredServices = useMemo(() => {
@@ -522,6 +576,174 @@ function SectionE() {
     setSelectedCollection(null)
   }
   const closeServiceReport = () => setShowServiceReportModal(false)
+  
+  // Resolution handlers
+  const showResolutionInput = () => setResolutionState('input')
+  const saveResolution = () => {
+    if (resolutionNotes.trim()) {
+      setCurrentResolution({
+        content: resolutionNotes,
+        author: 'Admin User',
+        authorInitials: 'AU',
+        savedAt: new Date()
+      })
+      setResolutionState('display')
+      setResolutionNotes('')
+    }
+  }
+  const editResolution = () => {
+    if (currentResolution) {
+      setResolutionNotes(currentResolution.content)
+      setResolutionState('edit')
+    }
+  }
+  const updateResolution = () => {
+    if (currentResolution && resolutionNotes.trim()) {
+      setCurrentResolution({
+        ...currentResolution,
+        content: resolutionNotes,
+        savedAt: new Date()
+      })
+      setResolutionState('display')
+      setResolutionNotes('')
+    }
+  }
+  const cancelEditResolution = () => {
+    setResolutionNotes('')
+    setResolutionState('display')
+  }
+  const deleteResolution = () => {
+    if (window.confirm('Are you sure you want to delete this resolution?')) {
+      setCurrentResolution(null)
+      setResolutionState('empty')
+    }
+  }
+  
+  // Task handlers
+  const openTaskModal = (task = null) => {
+    if (task) {
+      setEditingTask(task)
+      setTaskTitle(task.title)
+      setTaskDescription(task.description || '')
+    } else {
+      setEditingTask(null)
+      setTaskTitle('')
+      setTaskDescription('')
+    }
+    setShowTaskModal(true)
+  }
+  const closeTaskModal = () => {
+    setShowTaskModal(false)
+    setEditingTask(null)
+    setTaskTitle('')
+    setTaskDescription('')
+  }
+  const saveTask = () => {
+    if (!taskTitle.trim()) return
+    if (editingTask) {
+      setServiceTasks(serviceTasks.map(t => t.id === editingTask.id ? { ...t, title: taskTitle, description: taskDescription } : t))
+    } else {
+      setServiceTasks([...serviceTasks, { id: Date.now(), title: taskTitle, description: taskDescription, assignedTo: 'Unassigned', due: 'TBD', completed: false }])
+    }
+    closeTaskModal()
+  }
+  const toggleTaskCompletion = (taskId) => {
+    setServiceTasks(serviceTasks.map(t => t.id === taskId ? { ...t, completed: !t.completed } : t))
+  }
+  const deleteTask = (taskId) => {
+    if (window.confirm('Delete this task?')) {
+      setServiceTasks(serviceTasks.filter(t => t.id !== taskId))
+    }
+  }
+  
+  // Checklist handlers
+  const openChecklistModal = (item = null) => {
+    if (item) {
+      setEditingChecklistItem(item)
+      setChecklistName(item.name)
+      setChecklistTitle(item.title)
+      setChecklistDescription(item.description || '')
+    } else {
+      setEditingChecklistItem(null)
+      setChecklistName('')
+      setChecklistTitle('')
+      setChecklistDescription('')
+    }
+    setShowChecklistModal(true)
+  }
+  const closeChecklistModal = () => {
+    setShowChecklistModal(false)
+    setEditingChecklistItem(null)
+    setChecklistName('')
+    setChecklistTitle('')
+    setChecklistDescription('')
+  }
+  const saveChecklistItem = () => {
+    if (!checklistTitle.trim()) return
+    if (editingChecklistItem) {
+      setServiceChecklist(serviceChecklist.map(i => i.id === editingChecklistItem.id ? { ...i, name: checklistName, title: checklistTitle, description: checklistDescription } : i))
+    } else {
+      setServiceChecklist([...serviceChecklist, { id: Date.now(), name: checklistName, title: checklistTitle, description: checklistDescription, completed: false }])
+    }
+    closeChecklistModal()
+  }
+  const toggleChecklistCompletion = (itemId) => {
+    setServiceChecklist(serviceChecklist.map(i => i.id === itemId ? { ...i, completed: !i.completed } : i))
+  }
+  const deleteChecklistItem = (itemId) => {
+    if (window.confirm('Delete this checklist item?')) {
+      setServiceChecklist(serviceChecklist.filter(i => i.id !== itemId))
+    }
+  }
+  
+  // Work Log handlers
+  const openWorkLogModal = () => {
+    setWorkLogTitle('')
+    setWorkLogDescription('')
+    setShowWorkLogModal(true)
+  }
+  const closeWorkLogModal = () => {
+    setShowWorkLogModal(false)
+    setWorkLogTitle('')
+    setWorkLogDescription('')
+  }
+  const saveWorkLog = () => {
+    if (!workLogTitle.trim()) return
+    setServiceWorkLogs([...serviceWorkLogs, {
+      id: Date.now(),
+      author: 'Admin User',
+      authorInitials: 'AU',
+      timestamp: new Date().toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }),
+      title: workLogTitle,
+      description: workLogDescription,
+      replies: []
+    }])
+    closeWorkLogModal()
+  }
+  const deleteWorkLog = (logId) => {
+    if (window.confirm('Delete this work log?')) {
+      setServiceWorkLogs(serviceWorkLogs.filter(l => l.id !== logId))
+    }
+  }
+  
+  // Edit mode handler
+  const toggleEditMode = () => setEditMode(!editMode)
+  
+  // Assign modal handlers
+  const openAssignModal = () => setShowAssignModal(true)
+  const closeAssignModal = () => {
+    setShowAssignModal(false)
+    setSelectedTechnician(null)
+  }
+  const confirmAssignment = () => {
+    if (selectedTechnician) {
+      closeAssignModal()
+    }
+  }
+  
+  const formatDateTime = (date) => {
+    return new Date(date).toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true })
+  }
 
   const resetFilters = () => {
     setDeptFilter('All Departments')
@@ -1246,7 +1468,7 @@ function SectionE() {
                         {formatCurrency(selectedCollection.balance)}
                       </p>
                     </div>
-                  </div>
+                  </div>x
                 </div>
 
                 <div className="flex justify-end gap-3 pt-1">
@@ -1391,9 +1613,9 @@ function SectionE() {
             <div className="bg-white w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden animate-[fadeIn_0.2s_ease]">
               <div className="flex items-center justify-between px-4 sm:px-6 py-3 border-b border-gray-200 bg-gray-50">
                 <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                  <button className="px-3 py-1.5 text-xs font-semibold rounded-md border border-gray-200 text-gray-700 hover:bg-white">← Back</button>
-                  <button className="px-3 py-1.5 text-xs font-semibold rounded-md border border-gray-200 text-gray-700 hover:bg-white">Edit</button>
-                  <button className="px-3 py-1.5 text-xs font-semibold rounded-md border border-gray-200 text-gray-700 hover:bg-white">Assign</button>
+                  <button className="px-3 py-1.5 text-xs font-semibold rounded-md border border-gray-200 text-gray-700 hover:bg-white" onClick={closeDetail}>← Back</button>
+                  <button className="px-3 py-1.5 text-xs font-semibold rounded-md border border-gray-200 text-gray-700 hover:bg-white" onClick={toggleEditMode}>{editMode ? 'Cancel Edit' : 'Edit'}</button>
+                  <button className="px-3 py-1.5 text-xs font-semibold rounded-md border border-gray-200 text-gray-700 hover:bg-white" onClick={openAssignModal}>Assign</button>
                 </div>
                 <div className="flex items-center gap-2">
                   <button className="w-9 h-9 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50">⚙</button>
@@ -1501,10 +1723,239 @@ function SectionE() {
                       </div>
                     )}
 
-                    {serviceDetailTab !== 'details' && serviceDetailTab !== 'report' && (
-                      <div className="border border-gray-200 rounded-xl p-5 text-sm text-gray-600 bg-white">
-                        <p className="font-semibold text-gray-800 mb-2 capitalize">{serviceDetailTab.replace(/([A-Z])/g, ' $1')}</p>
-                        <p>No data available for this section.</p>
+                    {/* Resolution Tab */}
+                    {serviceDetailTab === 'resolution' && (
+                      <div className="bg-white border border-gray-200 rounded-lg p-5">
+                        <h3 className="text-[15px] font-bold text-gray-800 mb-4">Resolution</h3>
+                        
+                        {resolutionState === 'empty' && (
+                          <div className="flex flex-col items-center justify-center py-12 min-h-[300px] relative">
+                            <button className="absolute top-0 right-0 px-4 py-2 bg-blue-600 text-white rounded-md text-[13px] font-medium hover:bg-blue-700" onClick={showResolutionInput}>+ Add Resolution</button>
+                            <div className="relative mb-4">
+                              <div className="text-7xl text-gray-300 opacity-60">⚙️</div>
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <div className="text-5xl text-gray-300 opacity-80">🔍</div>
+                              </div>
+                            </div>
+                            <p className="text-gray-500 text-[13px] font-medium">No Resolution Found</p>
+                          </div>
+                        )}
+
+                        {resolutionState === 'input' && (
+                          <div>
+                            <textarea className="w-full min-h-[200px] p-3 border border-gray-300 rounded-md text-[13px] focus:outline-none focus:border-blue-500" placeholder="Enter resolution details..." value={resolutionNotes} onChange={(e) => setResolutionNotes(e.target.value)} />
+                            <div className="flex gap-3 mt-4">
+                              <button className="px-4 py-2 bg-blue-600 text-white rounded-md text-[13px] font-medium hover:bg-blue-700" onClick={saveResolution}>Save Resolution</button>
+                              <button className="px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-md text-[13px] font-medium hover:bg-gray-50" onClick={() => setResolutionState('empty')}>Cancel</button>
+                            </div>
+                          </div>
+                        )}
+
+                        {resolutionState === 'display' && currentResolution && (
+                          <div>
+                            <div className="bg-white border border-gray-200 rounded-md p-4 min-h-[200px]">
+                              <div className="flex items-center gap-2 mb-3">
+                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">{currentResolution.authorInitials || 'JD'}</div>
+                                <div className="text-[13px] text-gray-600">
+                                  <span className="font-medium">{currentResolution.author}</span>
+                                  <span className="text-gray-500 ml-2">{currentResolution.savedAt instanceof Date ? formatDateTime(currentResolution.savedAt) : formatDateTime(new Date(currentResolution.savedAt))}</span>
+                                </div>
+                              </div>
+                              <p className="text-gray-700 text-[13px] leading-relaxed whitespace-pre-wrap">{currentResolution.content}</p>
+                            </div>
+                            <div className="flex gap-3 mt-4 justify-end">
+                              <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-[13px] font-medium hover:bg-gray-300" onClick={editResolution}>Edit</button>
+                              <button className="px-4 py-2 bg-red-600 text-white rounded-md text-[13px] font-medium hover:bg-red-700" onClick={deleteResolution}>Delete</button>
+                            </div>
+                          </div>
+                        )}
+
+                        {resolutionState === 'edit' && currentResolution && (
+                          <div>
+                            <div className="bg-white border border-gray-200 rounded-md p-4 min-h-[200px] relative">
+                              <div className="flex items-center gap-2 mb-3">
+                                <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">{currentResolution.authorInitials || 'JD'}</div>
+                                <div className="text-[13px] text-gray-600">
+                                  <span className="font-medium">{currentResolution.author}</span>
+                                  <span className="text-gray-500 ml-2">{currentResolution.savedAt instanceof Date ? formatDateTime(currentResolution.savedAt) : formatDateTime(new Date(currentResolution.savedAt))}</span>
+                                </div>
+                              </div>
+                              <textarea className="w-full min-h-[200px] p-3 border border-gray-300 rounded-md text-[13px] focus:outline-none focus:border-blue-500" placeholder="Enter resolution details..." value={resolutionNotes} onChange={(e) => setResolutionNotes(e.target.value)} />
+                            </div>
+                            <div className="flex gap-3 mt-4 justify-end">
+                              <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-[13px] font-medium hover:bg-gray-300" onClick={cancelEditResolution}>Cancel</button>
+                              <button className="px-4 py-2 bg-blue-600 text-white rounded-md text-[13px] font-medium hover:bg-blue-700" onClick={updateResolution}>Save</button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Tasks Tab */}
+                    {serviceDetailTab === 'tasks' && (
+                      <div className="bg-white border border-gray-200 rounded-lg p-5">
+                        <div className="flex justify-between items-center mb-5">
+                          <h3 className="text-[15px] font-bold text-gray-800">Tasks</h3>
+                          <button className="px-4 py-2 bg-blue-600 text-white rounded-md text-[13px] font-medium hover:bg-blue-700" onClick={() => openTaskModal()}>+ Add Task</button>
+                        </div>
+                        {serviceTasks.length > 0 ? (
+                          <div className="space-y-3">
+                            {serviceTasks.map((task) => (
+                              <div key={task.id} className="flex items-start gap-3 p-3 bg-white border border-blue-200 rounded-md">
+                                <input type="checkbox" className="w-[18px] h-[18px] mt-0.5 accent-blue-500 cursor-pointer" checked={task.completed || false} onChange={() => toggleTaskCompletion(task.id)} />
+                                <div className="flex-1">
+                                  <div className={`text-sm font-bold text-gray-800 mb-1 ${task.completed ? 'line-through text-gray-400' : ''}`}>{task.title || task.description}</div>
+                                  <div className="text-xs text-gray-500">{task.completed ? `Completed: ${task.due}` : `Assigned to: ${task.assignedTo || 'Unassigned'} | Due: ${task.due}`}</div>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                  <button className="text-xs text-blue-600 font-medium hover:text-blue-800 hover:underline" onClick={() => openTaskModal(task)}>Edit</button>
+                                  <span className="text-gray-300">|</span>
+                                  <button className="text-xs text-red-600 font-medium hover:text-red-800 hover:underline" onClick={() => deleteTask(task.id)}>Delete</button>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="border border-gray-200 rounded-lg h-64 flex flex-col justify-center items-center bg-white">
+                            <div className="mb-3 text-gray-300">
+                              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="9" y1="15" x2="15" y2="15"></line>
+                                <line x1="12" y1="15" x2="12" y2="15.01"></line>
+                              </svg>
+                            </div>
+                            <h4 className="text-[15px] font-bold text-gray-400">No Task Found</h4>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Checklist Tab */}
+                    {serviceDetailTab === 'checklist' && (
+                      <div className="bg-white border border-gray-200 rounded-lg p-5">
+                        <div className="flex justify-between items-center mb-6">
+                          <h3 className="text-[15px] font-bold text-gray-800">Checklist</h3>
+                          <button className="bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-medium px-4 py-2 rounded transition-colors flex items-center" onClick={() => openChecklistModal()}>+ Add Item</button>
+                        </div>
+                        {serviceChecklist.length > 0 ? (
+                          <div className="space-y-2">
+                            {serviceChecklist.map((item) => (
+                              <div key={item.id} className="flex items-start gap-3 p-0 bg-white border border-blue-200 rounded-md">
+                                <div className="flex items-center w-full gap-2">
+                                  <input type="checkbox" className="w-[18px] h-[18px] mt-0.5 accent-blue-500 cursor-pointer ml-4" checked={item.completed || false} onChange={() => toggleChecklistCompletion(item.id)} />
+                                  <div className="flex-1 pl-1 flex flex-col justify-center min-h-[54px] py-3">
+                                    <div className={`text-[15px] font-bold text-gray-800 mb-1 ${item.completed ? 'line-through text-gray-400' : ''}`}>{item.title || item.name}</div>
+                                    <div className="text-xs text-gray-500">Requested: {item.name}</div>
+                                  </div>
+                                  <div className="flex items-center gap-2 pr-5">
+                                    <button className="text-xs text-blue-600 font-medium hover:text-blue-800 hover:underline" onClick={() => openChecklistModal(item)}>Edit</button>
+                                    <span className="text-gray-300">|</span>
+                                    <button className="text-xs text-red-600 font-medium hover:text-red-800 hover:underline" onClick={() => deleteChecklistItem(item.id)}>Delete</button>
+                                  </div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="border border-gray-200 rounded-lg h-64 flex flex-col justify-center items-center bg-white">
+                            <div className="mb-3 text-gray-300">
+                              <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="9" y1="15" x2="15" y2="15"></line>
+                                <line x1="12" y1="15" x2="12" y2="15.01"></line>
+                              </svg>
+                            </div>
+                            <h4 className="text-[15px] font-bold text-gray-400">No Item Found</h4>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Work Logs Tab */}
+                    {serviceDetailTab === 'workLogs' && (
+                      <div className="bg-white border border-gray-200 rounded-lg p-5">
+                        <div className="flex justify-between items-center mb-6">
+                          <h3 className="text-[15px] font-bold text-gray-800">Work Log History</h3>
+                          <button onClick={openWorkLogModal} className="bg-blue-600 hover:bg-blue-700 text-white text-[13px] font-medium px-4 py-2 rounded transition-colors flex items-center">+ Add Work Log</button>
+                        </div>
+                        {serviceWorkLogs.length > 0 ? (
+                          <div className="flex flex-col gap-4">
+                            {serviceWorkLogs.map((log) => (
+                              <div key={log.id} className="border border-gray-200 rounded-lg bg-white px-6 py-4 shadow-sm flex flex-col sm:flex-row sm:items-center sm:gap-5">
+                                <div className="flex-shrink-0 flex flex-col items-center w-full sm:w-36 mb-2 sm:mb-0">
+                                  <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xl mb-1">{log.authorInitials || (log.author && log.author.split(' ').map(w => w[0]).join('').toUpperCase())}</div>
+                                  <div className="text-xs text-gray-500 text-center">
+                                    <span className="font-semibold text-gray-800 block">{log.author}</span>
+                                    <span className="block text-gray-400">{log.timestamp}</span>
+                                  </div>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                  <div className="flex justify-between items-center mb-1">
+                                    <div className="text-base font-bold text-gray-800 truncate">{log.title}</div>
+                                    <button className="text-xs text-red-600 font-medium hover:text-red-800 ml-4" onClick={() => deleteWorkLog(log.id)}>Delete</button>
+                                  </div>
+                                  <div className="text-[13px] text-gray-700 leading-relaxed mb-2 whitespace-pre-line break-words">{log.description}</div>
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        ) : (
+                          <div className="border border-gray-200 rounded-lg h-80 flex flex-col justify-center items-center bg-white">
+                            <div className="mb-4 opacity-50">
+                              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                                <line x1="9" y1="14" x2="15" y2="14"></line>
+                                <line x1="12" y1="11" x2="12" y2="17"></line>
+                              </svg>
+                            </div>
+                            <h4 className="text-[16px] font-bold text-gray-300">No Work Log Found</h4>
+                          </div>
+                        )}
+                      </div>
+                    )}
+
+                    {/* Time Analysis Tab */}
+                    {/* Time Analysis Tab */}
+                    {serviceDetailTab === 'timeAnalysis' && (
+                      <div className="bg-white border border-gray-200 rounded-lg p-5">
+                        <h3 className="text-[15px] font-bold text-gray-800 mb-4">Time Analysis</h3>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                          <div className="border border-gray-200 rounded-lg px-4 py-4 bg-gray-50">
+                            <p className="text-xs uppercase text-gray-500 mb-1">Response Time</p>
+                            <p className="text-2xl font-bold text-gray-900">35 mins</p>
+                            <p className="text-xs text-gray-500">Time to first response</p>
+                          </div>
+                          <div className="border border-gray-200 rounded-lg px-4 py-4 bg-gray-50">
+                            <p className="text-xs uppercase text-gray-500 mb-1">Work Time</p>
+                            <p className="text-2xl font-bold text-gray-900">2h 20m</p>
+                            <p className="text-xs text-gray-500">Logged technician time</p>
+                          </div>
+                          <div className="border border-gray-200 rounded-lg px-4 py-4 bg-gray-50">
+                            <p className="text-xs uppercase text-gray-500 mb-1">SLA Status</p>
+                            <p className="text-2xl font-bold text-emerald-600">On Track</p>
+                            <p className="text-xs text-gray-500">Within SLA window</p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* History Tab */}
+                    {serviceDetailTab === 'history' && (
+                      <div className="bg-white border border-gray-200 rounded-lg p-5">
+                        <h3 className="text-[15px] font-bold text-gray-800 mb-4">Activity History</h3>
+                        <div className="space-y-4">
+                          {serviceHistory.map((event, index) => (
+                            <div key={index} className="flex gap-3 pb-4 border-b border-gray-100">
+                              <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-xs">{event.initials || event.user.substring(0, 2).toUpperCase()}</div>
+                              <div>
+                                <div className="text-sm text-gray-800"><strong>{event.user}</strong> {event.action}</div>
+                                <div className="text-xs text-gray-400 mt-1">{event.timestamp}</div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
                       </div>
                     )}
                   </div>
@@ -1601,6 +2052,156 @@ function SectionE() {
                     Export PDF
                   </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Task Modal */}
+        {showTaskModal && (
+          <div className="fixed inset-0 z-[2000] flex justify-center items-center bg-black/50 backdrop-blur-sm">
+            <div className="bg-white rounded-lg shadow-2xl w-full max-w-[420px] mx-4 animate-fadeIn overflow-hidden" onClick={e => e.stopPropagation()}>
+              <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                <h3 className="text-[16px] font-bold text-gray-800">{editingTask ? 'Edit Task' : 'Add Task'}</h3>
+                <button className="text-gray-400 hover:text-gray-600 border border-gray-200 rounded p-1 hover:bg-gray-100 transition-colors" onClick={closeTaskModal}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+              </div>
+              <div className="p-6 space-y-4 bg-white">
+                <div>
+                  <label className="block text-[13px] font-bold text-gray-700 mb-1">Title <span className="text-red-500">*</span></label>
+                  <input type="text" className="w-full border border-gray-300 rounded-[4px] px-3 py-2.5 text-[14px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" placeholder="Enter task title..." value={taskTitle} onChange={e => setTaskTitle(e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-[13px] font-bold text-gray-700 mb-1">Description</label>
+                  <textarea rows="3" className="w-full border border-gray-300 rounded-[4px] px-3 py-2.5 text-[14px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all resize-none" placeholder="Enter task description..." value={taskDescription} onChange={e => setTaskDescription(e.target.value)} />
+                </div>
+                <div className="flex justify-end gap-3">
+                  <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-[13px] font-medium hover:bg-gray-300" onClick={closeTaskModal}>Cancel</button>
+                  <button className="px-4 py-2 bg-blue-600 text-white rounded-md text-[13px] font-medium hover:bg-blue-700" onClick={saveTask}>{editingTask ? 'Update' : 'Save'}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Checklist Modal */}
+        {showChecklistModal && (
+          <div className="fixed inset-0 z-[2000] flex justify-center items-center bg-black/50 backdrop-blur-sm">
+            <div className="bg-white rounded-lg shadow-2xl w-full max-w-[420px] mx-4 animate-fadeIn overflow-hidden" onClick={e => e.stopPropagation()}>
+              <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                <h3 className="text-[16px] font-bold text-gray-800">{editingChecklistItem ? 'Edit Item' : 'Add Item'}</h3>
+                <button className="text-gray-400 hover:text-gray-600 border border-gray-200 rounded p-1 hover:bg-gray-100 transition-colors" onClick={closeChecklistModal}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+              </div>
+              <div className="p-6 space-y-4 bg-white">
+                <div>
+                  <label className="block text-[13px] font-bold text-gray-700 mb-1">Name <span className="text-red-500">*</span></label>
+                  <input type="text" className="w-full border border-gray-300 rounded-[4px] px-3 py-2.5 text-[14px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" placeholder="Enter name..." value={checklistName} onChange={e => setChecklistName(e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-[13px] font-bold text-gray-700 mb-1">Title <span className="text-red-500">*</span></label>
+                  <input type="text" className="w-full border border-gray-300 rounded-[4px] px-3 py-2.5 text-[14px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" placeholder="Enter title..." value={checklistTitle} onChange={e => setChecklistTitle(e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-[13px] font-bold text-gray-700 mb-1">Description</label>
+                  <textarea rows="3" className="w-full border border-gray-300 rounded-[4px] px-3 py-2.5 text-[14px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all resize-none" placeholder="Enter description..." value={checklistDescription} onChange={e => setChecklistDescription(e.target.value)} />
+                </div>
+                <div className="flex justify-end gap-3">
+                  <button className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md text-[13px] font-medium hover:bg-gray-300" onClick={closeChecklistModal}>Cancel</button>
+                  <button className="px-4 py-2 bg-blue-600 text-white rounded-md text-[13px] font-medium hover:bg-blue-700" onClick={saveChecklistItem}>{editingChecklistItem ? 'Update' : 'Save'}</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Work Log Modal */}
+        {showWorkLogModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+            <div className="bg-white rounded-lg shadow-2xl w-full max-w-[600px] mx-4 overflow-hidden">
+              <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-gray-50/50">
+                <h3 className="text-[16px] font-bold text-gray-800">+ Add Work Log</h3>
+                <button onClick={closeWorkLogModal} className="text-gray-400 hover:text-gray-600 border border-gray-200 rounded p-1 hover:bg-gray-100 transition-colors">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+              <div className="p-6 space-y-5 bg-white">
+                <div>
+                  <label className="block text-[13px] font-bold text-gray-700 mb-2">Title <span className="text-red-500">*</span></label>
+                  <input type="text" placeholder="Enter work log title..." className="w-full border border-gray-300 rounded-[4px] px-3 py-2.5 text-[14px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" value={workLogTitle} onChange={(e) => setWorkLogTitle(e.target.value)} />
+                </div>
+                <div>
+                  <label className="block text-[13px] font-bold text-gray-700 mb-2">Description</label>
+                  <textarea rows="5" placeholder="Enter description..." className="w-full border border-gray-300 rounded-[4px] px-3 py-2.5 text-[14px] text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all resize-none" value={workLogDescription} onChange={(e) => setWorkLogDescription(e.target.value)}></textarea>
+                </div>
+              </div>
+              <div className="flex justify-end items-center gap-3 px-6 py-4 border-t border-gray-100 bg-white">
+                <button onClick={closeWorkLogModal} className="px-4 py-2 text-[13px] font-semibold text-gray-600 bg-white border border-gray-300 rounded hover:bg-gray-50 transition-colors">Cancel</button>
+                <button onClick={saveWorkLog} className="px-6 py-2 text-[13px] font-semibold text-white bg-blue-600 rounded hover:bg-blue-700 transition-colors shadow-sm">Save</button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Assign Modal */}
+        {showAssignModal && (
+          <div className="fixed inset-0 z-[1100] flex justify-center items-center bg-black/50 backdrop-blur-sm" onClick={closeAssignModal}>
+            <div className="relative bg-white w-full max-w-2xl mx-4 rounded-xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between p-5 border-b border-gray-200">
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 flex items-center justify-center">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-600">
+                      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-800">Assign Service</h3>
+                </div>
+                <button className="w-8 h-8 flex items-center justify-center border border-gray-200 rounded hover:bg-gray-100 transition-colors" onClick={closeAssignModal}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-500">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                  </svg>
+                </button>
+              </div>
+              <div className="p-6">
+                <div className="mb-6">
+                  <label className="block text-sm font-semibold text-gray-700 mb-3">Select Technician <span className="text-red-500">*</span></label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {techniciansData.map((tech) => (
+                      <div
+                        key={tech.id}
+                        className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all hover:border-blue-400 ${selectedTechnician === tech.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white'}`}
+                        onClick={() => setSelectedTechnician(tech.id)}
+                      >
+                        <div className="flex items-start gap-3">
+                          <div className="mt-1">
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${selectedTechnician === tech.id ? 'border-blue-500' : 'border-gray-300'}`}>
+                              {selectedTechnician === tech.id && <div className="w-2.5 h-2.5 rounded-full bg-blue-500"></div>}
+                            </div>
+                          </div>
+                          <div className="mt-1">
+                            <div className={`w-3 h-3 rounded-full ${tech.status === 'online' ? 'bg-emerald-500' : 'bg-gray-400'}`}></div>
+                          </div>
+                          <div className="flex-1">
+                            <h4 className="text-lg font-semibold text-blue-600">{tech.name}</h4>
+                            <p className="text-sm text-red-500 font-medium">{tech.role}</p>
+                            <p className="text-sm text-gray-500 mt-1">{tech.department} • {tech.openTasks} open tasks</p>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-end items-center gap-3 p-5 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+                <button className="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors" onClick={closeAssignModal}>Cancel</button>
+                <button className="px-6 py-2.5 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors shadow-sm" onClick={confirmAssignment}>Save</button>
               </div>
             </div>
           </div>
