@@ -4,7 +4,7 @@ import Sidebar from '../components/Sidebar'
 import SidebarToggle from '../components/SidebarToggle'
 
 // Sample data
-const requestsData = [
+const initialRequestsData = [
   { 
     id: 'JOR-2025-001', 
     subject: 'Request for Testing and Commissioning', 
@@ -150,9 +150,24 @@ const problemsData = [
   { id: 'PRB-0843', description: 'Database performance degradation', category: 'Database', status: 'Open', priority: 'Medium' }
 ]
 
+const IGNORED_DUE_VALUES = new Set(['-', 'tbd', 'n/a', 'none'])
+
+const startOfDay = (date) => new Date(date.getFullYear(), date.getMonth(), date.getDate())
+
+const parseDueDate = (dueString) => {
+  if (!dueString || typeof dueString !== 'string') return null
+  const trimmed = dueString.trim()
+  if (!trimmed) return null
+  if (IGNORED_DUE_VALUES.has(trimmed.toLowerCase())) return null
+  const parsed = new Date(trimmed)
+  if (Number.isNaN(parsed.getTime())) return null
+  return startOfDay(parsed)
+}
+
 function Request() {
   const navigate = useNavigate()
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [requests, setRequests] = useState(initialRequestsData)
   const [currentView, setCurrentView] = useState('requests')
   const [filter, setFilter] = useState('assigned')
   const [showRequestModal, setShowRequestModal] = useState(false)
@@ -347,7 +362,7 @@ function Request() {
   const showProblems = () => setCurrentView('problems')
 
   const openRequestModal = (requestId) => {
-    const request = requestsData.find(r => r.id === requestId)
+    const request = requests.find(r => r.id === requestId)
     setSelectedRequest(request)
     setShowRequestModal(true)
     setEditMode(false)
@@ -411,6 +426,24 @@ function Request() {
       alert('Please select a technician.')
       return
     }
+    if (!selectedRequest) {
+      alert('No request selected.')
+      return
+    }
+
+    const technician = techniciansData.find((tech) => tech.id === selectedTechnician)
+    const updatedRequest = {
+      ...selectedRequest,
+      assigned: true,
+      assignedTo: technician ? technician.name : selectedRequest.assignedTo,
+      status: 'Assigned'
+    }
+
+    setRequests((prev) => prev.map((req) => (req.id === updatedRequest.id ? updatedRequest : req)))
+    if (showRequestModal) {
+      setSelectedRequest(updatedRequest)
+    }
+
     showSuccessNotification('Request assigned successfully', 'Assigned Successfully')
     closeAssignModal()
   }
@@ -824,7 +857,29 @@ function Request() {
     }
   }
 
-  const filteredRequests = requestsData.filter(req => {
+  const today = startOfDay(new Date())
+  const summaryCounts = requests.reduce((acc, req) => {
+    if (req.assigned) {
+      acc.assigned += 1
+    }
+    const dueDate = parseDueDate(req.dueBy)
+    if (dueDate) {
+      if (dueDate.getTime() === today.getTime()) {
+        acc.dueToday += 1
+      } else if (dueDate.getTime() < today.getTime()) {
+        acc.overdue += 1
+      }
+    }
+    return acc
+  }, { assigned: 0, dueToday: 0, overdue: 0 })
+
+  const summaryStats = [
+    { label: 'Assigned', value: summaryCounts.assigned },
+    { label: 'Due Today', value: summaryCounts.dueToday },
+    { label: 'Overdue', value: summaryCounts.overdue }
+  ]
+
+  const filteredRequests = requests.filter(req => {
     if (filter === 'assigned') return req.assigned
     if (filter === 'unassigned') return !req.assigned
     return true
@@ -840,6 +895,21 @@ function Request() {
     return (
       <span className={`inline-block px-2.5 py-1 rounded-md text-[11px] font-bold uppercase ${colors[priority] || 'bg-gray-500'} text-white shadow-sm`}>
         {priority}
+      </span>
+    )
+  }
+
+  const getStatusBadge = (status) => {
+    const normalized = status || 'Open'
+    const styles = {
+      Open: 'bg-[#e9fbef] text-[#1e9b4c] border border-[#c3f1d2]',
+      Assigned: 'bg-[#e7edff] text-[#1d3dbb] border border-[#cbd5ff]',
+      Overdue: 'bg-[#ffeaea] text-[#c53030] border border-[#ffc2c2]',
+      Closed: 'bg-[#e9f5ff] text-[#1d6fa5] border border-[#c4e0f5]'
+    }
+    return (
+      <span className={`inline-flex px-4 py-1.5 rounded-full text-xs font-bold uppercase ${styles[normalized] || styles.Open}`}>
+        {normalized}
       </span>
     )
   }
@@ -905,7 +975,7 @@ function Request() {
                 ].map((card, index) => (
                   <div
                     key={card.label}
-                    className="bg-gradient-to-r from-[#1c44d7] to-[#2b77f6] rounded-[18px] p-4 flex items-center gap-4 shadow-lg border border-white/15"
+                    className="bg-gradient-to-b from-[#1c44d7] to-[#1e4a97] rounded-[18px] p-4 flex items-center gap-4 shadow-lg border border-white/15"
                     style={{ animationDelay: `${0.1 * (index + 1)}s` }}
                   >
                     <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center text-2xl border border-white/20">
@@ -1027,24 +1097,18 @@ function Request() {
 
             {/* Requests View */}
         {currentView === 'requests' && (
-          <div id="requestsView" className="space-y-6">
+          <div id="requestsView" className="space-y-6 ">
             <div className="relative overflow-hidden rounded-[28px] shadow-2xl border border-[#0d255f]/40 bg-gradient-to-r from-[#071536] via-[#102e6f] to-[#1f63f3]">
               <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-60" aria-hidden="true"></div>
               <div className="px-6 md:px-8 py-7 flex flex-wrap items-center justify-between gap-6 text-white relative">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 rounded-[22px] bg-white/15 flex items-center justify-center text-3xl border border-white/20">📋</div>
                   <div>
-                    <p className="text-sm uppercase tracking-[0.4em] text-white/80 font-semibold">Job Order Requests</p>
                     <h2 className="text-3xl font-semibold mt-1">Job Order Requests</h2>
-                    <p className="text-white/80 text-sm mt-1">Monitor all assignments, due dates, and escalations in one console.</p>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-3">
-                  {[
-                    { label: 'Assigned', value: '8' },
-                    { label: 'Due Today', value: '5' },
-                    { label: 'Overdue', value: '2' }
-                  ].map((stat) => (
+                  {summaryStats.map((stat) => (
                     <div key={stat.label} className="bg-[#5e667c] text-white px-6 py-3 rounded-2xl border border-white/10 shadow-md min-w-[120px] text-center">
                       <p className="text-2xl font-bold leading-none">{stat.value}</p>
                       <p className="text-xs uppercase tracking-wide text-white/90 mt-1">{stat.label}</p>
@@ -1112,34 +1176,34 @@ function Request() {
                         }`}
                         onClick={() => openRequestModal(req.id)}
                       >
-                        <td className="p-4">
+                        <td className="px-4 py-3">
                           <input type="checkbox" className="w-4 h-4 accent-[#1f5cf4]" onClick={(e) => e.stopPropagation()} />
                         </td>
-                        <td className="p-4 font-semibold text-[#1a3bb5] whitespace-nowrap">
+                        <td className="px-4 py-3 font-semibold text-[#1a3bb5] whitespace-nowrap">
                           <div className="flex items-center gap-2">
                             {/* <span className="text-lg"></span> */}
                             <span className="hover:underline">{req.id}</span>
                           </div>
                         </td>
-                        <td className="p-4 text-gray-800 max-w-[320px]">
+                        <td className="px-4 py-3 text-gray-800 max-w-[320px]">
                           <div className="font-semibold">{req.subject}</div>
                           <p className="text-xs text-gray-500">Created {req.createdDate}</p>
                         </td>
-                        <td className="p-4 text-gray-700">{req.requester}</td>
-                        <td className="p-4">
+                        <td className="px-4 py-3 text-gray-700">{req.requester}</td>
+                        <td className="px-4 py-3">
                           {req.assignedTo ? (
                             <span className="bg-[#1c4fcf] text-white px-4 py-1.5 rounded-full text-xs font-semibold shadow-sm">{req.assignedTo}</span>
                           ) : (
                             <span className="text-gray-500">Unassigned</span>
                           )}
                         </td>
-                        <td className="p-4 text-gray-700">{req.dueBy}</td>
-                        <td className="p-4">
-                          <span className="inline-flex px-4 py-1.5 rounded-full text-xs font-bold uppercase bg-[#e9fbef] text-[#1e9b4c] border border-[#c3f1d2]">Open</span>
+                        <td className="px-4 py-3 text-gray-700">{req.dueBy}</td>
+                        <td className="px-4 py-3">
+                          {getStatusBadge(req.status)}
                         </td>
-                        <td className="p-4">{getPriorityBadge(req.priority) || '-'}</td>
+                        <td className="px-4 py-3">{getPriorityBadge(req.priority) || '-'}</td>
                         {filter !== 'assigned' && (
-                          <td className="p-4">
+                          <td className="px-4 py-3">
                             {!req.assignedTo ? (
                               <button
                                 className="px-3 py-1.5 text-xs font-semibold text-white bg-[#1f5cf4] rounded-md shadow-sm hover:bg-[#1844b0]"
