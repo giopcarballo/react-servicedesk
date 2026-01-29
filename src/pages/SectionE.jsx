@@ -406,6 +406,9 @@ function SectionE() {
   const [editMode, setEditMode] = useState(false)
   const [showAssignModal, setShowAssignModal] = useState(false)
   const [selectedTechnician, setSelectedTechnician] = useState(null)
+  const [assignRequestTitle, setAssignRequestTitle] = useState('')
+  const [scheduledStartDate, setScheduledStartDate] = useState('')
+  const [scheduledEndDate, setScheduledEndDate] = useState('')
   
   // Resolution state
   const [resolutionState, setResolutionState] = useState('empty')
@@ -423,11 +426,7 @@ function SectionE() {
   const [taskDescription, setTaskDescription] = useState('')
   
   // Checklist state
-  const [serviceChecklist, setServiceChecklist] = useState([
-    { id: 1, name: 'System', title: 'Validate issue with requester', completed: true },
-    { id: 2, name: 'Technician', title: 'Capture photos of affected area', completed: false },
-    { id: 3, name: 'Vendor', title: 'Confirm parts availability', completed: false },
-  ])
+  const [serviceChecklist, setServiceChecklist] = useState([])
   const [showChecklistModal, setShowChecklistModal] = useState(false)
   const [editingChecklistItem, setEditingChecklistItem] = useState(null)
   const [checklistName, setChecklistName] = useState('')
@@ -442,6 +441,7 @@ function SectionE() {
   const [showWorkLogModal, setShowWorkLogModal] = useState(false)
   const [workLogTitle, setWorkLogTitle] = useState('')
   const [workLogDescription, setWorkLogDescription] = useState('')
+  const [replyDrafts, setReplyDrafts] = useState({})
   
   // History state
   const [serviceHistory] = useState([
@@ -724,6 +724,74 @@ function SectionE() {
     if (window.confirm('Delete this work log?')) {
       setServiceWorkLogs(serviceWorkLogs.filter(l => l.id !== logId))
     }
+  }
+  
+  const addReply = (logId, parentReplyId = null) => {
+    const draftKey = parentReplyId ? `${logId}-${parentReplyId}` : `${logId}-root`
+    const text = replyDrafts[draftKey]?.trim()
+    if (!text) {
+      alert('Please enter a reply.')
+      return
+    }
+
+    const addReplyRecursive = (replies, targetId) => {
+      return replies.map(r => {
+        if (r.id === targetId) {
+          const nested = r.replies ? [...r.replies] : []
+          nested.push({
+            id: Date.now(),
+            author: 'Chris Mendoza',
+            authorInitials: 'CM',
+            timestamp: '1d ago',
+            text,
+            replies: []
+          })
+          return { ...r, replies: nested }
+        }
+        if (r.replies && r.replies.length) {
+          return { ...r, replies: addReplyRecursive(r.replies, targetId) }
+        }
+        return r
+      })
+    }
+
+    const updatedLogs = serviceWorkLogs.map(log => {
+      if (log.id === logId) {
+        if (parentReplyId) {
+          const updatedReplies = addReplyRecursive(log.replies || [], parentReplyId)
+          return { ...log, replies: updatedReplies }
+        }
+        const replies = log.replies ? [...log.replies] : []
+        replies.push({
+          id: Date.now(),
+          author: 'Chris Mendoza',
+          authorInitials: 'CM',
+          timestamp: '1d ago',
+          text,
+          replies: []
+        })
+        return { ...log, replies }
+      }
+      return log
+    })
+    setServiceWorkLogs(updatedLogs)
+    setReplyDrafts(prev => ({ ...prev, [draftKey]: '' }))
+  }
+
+  const deleteReply = (logId, replyId) => {
+    const deleteRecursive = (replies, targetId) => {
+      return replies
+        .filter(r => r.id !== targetId)
+        .map(r => r.replies && r.replies.length ? { ...r, replies: deleteRecursive(r.replies, targetId) } : r)
+    }
+
+    const updatedLogs = serviceWorkLogs.map(log => {
+      if (log.id === logId) {
+        return { ...log, replies: deleteRecursive(log.replies || [], replyId) }
+      }
+      return log
+    })
+    setServiceWorkLogs(updatedLogs)
   }
   
   // Edit mode handler
@@ -1394,7 +1462,7 @@ function SectionE() {
         {/* Collection Detail Modal */}
         {showCollectionDetail && selectedCollection && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-4">
-            <div className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl overflow-hidden animate-[fadeIn_0.18s_ease]">
+            <div className="w-full max-w-2xl rounded-2xl bg-white shadow-2xl overflow-hidden animate-[fadeIn_0.18s_ease] max-h-[85vh] flex flex-col">
               <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-[#e0f2fe] via-white to-white border-b border-slate-200">
                 <div className="flex items-center gap-3">
                   <div className="h-11 w-11 rounded-xl bg-[#0ea5e9]/15 text-[#0ea5e9] flex items-center justify-center text-xl">👁</div>
@@ -1412,7 +1480,7 @@ function SectionE() {
                 </button>
               </div>
 
-              <div className="p-6 space-y-5 bg-gray-50/80">
+              <div className="p-6 space-y-5 bg-gray-50/80 overflow-y-auto flex-1">
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="px-3 py-1 rounded-md bg-slate-100 text-slate-800 text-xs font-semibold">Ticket: {selectedCollection.ticket}</div>
                   <div className="px-3 py-1 rounded-md bg-white border border-gray-200 text-xs font-semibold text-gray-700">Service: {selectedCollection.service}</div>
@@ -1468,7 +1536,7 @@ function SectionE() {
                         {formatCurrency(selectedCollection.balance)}
                       </p>
                     </div>
-                  </div>x
+                  </div>
                 </div>
 
                 <div className="flex justify-end gap-3 pt-1">
@@ -1682,8 +1750,25 @@ function SectionE() {
                           <p className="leading-relaxed">{selectedService.description}</p>
                           <div className="flex items-center gap-2 text-sm text-gray-600">
                             <span className="text-base">📎</span>
-                            <span className="text-[#1f3c8e] font-semibold">Browse Files</span>
+                            <button
+                              onClick={() => fileInputRef.current?.click()}
+                              className="text-[#1f3c8e] font-semibold hover:text-[#152a6e] cursor-pointer underline"
+                            >
+                              Browse Files
+                            </button>
                             <span className="text-gray-400">or Drag files here [ Max size: 50 MB. ]</span>
+                            <input
+                              ref={fileInputRef}
+                              type="file"
+                              multiple
+                              accept="*/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                if (e.target.files) {
+                                  console.log('Selected files:', Array.from(e.target.files))
+                                }
+                              }}
+                            />
                           </div>
                         </div>
                       </div>
@@ -1897,6 +1982,34 @@ function SectionE() {
                                     <button className="text-xs text-red-600 font-medium hover:text-red-800 ml-4" onClick={() => deleteWorkLog(log.id)}>Delete</button>
                                   </div>
                                   <div className="text-[13px] text-gray-700 leading-relaxed mb-2 whitespace-pre-line break-words">{log.description}</div>
+                                  {/* Replies recursive */}
+                                  <div className="mt-3 space-y-3">
+                                    {log.replies && log.replies.map((reply) => (
+                                      <ReplyThread
+                                        key={reply.id}
+                                        reply={reply}
+                                        logId={log.id}
+                                        replyDrafts={replyDrafts}
+                                        setReplyDrafts={setReplyDrafts}
+                                        addReply={addReply}
+                                        deleteReply={deleteReply}
+                                      />
+                                    ))}
+                                  </div>
+                                  {/* Reply Form (root) */}
+                                  <div className="mt-3 border border-gray-200 rounded-md bg-white">
+                                    <textarea
+                                      rows="2"
+                                      placeholder="Add a reply..."
+                                      className="w-full p-2 text-[13px] border-0 rounded-md focus:outline-none"
+                                      value={replyDrafts[`${log.id}-root`] || ''}
+                                      onChange={(e) => setReplyDrafts(prev => ({ ...prev, [`${log.id}-root`]: e.target.value }))}
+                                    ></textarea>
+                                    <div className="flex justify-end gap-2 border-t border-gray-200 p-2 text-xs">
+                                      <button className="px-3 py-1 text-gray-600 hover:text-gray-800" onClick={() => setReplyDrafts(prev => ({ ...prev, [`${log.id}-root`]: '' }))}>Cancel</button>
+                                      <button className="px-3 py-1 text-blue-600 hover:text-blue-800 font-semibold" onClick={() => addReply(log.id)}>Post</button>
+                                    </div>
+                                  </div>
                                 </div>
                               </div>
                             ))}
@@ -1916,7 +2029,6 @@ function SectionE() {
                       </div>
                     )}
 
-                    {/* Time Analysis Tab */}
                     {/* Time Analysis Tab */}
                     {serviceDetailTab === 'timeAnalysis' && (
                       <div className="bg-white border border-gray-200 rounded-lg p-5">
@@ -2151,8 +2263,8 @@ function SectionE() {
         {/* Assign Modal */}
         {showAssignModal && (
           <div className="fixed inset-0 z-[1100] flex justify-center items-center bg-black/50 backdrop-blur-sm" onClick={closeAssignModal}>
-            <div className="relative bg-white w-full max-w-2xl mx-4 rounded-xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
-              <div className="flex items-center justify-between p-5 border-b border-gray-200">
+            <div className="relative bg-white w-full max-w-lg mx-4 rounded-xl shadow-2xl" onClick={(e) => e.stopPropagation()}>
+              <div className="flex items-center justify-between p-4 border-b border-gray-200">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 flex items-center justify-center">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-600">
@@ -2169,14 +2281,18 @@ function SectionE() {
                   </svg>
                 </button>
               </div>
-              <div className="p-6">
-                <div className="mb-6">
-                  <label className="block text-sm font-semibold text-gray-700 mb-3">Select Technician <span className="text-red-500">*</span></label>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="p-4">
+                <div className="mb-4">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Title <span className="text-red-500">*</span></label>
+                  <input type="text" className="w-full p-3 border border-gray-300 rounded-lg text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" placeholder="Enter template title..." value={assignRequestTitle} onChange={(e) => setAssignRequestTitle(e.target.value)} />
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Select Technician <span className="text-red-500">*</span></label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {techniciansData.map((tech) => (
                       <div
                         key={tech.id}
-                        className={`relative border-2 rounded-lg p-4 cursor-pointer transition-all hover:border-blue-400 ${selectedTechnician === tech.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white'}`}
+                        className={`relative border-2 rounded-lg p-3 cursor-pointer transition-all hover:border-blue-400 ${selectedTechnician === tech.id ? 'border-blue-500 bg-blue-50' : 'border-gray-200 bg-white'}`}
                         onClick={() => setSelectedTechnician(tech.id)}
                       >
                         <div className="flex items-start gap-3">
@@ -2198,8 +2314,36 @@ function SectionE() {
                     ))}
                   </div>
                 </div>
+                <div className="mb-2">
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Scheduled Start</label>
+                  <div className="flex items-center gap-3">
+                    <div className="relative flex-1">
+                      <input type="date" className="w-full p-3 pr-10 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" placeholder="dd/mm/yyyy" value={scheduledStartDate} onChange={(e) => setScheduledStartDate(e.target.value)} />
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                          <line x1="16" y1="2" x2="16" y2="6"></line>
+                          <line x1="8" y1="2" x2="8" y2="6"></line>
+                          <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                      </div>
+                    </div>
+                    <span className="text-gray-400 font-medium">-</span>
+                    <div className="relative flex-1">
+                      <input type="date" className="w-full p-3 pr-10 border border-gray-300 rounded-lg text-sm text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all" placeholder="dd/mm/yyyy" value={scheduledEndDate} onChange={(e) => setScheduledEndDate(e.target.value)} />
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
+                          <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                          <line x1="16" y1="2" x2="16" y2="6"></line>
+                          <line x1="8" y1="2" x2="8" y2="6"></line>
+                          <line x1="3" y1="10" x2="21" y2="10"></line>
+                        </svg>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex justify-end items-center gap-3 p-5 border-t border-gray-200 bg-gray-50 rounded-b-xl">
+              <div className="flex justify-end items-center gap-3 p-4 border-t border-gray-200 bg-gray-50 rounded-b-xl">
                 <button className="px-6 py-2.5 bg-white border border-gray-300 text-gray-700 rounded-lg text-sm font-semibold hover:bg-gray-50 transition-colors" onClick={closeAssignModal}>Cancel</button>
                 <button className="px-6 py-2.5 bg-red-500 text-white rounded-lg text-sm font-semibold hover:bg-red-600 transition-colors shadow-sm" onClick={confirmAssignment}>Save</button>
               </div>
@@ -2207,6 +2351,88 @@ function SectionE() {
           </div>
         )}
       </div>
+    </div>
+  )
+}
+
+// Helper component for nested replies
+const ReplyThread = ({ reply, logId, replyDrafts, setReplyDrafts, addReply, deleteReply }) => {
+  return (
+    <div className="border border-gray-200 rounded-md px-3 py-2 bg-gray-50">
+      <div className="flex items-center gap-2 text-[12px] text-gray-500 mb-1">
+        <span className="font-semibold text-gray-700">{reply.author}</span>
+        <span className="text-gray-400">{reply.timestamp}</span>
+      </div>
+      <div className="text-[13px] text-gray-700 leading-relaxed">{reply.text}</div>
+      <div className="flex gap-3 text-[12px] text-blue-600 mt-2">
+        <button
+          className="hover:underline"
+          onClick={() => {
+            const key = `${logId}-${reply.id}`
+            setReplyDrafts(prev => ({ ...prev, [key]: prev[key] || '' }))
+          }}
+        >
+          Reply
+        </button>
+        <button
+          className="text-red-600 hover:underline"
+          onClick={() => deleteReply(logId, reply.id)}
+        >
+          Delete
+        </button>
+      </div>
+
+      {/* Nested reply box */}
+      {replyDrafts[`${logId}-${reply.id}`] !== undefined && (
+        <div className="mt-2 border border-gray-200 rounded bg-white">
+          <textarea
+            rows="2"
+            placeholder="Add a reply..."
+            className="w-full p-2 text-[13px] border-0 rounded-md focus:outline-none"
+            value={replyDrafts[`${logId}-${reply.id}`] || ''}
+            onChange={(e) =>
+              setReplyDrafts(prev => ({ ...prev, [`${logId}-${reply.id}`]: e.target.value }))
+            }
+          />
+          <div className="flex justify-end gap-2 border-t border-gray-200 p-2 text-xs">
+            <button
+              className="px-3 py-1 text-gray-600 hover:text-gray-800"
+              onClick={() =>
+                setReplyDrafts(prev => {
+                  const next = { ...prev }
+                  delete next[`${logId}-${reply.id}`]
+                  return next
+                })
+              }
+            >
+              Cancel
+            </button>
+            <button
+              className="px-3 py-1 text-blue-600 hover:text-blue-800 font-semibold"
+              onClick={() => addReply(logId, reply.id)}
+            >
+              Post
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Child replies */}
+      {reply.replies && reply.replies.length > 0 && (
+        <div className="mt-3 space-y-2 border-l border-gray-200 pl-3">
+          {reply.replies.map(child => (
+            <ReplyThread
+              key={child.id}
+              reply={child}
+              logId={logId}
+              replyDrafts={replyDrafts}
+              setReplyDrafts={setReplyDrafts}
+              addReply={addReply}
+              deleteReply={deleteReply}
+            />
+          ))}
+        </div>
+      )}
     </div>
   )
 }
