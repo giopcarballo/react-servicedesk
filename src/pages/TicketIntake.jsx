@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import SidebarToggle from '../components/SidebarToggle'
@@ -6,47 +6,196 @@ import Header from '../components/Header'
 
 const serviceCategories = [
   {
-    id: 'big',
-    name: 'Business Intelligence Group',
-    icon: '📊',
-    templates: [
-      { id: 'big01', name: 'Feasibility Study', type: 'service', desc: 'Comprehensive feasibility study preparation', code: 'BIG01', baseRate: 50000, sla: '45-90 days' },
-      { id: 'big02', name: 'Data Analysis', type: 'service', desc: 'Business data analysis and reporting', code: 'BIG02', baseRate: 25000, sla: '7-14 days' },
-      { id: 'big03', name: 'Market Research', type: 'service', desc: 'Market research and competitive analysis', code: 'BIG03', baseRate: 35000, sla: '14-30 days' },
-    ]
+      id: 'ad',
+      name: 'Accounting Department',
+      code: 'AD',
+      templates: [
+          { id: 'ad1', name: 'Assistance in Financial Assessment Templates', type: 'service', desc: 'Request help with financial assessment document templates', code: 'AD01', baseRate: 5000, sla: '3-5 days' },
+          { id: 'ad2', name: 'Assistance in Financial Budget Templates', type: 'service', desc: 'Request help with budget planning templates', code: 'AD02', baseRate: 5000, sla: '3-5 days' },
+          { id: 'ad3', name: 'Inquiries & Follow up of Contractor\'s Billing', type: 'service', desc: 'Follow up on contractor billing inquiries', code: 'AD03', baseRate: 2000, sla: '1-2 days' },
+          { id: 'ad4', name: 'Inquiries & Follow Up of Supplier\'s Payable Account', type: 'service', desc: 'Follow up on supplier payment status', code: 'AD04', baseRate: 2000, sla: '1-2 days' },
+          { id: 'ad5', name: 'Request for AD Documents', type: 'service', desc: 'Request accounting department documents', code: 'AD05', baseRate: 1000, sla: '1 day' },
+          { id: 'ad6', name: 'Request for Breakdown - Detailed Expenses aside from the seven (7) Critical Expenses', type: 'service', desc: 'Request detailed expense breakdown reports', code: 'AD06', baseRate: 8000, sla: '5-7 days' },
+          { id: 'ad7', name: 'Payment Processing Error', type: 'incident', desc: 'Report issues with payment processing', code: 'AD-I01', baseRate: 0, sla: '4 hrs' },
+          { id: 'ad8', name: 'Budget System Access Issue', type: 'incident', desc: 'Report problems accessing budget systems', code: 'AD-I02', baseRate: 0, sla: '2 hrs' }
+      ]
   },
   {
-    id: 'it',
-    name: 'IT Department',
-    icon: '💻',
-    templates: [
-      { id: 'it01', name: 'Hardware Setup', type: 'service', desc: 'Computer and hardware installation', code: 'IT01', baseRate: 2500, sla: '4 hours' },
-      { id: 'it02', name: 'Network Issue', type: 'incident', desc: 'Network connectivity problems', code: 'IT02', baseRate: 1500, sla: '2 hours' },
-      { id: 'it03', name: 'Software Installation', type: 'service', desc: 'Software setup and configuration', code: 'IT03', baseRate: 2000, sla: '4 hours' },
-      { id: 'it04', name: 'Email Setup', type: 'service', desc: 'Email account setup and configuration', code: 'IT04', baseRate: 1000, sla: '2 hours' },
-    ]
+      id: 'cad',
+      name: 'Audit',
+      code: 'CAD',
+      templates: [
+          { id: 'cad1', name: 'Internal Audit Request', type: 'service', desc: 'Request for internal audit services', code: 'CAD01', baseRate: 25000, sla: '15-30 days' },
+          { id: 'cad2', name: 'Compliance Review Request', type: 'service', desc: 'Request compliance review for processes', code: 'CAD02', baseRate: 15000, sla: '10-15 days' },
+          { id: 'cad3', name: 'Audit Report Access', type: 'service', desc: 'Request access to audit reports', code: 'CAD03', baseRate: 500, sla: '1 day' },
+          { id: 'cad4', name: 'Audit Finding Follow-up', type: 'incident', desc: 'Report issues with audit findings resolution', code: 'CAD-I01', baseRate: 0, sla: '8 hrs' }
+      ]
   },
   {
-    id: 'facilities',
-    name: 'Facilities Management',
-    icon: '🏢',
-    templates: [
-      { id: 'fac01', name: 'AC Maintenance', type: 'service', desc: 'Air conditioning service and repair', code: 'FAC01', baseRate: 3500, sla: '4 hours' },
-      { id: 'fac02', name: 'Plumbing Issue', type: 'incident', desc: 'Plumbing repairs and maintenance', code: 'FAC02', baseRate: 2500, sla: '2 hours' },
-      { id: 'fac03', name: 'Electrical Work', type: 'service', desc: 'Electrical repairs and installation', code: 'FAC03', baseRate: 3000, sla: '4 hours' },
-    ]
+      id: 'bd',
+      name: 'Business Development',
+      code: 'BD',
+      templates: [
+          { id: 'bd1', name: 'New Client Onboarding Request', type: 'service', desc: 'Request support for new client onboarding', code: 'BD01', baseRate: 10000, sla: '5-7 days' },
+          { id: 'bd2', name: 'Partnership Proposal Review', type: 'service', desc: 'Request review of partnership proposals', code: 'BD02', baseRate: 8000, sla: '3-5 days' },
+          { id: 'bd3', name: 'Market Research Request', type: 'service', desc: 'Request market research analysis', code: 'BD03', baseRate: 20000, sla: '10-15 days' },
+          { id: 'bd4', name: 'CRM System Issue', type: 'incident', desc: 'Report CRM system problems', code: 'BD-I01', baseRate: 0, sla: '4 hrs' }
+      ]
   },
   {
-    id: 'housekeeping',
-    name: 'Housekeeping',
-    icon: '🧹',
-    templates: [
-      { id: 'hk01', name: 'Room Cleaning', type: 'service', desc: 'Standard room cleaning service', code: 'HK01', baseRate: 500, sla: '1 hour' },
-      { id: 'hk02', name: 'Deep Cleaning', type: 'service', desc: 'Deep cleaning and sanitization', code: 'HK02', baseRate: 1500, sla: '2 hours' },
-      { id: 'hk03', name: 'Laundry Service', type: 'service', desc: 'Laundry and dry cleaning', code: 'HK03', baseRate: 300, sla: '24 hours' },
-    ]
+      id: 'big',
+      name: 'Business Intelligence Group',
+      code: 'BIG',
+      templates: [
+          { id: 'big1', name: 'Feasibility Study Preparation', type: 'service', desc: 'Comprehensive feasibility study for new projects', code: 'BIG01', baseRate: 50000, sla: '45-90 days' },
+          { id: 'big2', name: 'Data Analysis Request', type: 'service', desc: 'Request custom data analysis', code: 'BIG02', baseRate: 15000, sla: '7-14 days' },
+          { id: 'big3', name: 'Dashboard Development', type: 'service', desc: 'Request new dashboard creation', code: 'BIG03', baseRate: 25000, sla: '14-21 days' },
+          { id: 'big4', name: 'Report Generation', type: 'service', desc: 'Request automated report generation', code: 'BIG04', baseRate: 8000, sla: '5-7 days' },
+          { id: 'big5', name: 'BI Tool Access Request', type: 'service', desc: 'Request access to BI tools', code: 'BIG05', baseRate: 2000, sla: '1-2 days' },
+          { id: 'big6', name: 'Data Discrepancy Report', type: 'incident', desc: 'Report data inconsistencies', code: 'BIG-I01', baseRate: 0, sla: '8 hrs' },
+          { id: 'big7', name: 'Dashboard Error', type: 'incident', desc: 'Report dashboard malfunction', code: 'BIG-I02', baseRate: 0, sla: '4 hrs' }
+      ]
   },
-]
+  {
+      id: 'cmi',
+      name: 'CareMasters Inc',
+      code: 'CMI',
+      templates: [
+          { id: 'cmi1', name: 'Healthcare Service Request', type: 'service', desc: 'Request healthcare-related services', code: 'CMI01', baseRate: 5000, sla: '2-3 days' },
+          { id: 'cmi2', name: 'Medical Equipment Request', type: 'service', desc: 'Request medical equipment', code: 'CMI02', baseRate: 15000, sla: '5-10 days' },
+          { id: 'cmi3', name: 'Patient Care Coordination', type: 'service', desc: 'Request patient care coordination support', code: 'CMI03', baseRate: 8000, sla: '1-2 days' },
+          { id: 'cmi4', name: 'Healthcare System Issue', type: 'incident', desc: 'Report healthcare system problems', code: 'CMI-I01', baseRate: 0, sla: '1 hr' }
+      ]
+  },
+  {
+      id: 'cpd',
+      name: 'Corporate Procurement Department',
+      code: 'CPD',
+      templates: [
+          { id: 'cpd1', name: 'Purchase Request', type: 'service', desc: 'Submit new purchase request', code: 'CPD01', baseRate: 1000, sla: '3-5 days' },
+          { id: 'cpd2', name: 'Vendor Registration', type: 'service', desc: 'Request new vendor registration', code: 'CPD02', baseRate: 2000, sla: '5-7 days' },
+          { id: 'cpd3', name: 'Contract Review Request', type: 'service', desc: 'Request contract review', code: 'CPD03', baseRate: 5000, sla: '3-5 days' },
+          { id: 'cpd4', name: 'PO Status Inquiry', type: 'service', desc: 'Inquire about purchase order status', code: 'CPD04', baseRate: 500, sla: '1 day' },
+          { id: 'cpd5', name: 'Procurement System Error', type: 'incident', desc: 'Report procurement system issues', code: 'CPD-I01', baseRate: 0, sla: '4 hrs' }
+      ]
+  },
+  {
+      id: 'cc',
+      name: 'Credit and Collection',
+      code: 'C&C',
+      templates: [
+          { id: 'cc1', name: 'Credit Application Review', type: 'service', desc: 'Request credit application review', code: 'CC01', baseRate: 3000, sla: '2-3 days' },
+          { id: 'cc2', name: 'Collection Status Inquiry', type: 'service', desc: 'Inquire about collection status', code: 'CC02', baseRate: 500, sla: '1 day' },
+          { id: 'cc3', name: 'Payment Plan Request', type: 'service', desc: 'Request payment plan arrangement', code: 'CC03', baseRate: 2000, sla: '2-3 days' },
+          { id: 'cc4', name: 'Credit System Issue', type: 'incident', desc: 'Report credit system problems', code: 'CC-I01', baseRate: 0, sla: '2 hrs' }
+      ]
+  },
+  {
+      id: 'ced',
+      name: 'Engineering',
+      code: 'CED',
+      templates: [
+          { id: 'ced1', name: 'Technical Support Request', type: 'service', desc: 'Request engineering technical support', code: 'CED01', baseRate: 5000, sla: '2-3 days' },
+          { id: 'ced2', name: 'Equipment Maintenance Request', type: 'service', desc: 'Request equipment maintenance', code: 'CED02', baseRate: 8000, sla: '3-5 days' },
+          { id: 'ced3', name: 'Facility Modification Request', type: 'service', desc: 'Request facility modifications', code: 'CED03', baseRate: 25000, sla: '15-30 days' },
+          { id: 'ced4', name: 'Equipment Malfunction', type: 'incident', desc: 'Report equipment malfunction', code: 'CED-I01', baseRate: 0, sla: '2 hrs' },
+          { id: 'ced5', name: 'Safety Hazard Report', type: 'incident', desc: 'Report safety hazards', code: 'CED-I02', baseRate: 0, sla: '30 mins' }
+      ]
+  },
+  {
+      id: 'exec',
+      name: 'Executive',
+      code: 'EXEC',
+      templates: [
+          { id: 'exec1', name: 'Executive Meeting Coordination', type: 'service', desc: 'Request executive meeting coordination', code: 'EXEC01', baseRate: 5000, sla: '1-2 days' },
+          { id: 'exec2', name: 'Board Report Request', type: 'service', desc: 'Request board report preparation', code: 'EXEC02', baseRate: 15000, sla: '5-7 days' },
+          { id: 'exec3', name: 'Executive Travel Arrangement', type: 'service', desc: 'Request executive travel arrangements', code: 'EXEC03', baseRate: 10000, sla: '2-3 days' },
+          { id: 'exec4', name: 'Confidential Document Request', type: 'service', desc: 'Request confidential documents', code: 'EXEC04', baseRate: 2000, sla: '1 day' }
+      ]
+  },
+  {
+      id: 'fin',
+      name: 'Finance',
+      code: 'FIN',
+      templates: [
+          { id: 'fin1', name: 'Budget Allocation Request', type: 'service', desc: 'Request budget allocation', code: 'FIN01', baseRate: 5000, sla: '3-5 days' },
+          { id: 'fin2', name: 'Financial Report Request', type: 'service', desc: 'Request financial reports', code: 'FIN02', baseRate: 3000, sla: '2-3 days' },
+          { id: 'fin3', name: 'Expense Reimbursement', type: 'service', desc: 'Submit expense reimbursement', code: 'FIN03', baseRate: 500, sla: '3-5 days' },
+          { id: 'fin4', name: 'Tax Document Request', type: 'service', desc: 'Request tax-related documents', code: 'FIN04', baseRate: 1000, sla: '2-3 days' },
+          { id: 'fin5', name: 'Financial System Error', type: 'incident', desc: 'Report financial system issues', code: 'FIN-I01', baseRate: 0, sla: '1 hr' }
+      ]
+  },
+  {
+      id: 'fpa',
+      name: 'Financial Planning & Analysis',
+      code: 'FP&A',
+      templates: [
+          { id: 'fpa1', name: 'Forecast Analysis Request', type: 'service', desc: 'Request financial forecast analysis', code: 'FPA01', baseRate: 20000, sla: '10-15 days' },
+          { id: 'fpa2', name: 'Variance Analysis Report', type: 'service', desc: 'Request variance analysis report', code: 'FPA02', baseRate: 15000, sla: '7-10 days' },
+          { id: 'fpa3', name: 'Budget Planning Support', type: 'service', desc: 'Request budget planning assistance', code: 'FPA03', baseRate: 10000, sla: '5-7 days' },
+          { id: 'fpa4', name: 'Financial Model Development', type: 'service', desc: 'Request financial model creation', code: 'FPA04', baseRate: 30000, sla: '15-20 days' },
+          { id: 'fpa5', name: 'Planning Tool Issue', type: 'incident', desc: 'Report planning tool problems', code: 'FPA-I01', baseRate: 0, sla: '4 hrs' }
+      ]
+  },
+  {
+      id: 'fb',
+      name: 'Food and Beverages',
+      code: 'F&B',
+      templates: [
+          { id: 'fb1', name: 'Catering Service Request', type: 'service', desc: 'Request catering services', code: 'FB01', baseRate: 15000, sla: '3-5 days' },
+          { id: 'fb2', name: 'Menu Planning Support', type: 'service', desc: 'Request menu planning assistance', code: 'FB02', baseRate: 5000, sla: '2-3 days' },
+          { id: 'fb3', name: 'Food Quality Complaint', type: 'incident', desc: 'Report food quality issues', code: 'FB-I01', baseRate: 0, sla: '1 hr' },
+          { id: 'fb4', name: 'Kitchen Equipment Issue', type: 'incident', desc: 'Report kitchen equipment problems', code: 'FB-I02', baseRate: 0, sla: '2 hrs' }
+      ]
+  },
+  {
+      id: 'hr',
+      name: 'Human Resources',
+      code: 'HR',
+      templates: [
+          { id: 'hr1', name: 'Leave Application', type: 'service', desc: 'Submit leave application', code: 'HR01', baseRate: 0, sla: '1-2 days' },
+          { id: 'hr2', name: 'Training Request', type: 'service', desc: 'Request training enrollment', code: 'HR02', baseRate: 5000, sla: '5-7 days' },
+          { id: 'hr3', name: 'Employee Certificate Request', type: 'service', desc: 'Request employee certificates', code: 'HR03', baseRate: 500, sla: '2-3 days' },
+          { id: 'hr4', name: 'Benefits Inquiry', type: 'service', desc: 'Inquire about employee benefits', code: 'HR04', baseRate: 0, sla: '1 day' },
+          { id: 'hr5', name: 'HRIS System Issue', type: 'incident', desc: 'Report HR system problems', code: 'HR-I01', baseRate: 0, sla: '4 hrs' },
+          { id: 'hr6', name: 'Payroll Discrepancy', type: 'incident', desc: 'Report payroll issues', code: 'HR-I02', baseRate: 0, sla: '8 hrs' }
+      ]
+  },
+  {
+      id: 'it',
+      name: 'Information Technology',
+      code: 'IT',
+      templates: [
+          { id: 'it1', name: 'New User Account Request', type: 'service', desc: 'Request new user account creation', code: 'IT01', baseRate: 1000, sla: '1-2 days' },
+          { id: 'it2', name: 'Software Installation Request', type: 'service', desc: 'Request software installation', code: 'IT02', baseRate: 2000, sla: '1-2 days' },
+          { id: 'it3', name: 'Hardware Request', type: 'service', desc: 'Request new hardware equipment', code: 'IT03', baseRate: 5000, sla: '5-10 days' },
+          { id: 'it4', name: 'Network Access Request', type: 'service', desc: 'Request network access', code: 'IT04', baseRate: 1000, sla: '1 day' },
+          { id: 'it5', name: 'Password Reset', type: 'service', desc: 'Request password reset', code: 'IT05', baseRate: 0, sla: '30 mins' },
+          { id: 'it6', name: 'Computer Not Working', type: 'incident', desc: 'Report computer malfunction', code: 'IT-I01', baseRate: 0, sla: '2 hrs' },
+          { id: 'it7', name: 'Network Connectivity Issue', type: 'incident', desc: 'Report network problems', code: 'IT-I02', baseRate: 0, sla: '1 hr' },
+          { id: 'it8', name: 'Email Issue', type: 'incident', desc: 'Report email problems', code: 'IT-I03', baseRate: 0, sla: '2 hrs' },
+          { id: 'it9', name: 'System Slow Performance', type: 'incident', desc: 'Report system performance issues', code: 'IT-I04', baseRate: 0, sla: '4 hrs' }
+      ]
+  },
+  {
+      id: 'legal',
+      name: 'Legal',
+      code: 'LEGAL',
+      templates: [
+          { id: 'legal1', name: 'Contract Review Request', type: 'service', desc: 'Request legal contract review', code: 'LEG01', baseRate: 10000, sla: '5-7 days' },
+          { id: 'legal2', name: 'Legal Opinion Request', type: 'service', desc: 'Request legal opinion', code: 'LEG02', baseRate: 15000, sla: '7-10 days' },
+          { id: 'legal3', name: 'NDA Request', type: 'service', desc: 'Request NDA preparation', code: 'LEG03', baseRate: 5000, sla: '2-3 days' },
+          { id: 'legal4', name: 'Compliance Query', type: 'service', desc: 'Submit compliance-related queries', code: 'LEG04', baseRate: 3000, sla: '2-3 days' }
+      ]
+  }
+];
+
+const metrics = [
+  { id: 1, label: 'Active Requests', value: 0, icon: '📋' },
+  { id: 2, label: 'Open Problems', value: 0, icon: '⚠️' },
+  { id: 3, label: 'Pending Changes', value: 0, icon: '🔄' },
+  { id: 4, label: 'Tasks Due Today', value: 0, icon: '✅' },
+];
 
 function TicketIntake() {
   const navigate = useNavigate()
@@ -56,6 +205,11 @@ function TicketIntake() {
   const [filterType, setFilterType] = useState('all')
   const [showTicketModal, setShowTicketModal] = useState(false)
   const [ticketType, setTicketType] = useState('service')
+  const [addCategoryModal, setAddCategoryModal] = useState(false)
+  const [addTemplateModal, setAddTemplateModal] = useState(false)
+  const [moreFieldsModal, setMoreFieldsModal] = useState(false)
+
+  const [searchTerm, setSearchTerm] = useState('');
 
   const navigateToModule = (module) => {
     switch(module) {
@@ -70,12 +224,21 @@ function TicketIntake() {
   }
 
   const getFilteredTemplates = () => {
-    if (!selectedCategory) return []
-    const category = serviceCategories.find(c => c.id === selectedCategory)
-    if (!category) return []
-    if (filterType === 'all') return category.templates
-    return category.templates.filter(t => t.type === filterType)
-  }
+    if (!selectedCategory) return [];
+    
+    const category = serviceCategories.find(c => c.id === selectedCategory);
+    if (!category) return [];
+  
+    return category.templates.filter(template => {
+      // Check for Type (all, incident, service)
+      const matchesType = filterType === 'all' || template.type === filterType;
+      
+      // Check for Search Term (name)
+      const matchesSearch = template.name.toLowerCase().includes(searchTerm.toLowerCase());
+  
+      return matchesType && matchesSearch;
+    });
+  };
 
   const handleCreateTicket = () => {
     alert(`✅ Ticket Created!\n\nType: ${ticketType.toUpperCase()}\nService: ${selectedTemplate?.name}\nCode: ${selectedTemplate?.code}\nEstimated Cost: ₱${selectedTemplate?.baseRate?.toLocaleString()}`)
@@ -83,36 +246,92 @@ function TicketIntake() {
     setSelectedTemplate(null)
   }
 
+  const calculateSeverity = (baseRate, multiplier) => {
+    return baseRate * multiplier;
+  };
+
+  const [severityMultiplier, setSeverityMultiplier] = useState(1); // Default is 1 (no change)
+
+  const [file, setFile] = useState(null);
+  const fileInputRef = useRef(null);
+
+  const handleBoxClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleFileChange = (event) => {
+    const selectedFile = event.target.files[0];
+    if (selectedFile) {
+      setFile(selectedFile);
+      console.log("Selected file:", selectedFile.name);
+    }
+  };
+
+  {/* Logic to find parent category info */}
+  const parentCategory = serviceCategories.find(cat => 
+    cat.templates.some(t => t.id === selectedTemplate?.id)
+  );
+
   return (
     <div className="font-sans bg-gray-50 min-h-screen text-gray-800">
       <Sidebar collapsed={sidebarCollapsed} onNavigate={navigateToModule} />
       <SidebarToggle collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
 
       {/* Header */}
-      <Header 
-        collapsed={sidebarCollapsed}
-        subtitle="Ticket Intake & Classification"
-        showStats={false}
-      />
+      <Header />
 
-      <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
-        <div className="grid grid-cols-[280px_1fr] gap-6">
+      <div className={`max-w-max mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
+        <div className="grid grid-cols-[320px_1fr] gap-6">
           {/* Sidebar - Categories */}
           <div className="bg-white rounded-xl border border-gray-200 shadow-sm">
-            <div className="p-4 border-b border-gray-200">
+            <div className="p-4 border-b border-gray-200 flex items-start justify-between">
               <h3 className="font-bold text-gray-800">Service Categories</h3>
+              <button 
+                className='bg-[#ef4444] text-white border-none text-[14px] cursor-pointer rounded-[4px] font-[600] px-3 py-1' 
+                onClick={() => setAddCategoryModal(true)}
+              >
+                <p>+ Add</p>
+              </button>
             </div>
             <div className="p-2">
               {serviceCategories.map((category) => (
                 <div
                   key={category.id}
-                  className={`p-3 rounded-lg cursor-pointer transition-all flex items-center gap-3 ${selectedCategory === category.id ? 'bg-amber-100 border-l-4 border-l-amber-500' : 'hover:bg-gray-50'}`}
+                  className={`group p-3 mb-1 cursor-pointer transition-all flex items-center justify-between gap-3 border-l-4 ${
+                    selectedCategory === category.id 
+                      ? 'bg-blue-50 border-blue-600' // Light blue bg and distinct blue border
+                      : 'bg-white border-transparent hover:bg-gray-50'
+                  }`}
                   onClick={() => { setSelectedCategory(category.id); setSelectedTemplate(null); }}
                 >
-                  <span className="text-xl">{category.icon}</span>
-                  <div>
-                    <div className="font-medium text-gray-800">{category.name}</div>
-                    <div className="text-xs text-gray-500">{category.templates.length} templates</div>
+                  <div className="flex items-center justify-between w-full p-2 group cursor-pointer">
+                    <div className="flex items-center gap-3">
+                      {/* Icon Wrapper */}
+                      <div className="flex items-center justify-center w-10 h-10 bg-gray-50 rounded-xl text-gray-400">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                          <circle cx="9" cy="7" r="4" />
+                          <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                          <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                      </div>
+
+                      {/* Text Details using your Category data */}
+                      <div className="flex flex-col">
+                        <div className={`text-[15px] font-medium leading-tight ${selectedCategory === category.code ? 'text-blue-600' : 'text-gray-800'}`}>
+                          {category.name}
+                        </div>
+                        <div className="text-[14px] text-blue-500 font-medium">
+                          [{category.code}]
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* The Number Badge on the side */}
+                  <div className="px-2 py-1 bg-gray-200 text-gray-600 text-xs rounded-full min-w-[24px] text-center">
+                    {category.templates.length}
                   </div>
                 </div>
               ))}
@@ -121,54 +340,121 @@ function TicketIntake() {
 
           {/* Main Content - Templates */}
           <div>
+            {/* Filter Bar */}
+            <div className="bg-white rounded-xl p-4 mb-6 border border-gray-200 flex gap-4 items-center w-full">
+              {/* Search Bar - flex-1 makes it stretch */}
+              <div className="relative flex items-center flex-1">
+                <svg 
+                  className="absolute left-3 text-gray-400" 
+                  width="18" 
+                  height="18" 
+                  viewBox="0 0 24 24" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  strokeWidth="2"
+                  strokeLinecap="round" 
+                  strokeLinejoin="round"
+                >
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.35-4.35"></path>
+                </svg>
+
+                <input 
+                  type="search" 
+                  placeholder="Search templates..." 
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 bg-white border border-gray-200 rounded-md outline-none transition-all text-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500" 
+                />
+              </div>
+
+              {/* Create Ticket Button - Matching the blue in the image */}
+              <button
+                className="flex items-center gap-2 px-4 py-2 bg-[#2563eb] text-white rounded-md text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+                onClick={() => setAddTemplateModal(true)}
+              >
+                <span className="text-lg font-light">+</span> Create Template
+              </button>
+                  
+              {/* Segmented Filter Group */}
+              <div className="flex border border-gray-200 rounded-md overflow-hidden">
+                {['all', 'incident', 'service'].map((type) => (
+                  <button
+                    key={type}
+                    className={`px-5 py-2 text-sm font-medium transition-all first:border-l-0 border-l border-gray-200 ${
+                      filterType === type 
+                      ? 'bg-[#ef4444] text-white' // Red background for active as seen in image
+                      : 'bg-white text-gray-600 hover:bg-gray-50'
+                    }`}
+                    onClick={() => setFilterType(type)}
+                  >
+                    {type.charAt(0).toUpperCase() + type.slice(1)}
+                  </button>
+                ))}
+              </div>
+                  
+            </div>
+            <div className='p-5 bg-white rounded-lg border border-solid border-gray-200'>
+              <p>Select a <strong>Service Category</strong> from the left panel, then choose a template to create your ticket. Templates help standardize requests and make it easier for you to find them.</p>
+              <p><strong>Incident templates</strong> are marked by a paper with an error and edit icon whereas <strong>service request templates</strong> are marked by a paper on a hand icon.</p>
+            </div>
             {selectedCategory ? (
               <>
-                {/* Filter Bar */}
-                <div className="bg-white rounded-xl p-4 mb-6 border border-gray-200 flex gap-4 items-center">
-                  <span className="text-sm text-gray-600">Filter by type:</span>
-                  <div className="flex gap-2">
-                    {['all', 'service', 'incident'].map((type) => (
-                      <button
-                        key={type}
-                        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${filterType === type ? 'bg-amber-500 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}`}
-                        onClick={() => setFilterType(type)}
-                      >
-                        {type === 'all' ? '📋 All' : type === 'service' ? '🔧 Service' : '🚨 Incident'}
-                      </button>
-                    ))}
-                  </div>
-                  <button
-                    className="ml-auto px-4 py-2 bg-amber-500 text-white rounded-lg text-sm font-semibold hover:bg-amber-600"
-                    onClick={() => setShowTicketModal(true)}
-                  >
-                    + New Ticket
-                  </button>
-                </div>
-
                 {/* Templates Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-6 bg-gray-50">
                   {getFilteredTemplates().map((template) => (
                     <div
                       key={template.id}
-                      className={`bg-white rounded-xl p-5 border-2 cursor-pointer transition-all ${selectedTemplate?.id === template.id ? 'border-amber-500 shadow-lg' : 'border-gray-200 hover:border-amber-300 hover:shadow-md'}`}
-                      onClick={() => setSelectedTemplate(template)}
+                      className={`bg-white rounded-xl p-5 border-2 cursor-pointer transition-all flex flex-col justify-between ${
+                        selectedTemplate?.id === template.id 
+                          ? 'border-blue-500 shadow-lg' 
+                          : 'border-gray-100 hover:border-blue-300 hover:shadow-md'
+                      }`}
+                      onClick={() => {
+                        setSelectedTemplate(template);
+                        setAddTemplateModal(true);
+                      }}
                     >
-                      <div className="flex items-start justify-between mb-3">
-                        <span className={`px-2 py-1 rounded text-xs font-semibold ${template.type === 'service' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'}`}>
-                          {template.type === 'service' ? '🔧 Service' : '🚨 Incident'}
-                        </span>
-                        <span className="font-mono text-xs text-gray-500">{template.code}</span>
-                      </div>
-                      <h4 className="font-bold text-gray-800 mb-2">{template.name}</h4>
-                      <p className="text-sm text-gray-500 mb-3">{template.desc}</p>
-                      <div className="flex justify-between items-center pt-3 border-t border-gray-100">
-                        <div>
-                          <div className="text-xs text-gray-500">Base Rate</div>
-                          <div className="font-bold text-gray-800">₱{template.baseRate.toLocaleString()}</div>
+                      {/* Header Section: Icon and Title side-by-side */}
+                      <div className="flex gap-4 items-start mb-2">
+                        <div className={`p-2 rounded-lg shrink-0 ${
+                          template.type === 'service' ? 'bg-green-50 text-green-600' : 'bg-red-50 text-red-600'
+                        }`}>
+                          {template.type === 'service' ? (
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                              <polyline points="14 2 14 8 20 8"></polyline>
+                              <path d="M9 15h6"></path>
+                            </svg>
+                          ) : (
+                            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2">
+                              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                              <line x1="12" y1="9" x2="12" y2="13"></line>
+                              <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                          )}
                         </div>
-                        <div className="text-right">
-                          <div className="text-xs text-gray-500">SLA</div>
-                          <div className="font-semibold text-amber-600">{template.sla}</div>
+                        
+                        <div className="flex flex-col">
+                          <h4 className="font-bold text-gray-700 leading-tight mb-1">{template.name}</h4>
+                          <span className={`w-fit px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${
+                            template.type === 'service' ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'
+                          }`}>
+                            {template.type === 'service' ? 'Service' : 'Incident'}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Description */}
+                      <p className="text-sm text-gray-500 my-4 line-clamp-2">{template.desc}</p>
+
+                      {/* Footer Section */}
+                      <div className="flex justify-between items-center pt-3 border-t border-gray-50">
+                        <div className="font-extrabold text-red-500">
+                          {template.baseRate === 0 ? 'Free' : `₱${template.baseRate.toLocaleString()}`}
+                        </div>
+                        <div className="bg-green-50 px-3 py-1 rounded-full border border-green-100">
+                          <span className="text-[11px] font-medium text-green-600">SLA: {template.sla}</span>
                         </div>
                       </div>
                     </div>
@@ -189,103 +475,440 @@ function TicketIntake() {
       {/* Create Ticket Modal */}
       {showTicketModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowTicketModal(false)}>
-          <div className="bg-white rounded-xl w-full max-w-2xl m-4 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="p-6 border-b border-gray-200">
+          <div className="bg-white rounded-xl w-full max-w-5xl m-4 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="sticky top-0 z-10 p-6 border-b border-gray-200 flex items-end justify-between bg-white">
               <h2 className="text-xl font-bold text-gray-800">Create New Ticket</h2>
+              <span  
+                className='cursor-pointer hover:text-slate-500 text-4xl'
+                onClick={() => setShowTicketModal(false)}
+              >
+                &times;
+              </span>
             </div>
             <div className="p-6 space-y-6">
               {/* Ticket Type */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Ticket Type</label>
+                <h1 className='text-xl font-semibold mb-5'>🎫 Ticket Type</h1>
+                <label className="flex items-start text-sm font-semibold text-gray-700 mb-2 ">
+                  <p>Select Ticket Type</p>
+                  <p className='text-red-600'>*</p>
+                </label>
                 <div className="grid grid-cols-2 gap-3">
                   <div
-                    className={`p-4 border-2 rounded-lg cursor-pointer text-center transition-all ${ticketType === 'incident' ? 'border-amber-500 bg-amber-50' : 'border-gray-200 hover:border-amber-300'}`}
+                    className={`p-4 border-2 rounded-lg cursor-pointer text-center transition-all ${ticketType === 'incident' ? 'border-blue-800 bg-blue-50' : 'border-gray-500 hover:border-blue-800 hover:bg-blue-50 hover:border-5'}`}
                     onClick={() => setTicketType('incident')}
                   >
-                    <div className="text-2xl mb-2">🚨</div>
-                    <div className="font-semibold">Incident Report</div>
-                    <div className="text-xs text-gray-500">Unexpected issues</div>
+                    <div className="text-6xl mb-2 mt-5">🚨</div>
+                    <div className="font-semibold text-xl pt-3 pb-3">Incident Report</div>
+                    <div className="text-lg text-gray-500 mb-5">Unexpected issues or emergencies</div>
                   </div>
                   <div
-                    className={`p-4 border-2 rounded-lg cursor-pointer text-center transition-all ${ticketType === 'service' ? 'border-amber-500 bg-amber-50' : 'border-gray-200 hover:border-amber-300'}`}
+                    className={`p-4 border-2 rounded-lg cursor-pointer text-center transition-all ${ticketType === 'service' ? 'border-blue-800 bg-blue-50' : 'border-gray-500 hover:border-blue-800 hover:bg-blue-50 hover:border-5'}`}
                     onClick={() => setTicketType('service')}
                   >
-                    <div className="text-2xl mb-2">🔧</div>
-                    <div className="font-semibold">Service Request</div>
-                    <div className="text-xs text-gray-500">Planned services</div>
+                    <div className="text-6xl mb-2 mt-5">🔧</div>
+                    <div className="font-semibold text-xl pt-3 pb-3">Service Request</div>
+                    <div className="text-lg text-gray-500 mb-5">Planned service request</div>
                   </div>
                 </div>
               </div>
 
-              {/* Category & Service */}
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Category</label>
-                  <select 
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5"
-                    value={selectedCategory || ''}
-                    onChange={(e) => { setSelectedCategory(e.target.value); setSelectedTemplate(null); }}
-                  >
-                    <option value="">Select category</option>
-                    {serviceCategories.map(cat => (
-                      <option key={cat.id} value={cat.id}>{cat.name}</option>
-                    ))}
-                  </select>
+
+
+              {/* Location */}
+              <div>
+                <div className='flex items-start justify-start'>
+                  <h1 className='text-xl font-semibold pr-2'>📍 Location</h1>
+                  <p className='text-green-800 bg-green-100 w-24 px-2 py-1 text-xs text-center font-semibold rounded-md mt-1'>AUTO-FILLED</p>
                 </div>
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Service</label>
-                  <select 
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5"
-                    value={selectedTemplate?.id || ''}
-                    onChange={(e) => {
-                      const cat = serviceCategories.find(c => c.id === selectedCategory)
-                      const template = cat?.templates.find(t => t.id === e.target.value)
-                      setSelectedTemplate(template)
-                    }}
-                    disabled={!selectedCategory}
-                  >
-                    <option value="">Select service</option>
-                    {getFilteredTemplates().map(template => (
-                      <option key={template.id} value={template.id}>{template.name}</option>
-                    ))}
-                  </select>
+
+                {/* Location */}
+                <div className='mt-4'>
+                  <p className='font-semibold'>Room / Area</p>
+                  <input 
+                    type="text" 
+                    placeholder="Corporate Office - 5th Floor" 
+                    readOnly 
+                    className='bg-green-50 border-green-300 border-2 border-solid w-full rounded-[3px] h-[3rem] pl-5 placeholder:text-black' 
+                  />
+                  <p className='text-xs text-gray-400 pt-2'>Auto-populated from current location/branch</p>
+                </div>              
+              </div>
+
+              {/* Service Provider & Request Details */}
+              <div className='mt-2'>
+                <div className='flex items-start justify-start'>
+                  <h1 className='text-xl font-semibold pr-2'>🖥️ Service Provider & Request Details</h1>
                 </div>
+
+                {/* Service Provider */}
+                <div className='mt-4'>
+                  <div>
+                    <label className="flex items-start text-sm font-semibold text-gray-700 mb-2 ">
+                      <p>Service Provider</p>
+                      <p className='text-red-600'>*</p>
+                    </label>
+                    <select 
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-blue-500"
+                      value={selectedCategory || ''}
+                      onChange={(e) => { setSelectedCategory(e.target.value); setSelectedTemplate(null); }}
+                    >
+                      <option value="">Select category</option>
+                      {serviceCategories.map(cat => (
+                        <option key={cat.id} value={cat.id}>{cat.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {/* Service */}
+                <div className='mt-5'>
+                  <div>
+                    <label className="flex items-start text-sm font-semibold text-gray-700 mb-2 ">
+                      <p>Service</p>
+                      <p className='text-red-600'>*</p>
+                    </label>
+                    <select 
+                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-blue-500"
+                      value={selectedTemplate?.id || ''}
+                      onChange={(e) => {
+                        const cat = serviceCategories.find(c => c.id === selectedCategory)
+                        const template = cat?.templates.find(t => t.id === e.target.value)
+                        setSelectedTemplate(template)
+                      }}
+                      disabled={!selectedCategory}
+                    >
+                      <option value="">Select service</option>
+                      {getFilteredTemplates().map(template => (
+                        <option key={template.id} value={template.id}>{template.name}</option>
+                      ))}
+                    </select>
+                    <p className='text-xs text-gray-400 pt-2'>Available services will appear based on selected provider</p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Subject */}
+              <div className="">
+                <div className='mt-4'>
+                <label className="flex items-start text-sm font-semibold text-gray-700 mb-2 ">
+                      <p>Subject</p>
+                      <p className='text-red-600'>*</p>
+                    </label>
+                    <input 
+                      type="text" 
+                      placeholder="Enter ticket subject..." 
+                      className='border-gray-300 border border-solid w-full rounded-[3px] h-[3rem] pl-5 outline-blue-500' 
+                    />
+                  </div>
+                
               </div>
 
               {/* Description */}
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                <textarea className="w-full border border-gray-300 rounded-lg px-4 py-2.5 h-24" placeholder="Describe the request..."></textarea>
+                <label className="flex items-start text-sm font-semibold text-gray-700 mb-2 ">
+                  <p>Description</p>
+                  <p className='text-red-600'>*</p>
+                </label>
+                <textarea className="w-full border border-gray-300 rounded-lg px-4 py-2.5 h-32 outline-blue-500" placeholder="Provide detailed description of the request..."></textarea>
               </div>
 
               {/* Pricing Preview */}
               {selectedTemplate && (
-                <div className="bg-amber-50 rounded-lg p-4 border border-amber-200">
-                  <div className="text-sm font-semibold text-amber-800 mb-2">Pricing Preview</div>
+                <div className="rounded-lg p-4 border border-gray-200">
+                  <div className="text-lg font-semibold mb-2">💰 Service Pricing</div>
                   <div className="grid grid-cols-3 gap-4 text-center">
-                    <div>
-                      <div className="text-xs text-gray-500">Service Code</div>
-                      <div className="font-bold text-gray-800">{selectedTemplate.code}</div>
+                    <div className='border-1 bg-gray-100 p-4 rounded-md'>
+                      <div className="text-lg text-gray-500 font-semibold">Service Code</div>
+                      <div className="text-2xl font-bold text-red-600 pt-2">{selectedTemplate.code}</div>
                     </div>
-                    <div>
-                      <div className="text-xs text-gray-500">Base Rate</div>
-                      <div className="font-bold text-gray-800">₱{selectedTemplate.baseRate.toLocaleString()}</div>
+                    <div className='border-1 bg-gray-100 p-4 rounded-md'>
+                      <div className="text-lg text-gray-500 font-semibold">SLA</div>
+                      <div className="text-2xl font-bold text-green-600 pt-2">{selectedTemplate.sla}</div>
                     </div>
-                    <div>
-                      <div className="text-xs text-gray-500">SLA</div>
-                      <div className="font-bold text-amber-600">{selectedTemplate.sla}</div>
+                    <div className='border-1 bg-gray-100 p-4 rounded-md'>
+                      <div className="text-lg text-gray-500 font-semibold">Base Rate</div>
+                      <div className="text-2xl font-bold text-blue-600 pt-2">₱{selectedTemplate.baseRate.toLocaleString()}</div>
+                    </div>           
+                  </div>
+                  <div className='mt-5'>
+                    <p className='font-semibold mb-2'>Severity Adjustment</p>
+                    <select 
+                      className='w-full rounded-[3px] h-[3rem] pl-5 border border-solid border-gray-300 outline-blue-400'
+                      onChange={(e) => setSeverityMultiplier(parseFloat(e.target.value))}
+                      value={severityMultiplier}
+                    >
+                      <option value="1">Normal (No adjustment)</option>
+                      <option value="1.25">High (+25%)</option>
+                      <option value="1.5">Urgent (+50%)</option>
+                    </select>
+                  </div>
+                  <div className='mt-5 flex justify-between items-center p-6 bg-red-50 border border-red-200 border-l-[6px] border-l-red-500 rounded-md shadow-sm'>
+                    {/* Left Side: Label */}
+                    <p className="text-[13px] uppercase tracking-widest text-red-800 font-bold">
+                      Total Cost
+                    </p>
+
+                    {/* Right Side: Price */}
+                    <div className="text-right">
+                      <span className="text-4xl font-black text-red-600">
+                        ₱{((selectedTemplate?.baseRate || 0) * severityMultiplier).toLocaleString()}
+                      </span>
                     </div>
                   </div>
-                </div>
+                </div>            
               )}
+
+              {/* Attachments */}
+              <div>
+                <div className='flex items-start justify-start'>
+                  <h1 className='text-xl font-semibold pr-2'>📎 Attachments</h1>
+                </div>
+
+                {/* Attachment Body */}
+                <div className='mt-4'>
+                  {/* Hidden File Input */}
+                  <input 
+                    type="file" 
+                    ref={fileInputRef} 
+                    onChange={handleFileChange} 
+                    className="hidden" 
+                    accept=".png,.jpg,.pdf"
+                  />
+
+                  {/* Styled Drop Zone */}
+                  <div 
+                    onClick={handleBoxClick}
+                    className='border-2 border-dashed rounded-md border-gray-400 cursor-pointer hover:border-blue-500 p-8 hover:bg-blue-50 transition-colors group'
+                  >
+                    <div className='flex flex-col items-center justify-center text-center'>
+                      <p className='font-semibold text-black bg-gray-200 border border-gray-300 px-4 py-2 rounded-md group-hover:bg-blue-100 group-hover:border-blue-300 transition-all'>
+                        📁 {file ? file.name : "Click to upload or drag and drop"}
+                      </p>
+                      
+                      <p className='text-xs text-gray-400 mt-2'>
+                        {file ? `Size: ${(file.size / 1024 / 1024).toFixed(2)} MB` : "PNG, JPG, PDF up to 10MB"}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Preview/Remove Section (Optional) */}
+                  {file && (
+                    <div className="mt-2 flex items-center justify-between bg-gray-100 p-2 rounded text-sm">
+                      <span className="truncate flex-1">{file.name}</span>
+                      <button 
+                        onClick={() => setFile(null)} 
+                        className="text-red-500 hover:text-red-700 ml-4 font-bold"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  )}
+                </div>             
+              </div>
             </div>
             <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
               <button className="px-4 py-2 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50" onClick={() => setShowTicketModal(false)}>Cancel</button>
-              <button className="px-4 py-2 bg-amber-500 text-white rounded-lg font-semibold hover:bg-amber-600" onClick={handleCreateTicket} disabled={!selectedTemplate}>Create Ticket</button>
+              <button className="px-4 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 cursor-pointer" onClick={handleCreateTicket} disabled={!selectedTemplate}>✓ Create Ticket</button>
             </div>
           </div>
         </div>
       )}
+
+      
+
+      {addTemplateModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setAddTemplateModal(false)}>
+          <div className="bg-white rounded-xl w-full max-w-5xl m-4 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            
+            {/* Header */}
+            <div className="sticky top-0 z-10 p-6 border-b border-gray-200 flex items-end justify-between bg-white">
+              <h2 className="text-xl font-bold text-gray-800">Create New Ticket</h2>
+              <span className='cursor-pointer hover:text-slate-500 text-4xl' onClick={() => setAddTemplateModal(false)}>&times;</span>
+            </div>
+
+            <div className='p-6 grid grid-cols-1 md:grid-cols-2 gap-6'>
+              <div>
+                <label className="flex items-start text-xl font-semibold text-gray-700">
+                  <p>Title</p>
+                  <p className='text-red-600'>*</p>
+                </label>
+                <input 
+                  type="text" 
+                  readOnly
+                  value={selectedTemplate?.name || ''} 
+                  className='pl-3 border border-solid border-gray-200 bg-gray-50 text-gray-600 outline-none mt-4 w-full h-[3rem] rounded-sm' 
+                />
+              </div>
+
+              <div>
+                <label className="flex items-start text-xl font-semibold text-gray-700">
+                  <p>Status</p>
+                  <p className='text-red-600'>*</p>
+                </label>
+                <select className='pl-3 border border-solid border-gray-200 outline-gray-400 mt-4 w-full h-[3rem] rounded-sm bg-white'>
+                  <option value="active">Active</option>
+                  <option value="inactive">Inactive</option>
+                </select>
+              </div>
+            </div>
+
+            <div className='pl-6 pr-6 pb-6'>
+              <div>
+                <label className="flex items-start text-xl font-semibold text-gray-700">
+                  <p>Service Category</p>
+                </label>
+                <input 
+                  type="text"
+                  readOnly
+                  value={parentCategory ? `${parentCategory.name} [${parentCategory.code}]` : ''}
+                  className='pl-3 border border-solid border-gray-200 bg-gray-50 text-gray-600 mt-4 w-full h-[3rem] rounded-sm'
+                />
+              </div>
+            </div>
+
+            <div className='pl-6 pr-6 pb-6'>
+              <div>
+                <label className="flex items-start text-xl font-semibold text-gray-700">
+                  <p>Description</p>
+                </label>
+                <textarea  
+                  readOnly
+                  value={selectedTemplate?.desc || ''}
+                  rows="4" 
+                  className='w-full pl-3 pt-3 border border-solid border-gray-200 bg-gray-50 text-gray-600 outline-none rounded-sm mt-4'
+                />
+              </div>
+            </div>
+
+            <div className='pl-6 pr-6 pb-6'>
+              <div>
+                <label className="flex items-start text-xl font-semibold text-gray-700">
+                  <p>SLA (Days)</p>
+                </label>
+                <input 
+                  type="text" 
+                  readOnly
+                  value={selectedTemplate?.sla || ''}
+                  className='pl-3 border border-solid border-gray-200 bg-gray-50 text-gray-600 mt-4 w-full h-[3rem] rounded-sm' 
+                />
+              </div>
+            </div>
+
+
+            <div className='pl-6 pr-6 pb-6 grid grid-cols-1 md:grid-cols-2 gap-6'>
+              <div>
+                <label className="flex items-start text-xl font-semibold text-gray-700">
+                  <p>Priority</p>
+                  <p className='text-red-600'>*</p>
+                </label>
+                <select className='pl-3 border border-solid border-gray-200 outline-gray-400 mt-4 w-full h-[3rem] rounded-sm bg-white'>
+                  <option value="">Select Priority</option>
+                  <option value="p1-urgent">P1 - Urgent</option>
+                  <option value="p2-high">P2 - High</option>
+                  <option value="p3-medium">P3 - Medium</option>
+                  <option value="p4-low">P4 - Low</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="flex items-start text-xl font-semibold text-gray-700">
+                  <p>Task Type</p>
+                  <p className='text-red-600'>*</p>
+                </label>
+                <input 
+                  type="text" 
+                  readOnly
+                  value={selectedTemplate?.type || ''}
+                  className='pl-3 border border-solid border-gray-200 bg-gray-50 text-gray-600 mt-4 w-full h-[3rem] rounded-sm' 
+                />
+              </div>
+            </div>
+
+            <div className='pl-6 pr-6 pb-6'>
+              <p className='text-xl font-semibold text-gray-700'>Scheduled Start</p>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
+                <input type="date" className='pl-3 border border-solid border-gray-200 outline-gray-400 mt-4 w-full h-[3rem] rounded-sm bg-white'/>
+                <input type="date" className='pl-3 border border-solid border-gray-200 outline-gray-400 mt-4 w-full h-[3rem] rounded-sm bg-white'/>
+              </div>
+            </div>
+
+            <div className='pl-6 pr-6 pb-2'>
+              <p 
+                className="p-2 bg-gray-200 w-fit px-4 rounded-md cursor-pointer font-semibold"
+                onClick={() => setMoreFieldsModal(!moreFieldsModal)}
+              >
+                More fields
+              </p>
+            </div>
+
+            {moreFieldsModal && (
+              <div className="mx-6 mb-6 p-4 bg-gray-50 border border-gray-200 rounded-sm">
+                <div className='pt-3 pb-3'>
+                  <label className="block text-base font-bold text-gray-500 tracking-tight mb-2">Service Code</label>
+                  <input 
+                    type="text" 
+                    readOnly
+                    value={selectedTemplate?.code || ''}
+                    className="w-full h-[2.5rem] pl-3 bg-white border border-gray-200 rounded-sm text-gray-600 text-sm focus:outline-none"
+                  />
+                </div>
+                <div className='pt-3 pb-10'>
+                  <label className="block text-base font-bold text-gray-500 tracking-tight mb-2">Base Rate (₱)</label>
+                  <input 
+                    type="text" 
+                    readOnly
+                    value={selectedTemplate?.baseRate ? `₱${selectedTemplate.baseRate.toLocaleString()}` : '₱0.00'}
+                    className="w-full h-[2.5rem] pl-3 bg-white border border-gray-200 rounded-sm text-gray-600 text-sm focus:outline-none"
+                  />
+                </div>
+              </div>
+            )}
+
+            <div className='pl-6 pr-6 pb-6'>
+              <h1 className='text-xl font-semibold'>Attachments</h1>
+              <div className='mt-4'>
+                <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".png,.jpg,.pdf" />
+                <div 
+                  onClick={handleBoxClick}
+                  className='border-2 border-dashed rounded-md border-gray-400 cursor-pointer hover:border-blue-500 p-8 hover:bg-blue-50 transition-colors group text-center'
+                >
+                  <p className='inline-block font-semibold text-black bg-gray-200 border border-gray-300 px-4 py-2 rounded-md group-hover:bg-blue-100 transition-all'>
+                    📎 {file ? file.name : "Attach file"}
+                  </p>
+                  {file && (
+                    <div className="mt-4 text-sm text-gray-600">
+                      {(file.size / (1024 * 1024)).toFixed(2)} MB — <span className="text-red-500 font-bold" onClick={(e) => { e.stopPropagation(); setFile(null); }}>Remove</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
+              <button className="px-4 py-2 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50" onClick={() => setAddTemplateModal(false)}>Cancel</button>
+              <button className="px-4 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 cursor-pointer" onClick={handleCreateTicket} disabled={!selectedTemplate}>✓ Create Ticket</button>
+            </div>
+
+          </div>
+        </div>
+      )}
+
+      {addCategoryModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowTicketModal(false)}>
+          <div className="bg-white rounded-xl w-full max-w-2xl m-4 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <button
+              className='p-3 bg-slate-500 text-white'
+              onClick={() => setAddCategoryModal(false)}
+            >
+              Close
+            </button>
+          </div>
+        </div>
+      )}
+
+      
     </div>
   )
 }
