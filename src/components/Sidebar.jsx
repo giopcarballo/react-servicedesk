@@ -29,8 +29,8 @@ function Sidebar({ collapsed, onNavigate }) {
         <div 
           className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
             isActive('/dashboard') 
-              ? 'text-white border-l-amber-400 bg-white/[0.12]' 
-              : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-amber-400'
+              ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
+              : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'
           }`}
           onClick={() => handleNavigate('dashboard', '/dashboard')}
           title="Dashboard"
@@ -39,11 +39,13 @@ function Sidebar({ collapsed, onNavigate }) {
           {!collapsed && <span>Dashboard</span>}
         </div>
 
+        <div className={`h-px bg-white/[0.15] my-3 transition-all duration-300 ${collapsed ? 'mx-3' : 'mx-4'}`}></div>
+
         <div 
           className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
             isActive('/servicedesk') 
-              ? 'text-white border-l-amber-400 bg-white/[0.12]' 
-              : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-amber-400'
+              ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
+              : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'
           }`}
           onClick={() => handleNavigate('myview', '/servicedesk')}
           title="My View"
@@ -57,8 +59,8 @@ function Sidebar({ collapsed, onNavigate }) {
         <div 
           className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
             isActive('/requests') 
-              ? 'text-white border-l-amber-400 bg-white/[0.12]' 
-              : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-amber-400'
+              ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
+              : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'
           }`}
           onClick={() => handleNavigate('requests', '/requests')}
           title="Requests"
@@ -76,8 +78,8 @@ function Sidebar({ collapsed, onNavigate }) {
         <div 
           className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
             isActive('/ticket-intake') 
-              ? 'text-white border-l-amber-400 bg-white/[0.12]' 
-              : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-amber-400'
+              ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
+              : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'
           }`}
           onClick={() => handleNavigate('intake', '/ticket-intake')}
           title="Service Configuration"
@@ -86,11 +88,13 @@ function Sidebar({ collapsed, onNavigate }) {
           {!collapsed && <span>Service Configuration</span>}
         </div>
 
+        <div className={`h-px bg-white/[0.15] my-3 transition-all duration-300 ${collapsed ? 'mx-3' : 'mx-4'}`}></div>
+
         <div 
           className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
             isActive('/section-e') 
-              ? 'text-white border-l-amber-400 bg-white/[0.12]' 
-              : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-amber-400'
+              ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
+              : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'
           }`}
           onClick={() => handleNavigate('financial', '/section-e')}
           title="Financials"
@@ -104,8 +108,8 @@ function Sidebar({ collapsed, onNavigate }) {
         <div 
           className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
             isActive('/admin') 
-              ? 'text-white border-l-amber-400 bg-white/[0.12]' 
-              : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-amber-400'
+              ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
+              : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'
           }`}
           onClick={() => handleNavigate('admin', '/admin')}
           title="Admin"
