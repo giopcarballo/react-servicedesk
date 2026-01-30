@@ -54,8 +54,6 @@ function SectionC() {
       {/* Header */}
       <Header 
         collapsed={sidebarCollapsed}
-        subtitle="Section C: Service Levels & Controls"
-        showStats={false}
       />
 
       <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>

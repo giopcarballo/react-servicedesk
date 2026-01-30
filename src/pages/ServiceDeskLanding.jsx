@@ -203,12 +203,6 @@ function ServiceDeskLanding() {
       
       <Header 
         collapsed={sidebarCollapsed}
-        stats={[
-          { label: 'Active Requests', value: '0', icon: '📋' },
-          { label: 'Open Problems', value: '0', icon: '⚠️' },
-          { label: 'Pending Changes', value: '0', icon: '🔄' },
-          { label: 'Tasks Due Today', value: '0', icon: '✅' }
-        ]}
       />
 
       {/* Main Content */}

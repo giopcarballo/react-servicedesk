@@ -938,13 +938,6 @@ function Request() {
       {/* Header */}
       <Header 
         collapsed={sidebarCollapsed}
-        stats={[
-          { label: 'Total Requests', value: '167', icon: '📋' },
-          { label: 'Open Problems', value: '4', icon: '⚡' },
-          { label: 'Pending Changes', value: '94.2', icon: '🌀' },
-          { label: 'Received Today', value: '22', icon: '✅' }
-        ]}
-        user={{ name: 'John Doe', role: 'IT Technician', initials: 'JD', notifications: 5 }}
       />
 
       <div className={`transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>

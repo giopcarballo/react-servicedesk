@@ -53,13 +53,6 @@ function SectionD() {
       {/* Header */}
       <Header 
         collapsed={sidebarCollapsed}
-        subtitle="Section D: Communication & Guest Experience"
-        stats={[
-          { label: 'Messages Sent', value: '156', icon: '📧' },
-          { label: 'Avg. CSAT', value: '4.5/5', icon: '⭐' },
-          { label: 'NPS Score', value: '+72', icon: '📊' },
-          { label: 'Recovery Cases', value: '8', icon: '🔄' }
-        ]}
       />
 
       <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>

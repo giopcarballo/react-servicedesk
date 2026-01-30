@@ -1,20 +1,28 @@
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import logo from '../assets/GCG.png'
 
 const defaultStats = [
   { label: 'Active Requests', value: '0', icon: '📋' },
+  { label: 'Tasks Due Today', value: '0', icon: '✅' },
   { label: 'Open Problems', value: '0', icon: '⚠️' },
-  { label: 'Pending Changes', value: '0', icon: '🔄' },
-  { label: 'Tasks Due Today', value: '0', icon: '✅' }
+  { label: 'Received Today', value: '0', icon: '📥' }
 ]
 
 function Header({ 
   collapsed, 
   stats = defaultStats,
   showStats = true,
-  subtitle = 'IT Service Management Platform',
-  gradient = 'from-[#071330] via-[#102a63] to-[#1f63f3]',
-  user = { name: 'Admin User', role: 'System Administrator', initials: 'AD', notifications: 3 }
+  gradient = 'from-[#071330] via-[#102a63] to-[#1f63f3]'
 }) {
+  const navigate = useNavigate()
+  const [showUserMenu, setShowUserMenu] = useState(false)
+
+  const handleLogout = () => {
+    setShowUserMenu(false)
+    navigate('/login')
+  }
+
   return (
     <div className={`relative overflow-hidden bg-gradient-to-r ${gradient} text-white shadow-lg transition-all duration-300 ${collapsed ? '' : 'with-sidebar'}`}>
       <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.35),_transparent_55%)] pointer-events-none" aria-hidden="true"></div>
@@ -24,22 +32,37 @@ function Header({
             <img src={logo} alt="Global Comfort Group" className="h-16" />
             <div className="flex flex-col leading-tight">
               <p className="text-2xl font-semibold text-white">Global Comfort Group</p>
-              <p className="text-white/80 text-md italic">{subtitle}</p>
+              <p className="text-white/80 text-md italic">IT Service Management Platform</p>
             </div>
           </div>
-          <div className="flex items-center gap-3 bg-white/15 px-4 py-2 rounded-xl border border-white/30">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-white to-blue-100 text-[#0f3285] text-sm font-bold flex items-center justify-center border border-white/50 relative">
-              {user.initials}
-              <span className="absolute -top-1 -right-1 bg-emerald-400 text-[#0b204c] text-[9px] font-bold px-1 py-0.5 rounded-full border-2 border-white">{user.notifications}</span>
+          <div className="relative">
+            <div 
+              className="flex items-center gap-3 bg-white/15 px-4 py-2 rounded-xl border border-white/30 cursor-pointer hover:bg-white/20 transition-all"
+              onClick={() => setShowUserMenu(!showUserMenu)}
+            >
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-white to-blue-100 text-[#0f3285] text-sm font-bold flex items-center justify-center border border-white/50 relative">
+                AD
+                <span className="absolute -top-1 -right-1 bg-emerald-400 text-[#0b204c] text-[9px] font-bold px-1 py-0.5 rounded-full border-2 border-white">3</span>
+              </div>
+              <div>
+                <p className="text-sm font-semibold">Admin User</p>
+                <p className="text-xs text-white/80 flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  System Administrator
+                </p>
+              </div>
+              <span className={`text-white/70 text-sm transition-transform ${showUserMenu ? 'rotate-180' : ''}`}>▾</span>
             </div>
-            <div>
-              <p className="text-sm font-semibold">{user.name}</p>
-              <p className="text-xs text-white/80 flex items-center gap-1.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                {user.role}
-              </p>
-            </div>
-            <span className="text-white/70 text-sm">▾</span>
+            {showUserMenu && (
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden z-50">
+                <button
+                  className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"
+                  onClick={handleLogout}
+                >
+                  <span>🚪</span> Logout
+                </button>
+              </div>
+            )}
           </div>
         </div>
         {showStats && stats && stats.length > 0 && (

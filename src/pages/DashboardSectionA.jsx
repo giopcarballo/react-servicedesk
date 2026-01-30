@@ -189,8 +189,6 @@ function DashboardSectionA() {
           {/* Header */}
           <Header 
             collapsed={sidebarCollapsed}
-            subtitle="Business Intelligence Dashboard"
-            showStats={false}
           />
 
       <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>

@@ -826,13 +826,6 @@ function SectionE() {
     setAttachmentLabel(`${file.name} (${prettySize})`)
   }
 
-  const metrics = [
-    { label: 'Active Requests', icon: '📄', value: '0' },
-    { label: 'Open Problems', icon: '⚠️', value: '0' },
-    { label: 'Pending Changes', icon: '📦', value: '0' },
-    { label: 'Tasks Due Today', icon: '☑️', value: '0' },
-  ]
-
   return (
     <div className="min-h-screen bg-[#f5f6fb] text-gray-800">
       <Sidebar collapsed={sidebarCollapsed} />
@@ -841,8 +834,6 @@ function SectionE() {
       <div className="transition-all duration-300">
         <Header 
           collapsed={sidebarCollapsed}
-          subtitle="Section E: Financial & Closure"
-          stats={metrics}
         />
 
         <main className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>

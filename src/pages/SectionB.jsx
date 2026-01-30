@@ -73,13 +73,6 @@ function SectionB() {
       {/* Header */}
       <Header 
         collapsed={sidebarCollapsed}
-        subtitle="Section B: Assignment & Execution"
-        stats={[
-          { label: 'Unassigned', value: String(unassignedRequests.length), icon: '📋' },
-          { label: 'Available Techs', value: String(technicians.filter(t => t.status === 'Available').length), icon: '👥' },
-          { label: 'In Progress', value: '12', icon: '⚡' },
-          { label: 'Completed Today', value: '28', icon: '✅' }
-        ]}
       />
 
       <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
