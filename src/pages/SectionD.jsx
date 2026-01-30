@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import SidebarToggle from '../components/SidebarToggle'
+import Header from '../components/Header'
 
 const messageTemplates = [
   { id: 1, name: 'Service Update', preview: 'Your service request #{ticket_id} has been updated...' },
@@ -50,63 +51,16 @@ function SectionD() {
       <SidebarToggle collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
 
       {/* Header */}
-      <div className={`bg-gradient-to-br from-emerald-900 to-emerald-600 text-white shadow-lg transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
-        <div className="max-w-7xl mx-auto px-4 pt-4 pb-6 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center flex-wrap gap-4 mb-5">
-            <div className="flex-1">
-              <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-3 mb-2">
-                <span className="text-3xl">💬</span>
-                Section D: Communication & Guest Experience
-              </h1>
-              <div className="text-base opacity-90">Communications Hub & Guest Feedback Management</div>
-            </div>
-            <div className="flex items-center gap-3 bg-white/10 px-4 py-2 rounded-lg cursor-pointer transition-all hover:bg-white/15">
-              <div className="w-10 h-10 rounded-full bg-emerald-500 flex items-center justify-center font-semibold text-white border-2 border-white/30 relative">
-                AD
-                <span className="absolute -top-1 -right-1 bg-yellow-400 text-gray-800 text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-emerald-900 min-w-[18px] text-center animate-pulse">3</span>
-              </div>
-              <div className="flex flex-col leading-tight">
-                <div className="font-semibold text-sm">Admin User</div>
-                <div className="text-xs opacity-80 flex items-center gap-1.5">
-                  <span className="w-2 h-2 bg-emerald-300 rounded-full animate-pulse"></span>
-                  System Administrator
-                </div>
-              </div>
-              <span className="ml-2 opacity-70">▼</span>
-            </div>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-5">
-            <div className="bg-white/10 rounded-xl p-3.5 flex items-center gap-3">
-              <div className="text-xl">📧</div>
-              <div>
-                <div className="text-xs opacity-80 mb-1">Messages Sent</div>
-                <div className="text-2xl font-bold">156</div>
-              </div>
-            </div>
-            <div className="bg-white/10 rounded-xl p-3.5 flex items-center gap-3">
-              <div className="text-xl">⭐</div>
-              <div>
-                <div className="text-xs opacity-80 mb-1">Avg. CSAT</div>
-                <div className="text-2xl font-bold">4.5/5</div>
-              </div>
-            </div>
-            <div className="bg-white/10 rounded-xl p-3.5 flex items-center gap-3">
-              <div className="text-xl">📊</div>
-              <div>
-                <div className="text-xs opacity-80 mb-1">NPS Score</div>
-                <div className="text-2xl font-bold">+72</div>
-              </div>
-            </div>
-            <div className="bg-white/10 rounded-xl p-3.5 flex items-center gap-3">
-              <div className="text-xl">🔄</div>
-              <div>
-                <div className="text-xs opacity-80 mb-1">Recovery Cases</div>
-                <div className="text-2xl font-bold">8</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Header 
+        collapsed={sidebarCollapsed}
+        subtitle="Section D: Communication & Guest Experience"
+        stats={[
+          { label: 'Messages Sent', value: '156', icon: '📧' },
+          { label: 'Avg. CSAT', value: '4.5/5', icon: '⭐' },
+          { label: 'NPS Score', value: '+72', icon: '📊' },
+          { label: 'Recovery Cases', value: '8', icon: '🔄' }
+        ]}
+      />
 
       <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
         {/* Section Toggle */}

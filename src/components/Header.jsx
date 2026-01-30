@@ -1,59 +1,63 @@
-function Header({ collapsed }) {
+import logo from '../assets/GCG.png'
+
+const defaultStats = [
+  { label: 'Active Requests', value: '0', icon: '📋' },
+  { label: 'Open Problems', value: '0', icon: '⚠️' },
+  { label: 'Pending Changes', value: '0', icon: '🔄' },
+  { label: 'Tasks Due Today', value: '0', icon: '✅' }
+]
+
+function Header({ 
+  collapsed, 
+  stats = defaultStats,
+  showStats = true,
+  subtitle = 'IT Service Management Platform',
+  gradient = 'from-[#071330] via-[#102a63] to-[#1f63f3]',
+  user = { name: 'Admin User', role: 'System Administrator', initials: 'AD', notifications: 3 }
+}) {
   return (
-    <div className={`bg-gradient-to-r from-blue-600 to-blue-800 text-white transition-all duration-300 ${collapsed ? '' : 'with-sidebar'}`}>
-      <div className="max-w-[1600px] mx-auto px-6 py-4">
-        <div className="flex justify-between items-center mb-5">
-          <div>
-            <h1 className="text-2xl font-bold flex items-center gap-2">
-              <span>🖥️</span> ServiceDesk
-            </h1>
-            <div className="text-blue-200 text-sm mt-1">IT Service Management Platform</div>
+    <div className={`relative overflow-hidden bg-gradient-to-r ${gradient} text-white shadow-lg transition-all duration-300 ${collapsed ? '' : 'with-sidebar'}`}>
+      <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.35),_transparent_55%)] pointer-events-none" aria-hidden="true"></div>
+      <div className={`max-w-7xl mx-auto px-4 ${showStats ? 'pt-5 pb-6' : 'pt-4 pb-4'} sm:px-6 lg:px-8 relative`}>
+        <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <img src={logo} alt="Global Comfort Group" className="h-10" />
+            <p className="text-white/80 text-sm italic">{subtitle}</p>
           </div>
-          <div className="flex items-center gap-3 bg-white/10 rounded-lg px-4 py-2 cursor-pointer">
-            <div className="relative w-10 h-10 rounded-full bg-white/20 flex items-center justify-center font-bold text-sm">
-              AD
-              <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full text-[10px] font-bold flex items-center justify-center">3</span>
+          <div className="flex items-center gap-3 bg-white/15 px-4 py-2 rounded-xl border border-white/30">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-white to-blue-100 text-[#0f3285] text-sm font-bold flex items-center justify-center border border-white/50 relative">
+              {user.initials}
+              <span className="absolute -top-1 -right-1 bg-emerald-400 text-[#0b204c] text-[9px] font-bold px-1 py-0.5 rounded-full border-2 border-white">{user.notifications}</span>
             </div>
             <div>
-              <div className="font-semibold text-sm">Admin User</div>
-              <div className="text-xs text-blue-200 flex items-center gap-1.5">
-                <span className="w-2 h-2 bg-green-400 rounded-full"></span>
-                System Administrator
+              <p className="text-sm font-semibold">{user.name}</p>
+              <p className="text-xs text-white/80 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                {user.role}
+              </p>
+            </div>
+            <span className="text-white/70 text-sm">▾</span>
+          </div>
+        </div>
+        {showStats && stats && stats.length > 0 && (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-5">
+            {stats.map((card, index) => (
+              <div
+                key={card.label}
+                className="bg-gradient-to-b from-[#1c44d7] to-[#1e4a97] rounded-xl p-3 flex items-center gap-3 shadow-md border border-white/15"
+                style={{ animationDelay: `${0.1 * (index + 1)}s` }}
+              >
+                <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center text-xl border border-white/20">
+                  {card.icon}
+                </div>
+                <div>
+                  <p className="text-[10px] uppercase tracking-wide text-white/80 font-semibold">{card.label}</p>
+                  <p className="text-xl font-bold text-white">{card.value}</p>
+                </div>
               </div>
-            </div>
-            <span className="text-xs ml-2">▼</span>
+            ))}
           </div>
-        </div>
-        <div className="grid grid-cols-4 gap-4">
-          <div className="bg-white/10 rounded-lg p-4 flex items-center gap-3">
-            <div className="text-2xl">📋</div>
-            <div>
-              <div className="text-xs text-blue-200 mb-1">Active Requests</div>
-              <div className="text-2xl font-bold">0</div>
-            </div>
-          </div>
-          <div className="bg-white/10 rounded-lg p-4 flex items-center gap-3">
-            <div className="text-2xl">⚠️</div>
-            <div>
-              <div className="text-xs text-blue-200 mb-1">Open Problems</div>
-              <div className="text-2xl font-bold">0</div>
-            </div>
-          </div>
-          <div className="bg-white/10 rounded-lg p-4 flex items-center gap-3">
-            <div className="text-2xl">🔄</div>
-            <div>
-              <div className="text-xs text-blue-200 mb-1">Pending Changes</div>
-              <div className="text-2xl font-bold">0</div>
-            </div>
-          </div>
-          <div className="bg-white/10 rounded-lg p-4 flex items-center gap-3">
-            <div className="text-2xl">✅</div>
-            <div>
-              <div className="text-xs text-blue-200 mb-1">Tasks Due Today</div>
-              <div className="text-2xl font-bold">0</div>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
     </div>
   )

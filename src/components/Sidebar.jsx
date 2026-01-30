@@ -1,4 +1,5 @@
 import { useNavigate, useLocation } from 'react-router-dom'
+import logo from '../assets/GCG.png'
 
 function Sidebar({ collapsed, onNavigate }) {
   const navigate = useNavigate()
@@ -22,7 +23,7 @@ function Sidebar({ collapsed, onNavigate }) {
     >
       <nav>
         <div className="px-4 py-3 flex items-center justify-center mx-3 mb-2">
-          <img src="/logoa.png" alt="Logo" className="max-w-[170px] h-auto rounded-lg" />
+          <img src={logo} alt="Logo" className="max-w-[170px] h-auto rounded-lg" />
         </div>
         
         <div 

@@ -201,7 +201,15 @@ function ServiceDeskLanding() {
       <Sidebar collapsed={sidebarCollapsed} onNavigate={navigateToModule} />
       <SidebarToggle collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
       
-      <Header collapsed={sidebarCollapsed} />
+      <Header 
+        collapsed={sidebarCollapsed}
+        stats={[
+          { label: 'Active Requests', value: '0', icon: '📋' },
+          { label: 'Open Problems', value: '0', icon: '⚠️' },
+          { label: 'Pending Changes', value: '0', icon: '🔄' },
+          { label: 'Tasks Due Today', value: '0', icon: '✅' }
+        ]}
+      />
 
       {/* Main Content */}
       <div className={`p-6 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>

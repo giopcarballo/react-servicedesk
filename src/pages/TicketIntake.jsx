@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import SidebarToggle from '../components/SidebarToggle'
+import Header from '../components/Header'
 
 const serviceCategories = [
   {
@@ -88,33 +89,16 @@ function TicketIntake() {
       <SidebarToggle collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
 
       {/* Header */}
-      <div className={`bg-gradient-to-br from-amber-900 to-amber-600 text-white shadow-lg transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
-        <div className="max-w-7xl mx-auto px-4 pt-4 pb-6 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center flex-wrap gap-4 mb-5">
-            <div className="flex-1">
-              <h1 className="text-2xl sm:text-3xl font-bold flex items-center gap-3 mb-2">
-                <span className="text-3xl">📥</span>
-                Ticket Intake & Classification
-              </h1>
-              <div className="text-base opacity-90">Service Catalog & Template Management</div>
-            </div>
-            <div className="flex items-center gap-3 bg-white/10 px-4 py-2 rounded-lg cursor-pointer transition-all hover:bg-white/15">
-              <div className="w-10 h-10 rounded-full bg-amber-500 flex items-center justify-center font-semibold text-white border-2 border-white/30 relative">
-                AD
-                <span className="absolute -top-1 -right-1 bg-yellow-400 text-gray-800 text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-amber-900 min-w-[18px] text-center animate-pulse">3</span>
-              </div>
-              <div className="flex flex-col leading-tight">
-                <div className="font-semibold text-sm">Admin User</div>
-                <div className="text-xs opacity-80 flex items-center gap-1.5">
-                  <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span>
-                  System Administrator
-                </div>
-              </div>
-              <span className="ml-2 opacity-70">▼</span>
-            </div>
-          </div>
-        </div>
-      </div>
+      <Header 
+        collapsed={sidebarCollapsed}
+        subtitle="Ticket Intake & Classification"
+        stats={[
+          { label: 'New Tickets', value: '12', icon: '📥' },
+          { label: 'In Triage', value: '5', icon: '🔄' },
+          { label: 'Categorized', value: '42', icon: '📋' },
+          { label: 'Templates', value: '16', icon: '📄' }
+        ]}
+      />
 
       <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
         <div className="grid grid-cols-[280px_1fr] gap-6">

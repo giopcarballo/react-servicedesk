@@ -1,6 +1,7 @@
 import { useMemo, useRef, useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import SidebarToggle from '../components/SidebarToggle'
+import Header from '../components/Header'
 
 const branchCards = [
   { name: 'Alabang', tickets: 2, amount: 25000 },
@@ -843,10 +844,10 @@ function SectionE() {
   }
 
   const metrics = [
-    { label: 'Active Requests', icon: '📄', value: 0 },
-    { label: 'Open Problems', icon: '⚠️', value: 0 },
-    { label: 'Pending Changes', icon: '📦', value: 0 },
-    { label: 'Tasks Due Today', icon: '☑️', value: 0 },
+    { label: 'Active Requests', icon: '📄', value: '0' },
+    { label: 'Open Problems', icon: '⚠️', value: '0' },
+    { label: 'Pending Changes', icon: '📦', value: '0' },
+    { label: 'Tasks Due Today', icon: '☑️', value: '0' },
   ]
 
   return (
@@ -855,41 +856,11 @@ function SectionE() {
       <SidebarToggle collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed((prev) => !prev)} />
 
       <div className={`transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
-        <header className="bg-gradient-to-br from-[#1f3c8e] via-[#2f5fcc] to-[#418cf4] text-white shadow-xl">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-white/20 flex items-center justify-center">
-                  <span className="text-2xl">📘</span>
-                </div>
-                <div>
-                  <h1 className="text-2xl font-bold leading-tight">ServiceDesk</h1>
-                  <p className="text-sm text-white/80">IT Service Management Platform</p>
-                </div>
-              </div>
-              <div className="flex items-center gap-3 bg-white/10 border border-white/10 px-4 py-2 rounded-xl backdrop-blur">
-                <div className="w-11 h-11 rounded-full bg-indigo-500 flex items-center justify-center font-semibold border border-white/30">AD</div>
-                <div>
-                  <p className="text-sm font-semibold">Admin User</p>
-                  <p className="text-xs text-white/80">System Administrator</p>
-                </div>
-                <span className="text-xs bg-amber-300 text-slate-900 font-semibold px-2 py-1 rounded-full border border-white">0</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-6">
-              {metrics.map((metric) => (
-                <div key={metric.label} className="bg-white/15 border border-white/20 rounded-2xl px-4 py-3 flex items-center gap-3">
-                  <div className="text-2xl">{metric.icon}</div>
-                  <div>
-                    <p className="text-xs uppercase tracking-wide text-white/80">{metric.label}</p>
-                    <p className="text-2xl font-bold">{metric.value}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </header>
+        <Header 
+          collapsed={sidebarCollapsed}
+          subtitle="Section E: Financial & Closure"
+          stats={metrics}
+        />
 
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
           <div className="bg-white border border-gray-200 rounded-2xl p-2 flex flex-wrap gap-2 shadow-sm">

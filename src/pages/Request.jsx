@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import SidebarToggle from '../components/SidebarToggle'
+import Header from '../components/Header'
 
 // Sample data
 const initialRequestsData = [
@@ -934,65 +935,21 @@ function Request() {
       <Sidebar collapsed={sidebarCollapsed} onNavigate={navigateToModule} />
       <SidebarToggle collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
 
-      <div className={`flex min-h-screen bg-[#0b1020] transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
-        <div className="flex-1 flex flex-col bg-gray-50">
-          {/* Header */}
-          <div className="relative overflow-hidden bg-gradient-to-r from-[#071330] via-[#102a63] to-[#1f63f3] text-white shadow-[0_25px_65px_rgba(6,16,53,0.6)]">
-            <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.35),_transparent_55%)] pointer-events-none" aria-hidden="true"></div>
-            <div className="max-w-7xl mx-auto px-4 pt-8 pb-10 sm:px-6 lg:px-8 relative">
-              <div className="flex flex-wrap items-start justify-between gap-8">
-                <div>
-                  <p className="text-sm uppercase tracking-[0.5em] text-white/70 font-semibold">Global Comfort Group</p>
-                  <h1 className="mt-3 text-3xl sm:text-4xl font-semibold tracking-tight">
-                    <span className="relative inline-block pb-2">
-                      Global Comfort Group
-                      {/* <span className="absolute left-0 bottom-0 w-full h-1 bg-white/85 rounded-full"></span> */}
-                    </span>
-                  </h1>
-                  <p className="text-white/80 mt-2 text-lg italic">IT Service Management Platform</p>
-                </div>
-                <div className="flex items-center gap-4 bg-white/15 px-6 py-3 rounded-[22px] border border-white/30 shadow-2xl">
-                  <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-white to-blue-100 text-[#0f3285] font-bold flex items-center justify-center border border-white/50 relative">
-                    JD
-                    <span className="absolute -top-1 -right-1 bg-emerald-400 text-[#0b204c] text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white">5</span>
-                  </div>
-                  <div>
-                    <p className="text-base font-semibold">John Doe</p>
-                    <p className="text-sm text-white/80 flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                      IT Technician
-                    </p>
-                  </div>
-                  <span className="text-white/70 text-lg">▾</span>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-8">
-                {[
-                  { label: 'Total Requests', value: '167', icon: '📋' },
-                  { label: 'Open Problems', value: '4', icon: '⚡' },
-                  { label: 'Pending Changes', value: '94.2', icon: '🌀' },
-                  { label: 'Received Today', value: '22', icon: '✅' }
-                ].map((card, index) => (
-                  <div
-                    key={card.label}
-                    className="bg-gradient-to-b from-[#1c44d7] to-[#1e4a97] rounded-[18px] p-4 flex items-center gap-4 shadow-lg border border-white/15"
-                    style={{ animationDelay: `${0.1 * (index + 1)}s` }}
-                  >
-                    <div className="w-12 h-12 rounded-2xl bg-white/15 flex items-center justify-center text-2xl border border-white/20">
-                      {card.icon}
-                    </div>
-                    <div>
-                      <p className="text-xs uppercase tracking-wide text-white/80 font-semibold">{card.label}</p>
-                      <p className="text-2xl font-bold text-white">{card.value}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+      {/* Header */}
+      <Header 
+        collapsed={sidebarCollapsed}
+        stats={[
+          { label: 'Total Requests', value: '167', icon: '📋' },
+          { label: 'Open Problems', value: '4', icon: '⚡' },
+          { label: 'Pending Changes', value: '94.2', icon: '🌀' },
+          { label: 'Received Today', value: '22', icon: '✅' }
+        ]}
+        user={{ name: 'John Doe', role: 'IT Technician', initials: 'JD', notifications: 5 }}
+      />
 
-          {/* Main Content */}
-          <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 w-full">
+      <div className={`transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
+        {/* Main Content */}
+        <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 w-full">
             {/* Landing Page View */}
         {currentView === 'landing' && (
               <div id="landingView">
@@ -1271,7 +1228,6 @@ function Request() {
             )}
           </div>
         </div>
-      </div>
 
       {/* Request Detail Modal */}
       {showRequestModal && selectedRequest && (
