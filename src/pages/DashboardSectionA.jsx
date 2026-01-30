@@ -30,7 +30,7 @@ function DashboardSectionA() {
   const navigate = useNavigate()
   
   // Maintenance Mode - Set to false to restore normal functionality
-  const isUnderMaintenance = true
+  const isUnderMaintenance = false
   
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [currentView, setCurrentView] = useState('landing')
@@ -190,12 +190,7 @@ function DashboardSectionA() {
           <Header 
             collapsed={sidebarCollapsed}
             subtitle="Business Intelligence Dashboard"
-            stats={[
-              { label: 'Active Tickets', value: '47', icon: '📋' },
-              { label: 'P1 / Critical', value: '3', icon: '⚡' },
-              { label: 'SLA Compliance', value: '94.2%', icon: '✅' },
-              { label: 'Guest CSAT', value: '4.7/5.0', icon: '⭐' }
-            ]}
+            showStats={false}
           />
 
       <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>

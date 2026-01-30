@@ -855,14 +855,14 @@ function SectionE() {
       <Sidebar collapsed={sidebarCollapsed} />
       <SidebarToggle collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed((prev) => !prev)} />
 
-      <div className={`transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
+      <div className="transition-all duration-300">
         <Header 
           collapsed={sidebarCollapsed}
           subtitle="Section E: Financial & Closure"
           stats={metrics}
         />
 
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        <main className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
           <div className="bg-white border border-gray-200 rounded-2xl p-2 flex flex-wrap gap-2 shadow-sm">
             <button
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold border transition-all ${

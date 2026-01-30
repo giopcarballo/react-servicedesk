@@ -22,7 +22,10 @@ function Header({
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <img src={logo} alt="Global Comfort Group" className="h-10" />
-            <p className="text-white/80 text-sm italic">{subtitle}</p>
+            <div className="flex flex-col leading-tight">
+              <p className="text-lg font-semibold text-white">Global Comfort Group</p>
+              <p className="text-white/80 text-sm italic">{subtitle}</p>
+            </div>
           </div>
           <div className="flex items-center gap-3 bg-white/15 px-4 py-2 rounded-xl border border-white/30">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-white to-blue-100 text-[#0f3285] text-sm font-bold flex items-center justify-center border border-white/50 relative">
