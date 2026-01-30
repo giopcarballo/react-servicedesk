@@ -278,7 +278,7 @@ function TicketIntake() {
       <SidebarToggle collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed(!sidebarCollapsed)} />
 
       {/* Header */}
-      <Header />
+      <Header collapsed={sidebarCollapsed} />
 
       <div className={`max-w-max mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
         <div className="grid grid-cols-[320px_1fr] gap-6">
