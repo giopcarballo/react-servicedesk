@@ -54,9 +54,9 @@ function Header({
               <span className={`text-white/70 text-sm transition-transform ${showUserMenu ? 'rotate-180' : ''}`}>▾</span>
             </div>
             {showUserMenu && (
-              <div className="absolute right-0 top-full mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden z-50">
+              <div className="absolute right-0 top-full mt-2 w-48 rounded-xl shadow-lg overflow-hidden z-50">
                 <button
-                  className="w-full px-4 py-3 text-left text-sm font-medium text-gray-700 hover:bg-gray-50 flex items-center gap-2 transition-colors"
+                  className="w-full px-4 py-3 text-left text-sm font-semibold bg-white/15 backdrop-blur-sm border border-white/30 text-white hover:bg-white/20 flex items-center gap-2 transition-all rounded-xl"
                   onClick={handleLogout}
                 >
                   <span>🚪</span> Logout

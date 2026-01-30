@@ -27,7 +27,7 @@ function Sidebar({ collapsed, onNavigate }) {
         </div>
         
         <div 
-          className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
+          className={`flex items-center gap-3 px-5 py-2 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
             isActive('/dashboard') 
               ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
               : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'
@@ -39,10 +39,10 @@ function Sidebar({ collapsed, onNavigate }) {
           {!collapsed && <span>Dashboard</span>}
         </div>
 
-        <div className={`h-px bg-white/[0.15] my-3 transition-all duration-300 ${collapsed ? 'mx-3' : 'mx-4'}`}></div>
+        <div className={`h-px bg-white/[0.15] my-1.5 transition-all duration-300 ${collapsed ? 'mx-3' : 'mx-4'}`}></div>
 
         <div 
-          className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
+          className={`flex items-center gap-3 px-5 py-2 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
             isActive('/servicedesk') 
               ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
               : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'
@@ -54,10 +54,10 @@ function Sidebar({ collapsed, onNavigate }) {
           {!collapsed && <span>My View</span>}
         </div>
 
-        <div className={`h-px bg-white/[0.15] my-3 transition-all duration-300 ${collapsed ? 'mx-3' : 'mx-4'}`}></div>
+        <div className={`h-px bg-white/[0.15] my-1.5 transition-all duration-300 ${collapsed ? 'mx-3' : 'mx-4'}`}></div>
 
         <div 
-          className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
+          className={`flex items-center gap-3 px-5 py-2 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
             isActive('/requests') 
               ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
               : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'
@@ -73,10 +73,10 @@ function Sidebar({ collapsed, onNavigate }) {
           {!collapsed && <span className="ml-auto bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">5</span>}
         </div>
 
-        <div className={`h-px bg-white/[0.15] my-3 transition-all duration-300 ${collapsed ? 'mx-3' : 'mx-4'}`}></div>
+        <div className={`h-px bg-white/[0.15] my-1.5 transition-all duration-300 ${collapsed ? 'mx-3' : 'mx-4'}`}></div>
 
         <div 
-          className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
+          className={`flex items-center gap-3 px-5 py-2 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
             isActive('/ticket-intake') 
               ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
               : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'
@@ -88,10 +88,10 @@ function Sidebar({ collapsed, onNavigate }) {
           {!collapsed && <span>Service Configuration</span>}
         </div>
 
-        <div className={`h-px bg-white/[0.15] my-3 transition-all duration-300 ${collapsed ? 'mx-3' : 'mx-4'}`}></div>
+        <div className={`h-px bg-white/[0.15] my-1.5 transition-all duration-300 ${collapsed ? 'mx-3' : 'mx-4'}`}></div>
 
         <div 
-          className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
+          className={`flex items-center gap-3 px-5 py-2 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
             isActive('/section-e') 
               ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
               : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'
@@ -103,10 +103,10 @@ function Sidebar({ collapsed, onNavigate }) {
           {!collapsed && <span>Financials</span>}
         </div>
 
-        <div className={`h-px bg-white/[0.15] my-3 transition-all duration-300 ${collapsed ? 'mx-3' : 'mx-4'}`}></div>
+        <div className={`h-px bg-white/[0.15] my-1.5 transition-all duration-300 ${collapsed ? 'mx-3' : 'mx-4'}`}></div>
 
         <div 
-          className={`flex items-center gap-3 px-5 py-3.5 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
+          className={`flex items-center gap-3 px-5 py-2 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
             isActive('/admin') 
               ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
               : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'
