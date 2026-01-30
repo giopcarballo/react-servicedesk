@@ -3,6 +3,8 @@ import Sidebar from '../components/Sidebar'
 import SidebarToggle from '../components/SidebarToggle'
 import Header from '../components/Header'
 
+const generateJORCode = () => `JOR-2025-${Math.floor(100000 + Math.random() * 900000)}`
+
 const branchCards = [
   { name: 'Alabang', tickets: 2, amount: 25000 },
   { name: 'Bagong Barrio', tickets: 2, amount: 7000 },
@@ -16,7 +18,7 @@ const branchCards = [
 
 const servicesData = [
   {
-    code: 'ENG01',
+    code: generateJORCode(),
     name: 'Major HVAC Repair',
     department: 'Engineering',
     branch: 'EDSA Cubao',
@@ -25,7 +27,7 @@ const servicesData = [
     description: 'Full chiller and AHU recovery with refrigerant recharge and leak isolation for guest areas.',
   },
   {
-    code: 'ENG02',
+    code: generateJORCode(),
     name: 'Electrical System Upgrade',
     department: 'Engineering',
     branch: 'Pasay Rotonda',
@@ -34,7 +36,7 @@ const servicesData = [
     description: 'Panel rebalancing, breaker replacements, and load certification with compliance report.',
   },
   {
-    code: 'ENG03',
+    code: generateJORCode(),
     name: 'Plumbing Overhaul',
     department: 'Engineering',
     branch: 'Sta. Mesa',
@@ -43,7 +45,7 @@ const servicesData = [
     description: 'Stack cleaning, riser pressure test, and valve kit swap for guest and service lines.',
   },
   {
-    code: 'HK01',
+    code: generateJORCode(),
     name: 'Deep Cleaning Service',
     department: 'Housekeeping',
     branch: 'EDSA Cubao',
@@ -52,7 +54,7 @@ const servicesData = [
     description: 'Detail clean with upholstery extraction and UV sanitation for premium floors.',
   },
   {
-    code: 'HK02',
+    code: generateJORCode(),
     name: 'Carpet & Upholstery Cleaning',
     department: 'Housekeeping',
     branch: 'Novaliches',
@@ -61,7 +63,7 @@ const servicesData = [
     description: 'Hot water extraction, stain lift, and deodorizing for lobby and suites.',
   },
   {
-    code: 'HK03',
+    code: generateJORCode(),
     name: 'Linen Replacement',
     department: 'Housekeeping',
     branch: 'North EDSA',
@@ -70,7 +72,7 @@ const servicesData = [
     description: 'Par level restoration with shrink-wrapped fresh sets and disposal handling.',
   },
   {
-    code: 'FO01',
+    code: generateJORCode(),
     name: 'Guest Complaint Resolution',
     department: 'Front Office',
     branch: 'Makati Avenue',
@@ -79,7 +81,7 @@ const servicesData = [
     description: 'Case handling with recovery voucher issuance and follow-through callbacks.',
   },
   {
-    code: 'FO02',
+    code: generateJORCode(),
     name: 'VIP Guest Setup',
     department: 'Front Office',
     branch: 'Alabang',
@@ -88,7 +90,7 @@ const servicesData = [
     description: 'VIP arrival prep, amenity placement, and priority concierge routing.',
   },
   {
-    code: 'FO03',
+    code: generateJORCode(),
     name: 'Room Transfer Assistance',
     department: 'Front Office',
     branch: 'Bagong Barrio',
@@ -97,7 +99,7 @@ const servicesData = [
     description: 'Coordinated move with luggage handling and room readiness verification.',
   },
   {
-    code: 'FNB01',
+    code: generateJORCode(),
     name: 'Kitchen Equipment Repair',
     department: 'F&B',
     branch: 'EDSA Cubao',
@@ -106,7 +108,7 @@ const servicesData = [
     description: 'Line equipment triage, parts replacement, and sanitation clearance.',
   },
   {
-    code: 'FNB02',
+    code: generateJORCode(),
     name: 'Banquet Setup Service',
     department: 'F&B',
     branch: 'Pasay Rotonda',
@@ -115,7 +117,7 @@ const servicesData = [
     description: 'Full banquet staging with AV coordination and menu service sequencing.',
   },
   {
-    code: 'FNB03',
+    code: generateJORCode(),
     name: 'In-Room Dining Setup',
     department: 'F&B',
     branch: 'Sta. Mesa',
@@ -124,7 +126,7 @@ const servicesData = [
     description: 'Tray line prep, pantry stocking, and butler-style delivery pathing.',
   },
   {
-    code: 'IT01',
+    code: generateJORCode(),
     name: 'Network Infrastructure Setup',
     department: 'IT',
     branch: 'North EDSA',
@@ -133,7 +135,7 @@ const servicesData = [
     description: 'Core switch staging, VLAN segmentation, and Wi-Fi heatmap optimization.',
   },
   {
-    code: 'IT02',
+    code: generateJORCode(),
     name: 'POS System Maintenance',
     department: 'IT',
     branch: 'Makati Avenue',
@@ -142,7 +144,7 @@ const servicesData = [
     description: 'POS terminal refresh, patching, and payment reconciliation tests.',
   },
   {
-    code: 'IT03',
+    code: generateJORCode(),
     name: 'CCTV System Upgrade',
     department: 'IT',
     branch: 'Alabang',
@@ -151,7 +153,7 @@ const servicesData = [
     description: 'Camera repositioning, NVR firmware uplift, and retention validation.',
   },
   {
-    code: 'SEC01',
+    code: generateJORCode(),
     name: 'Access Control System Install',
     department: 'Security',
     branch: 'Fairview',
@@ -160,7 +162,7 @@ const servicesData = [
     description: 'Badge provisioning, controller deployment, and door schedule tuning.',
   },
   {
-    code: 'SEC02',
+    code: generateJORCode(),
     name: 'Emergency Response Training',
     department: 'Security',
     branch: 'Bagong Barrio',
@@ -169,7 +171,7 @@ const servicesData = [
     description: 'Tabletop drills, evacuation walkthroughs, and incident comms rehearsal.',
   },
   {
-    code: 'SEC03',
+    code: generateJORCode(),
     name: 'Fire Safety Inspection',
     department: 'Security',
     branch: 'EDSA Cubao',
@@ -179,10 +181,13 @@ const servicesData = [
   },
 ]
 
+const createCollectionRecord = (record) => {
+  const mergedCode = generateJORCode()
+  return { ...record, id: mergedCode, ticket: mergedCode }
+}
+
 const collectionRecords = [
-  {
-    id: 'COL-001',
-    ticket: '#134842',
+  createCollectionRecord({
     branch: 'EDSA Cubao',
     department: 'Engineering',
     service: 'Major HVAC Repair',
@@ -191,10 +196,8 @@ const collectionRecords = [
     balance: 0,
     status: 'Collected',
     date: '2025-01-15',
-  },
-  {
-    id: 'COL-002',
-    ticket: '#134856',
+  }),
+  createCollectionRecord({
     branch: 'Pasay Rotonda',
     department: 'Engineering',
     service: 'Electrical System Upgrade',
@@ -203,10 +206,8 @@ const collectionRecords = [
     balance: 25000,
     status: 'Pending',
     date: '2025-01-18',
-  },
-  {
-    id: 'COL-003',
-    ticket: '#134821',
+  }),
+  createCollectionRecord({
     branch: 'EDSA Cubao',
     department: 'Housekeeping',
     service: 'Deep Cleaning Service',
@@ -215,10 +216,8 @@ const collectionRecords = [
     balance: 0,
     status: 'Collected',
     date: '2025-01-12',
-  },
-  {
-    id: 'COL-004',
-    ticket: '#134878',
+  }),
+  createCollectionRecord({
     branch: 'Fairview',
     department: 'Housekeeping',
     service: 'Carpet & Upholstery Cleaning',
@@ -227,10 +226,8 @@ const collectionRecords = [
     balance: 3000,
     status: 'Partial',
     date: '2025-01-20',
-  },
-  {
-    id: 'COL-005',
-    ticket: '#134798',
+  }),
+  createCollectionRecord({
     branch: 'Makati Avenue',
     department: 'Front Office',
     service: 'Guest Complaint Resolution',
@@ -239,10 +236,8 @@ const collectionRecords = [
     balance: 0,
     status: 'Collected',
     date: '2025-01-10',
-  },
-  {
-    id: 'COL-006',
-    ticket: '#134756',
+  }),
+  createCollectionRecord({
     branch: 'Alabang',
     department: 'Front Office',
     service: 'VIP Guest Setup',
@@ -251,10 +246,8 @@ const collectionRecords = [
     balance: 10000,
     status: 'Overdue',
     date: '2025-01-05',
-  },
-  {
-    id: 'COL-007',
-    ticket: '#134834',
+  }),
+  createCollectionRecord({
     branch: 'EDSA Cubao',
     department: 'F&B',
     service: 'Kitchen Equipment Repair',
@@ -263,10 +256,8 @@ const collectionRecords = [
     balance: 0,
     status: 'Collected',
     date: '2025-01-14',
-  },
-  {
-    id: 'COL-008',
-    ticket: '#134892',
+  }),
+  createCollectionRecord({
     branch: 'Pasay Rotonda',
     department: 'F&B',
     service: 'Banquet Setup Service',
@@ -275,10 +266,8 @@ const collectionRecords = [
     balance: 20000,
     status: 'Pending',
     date: '2025-01-22',
-  },
-  {
-    id: 'COL-009',
-    ticket: '#134845',
+  }),
+  createCollectionRecord({
     branch: 'North EDSA',
     department: 'IT',
     service: 'Network Infrastructure Setup',
@@ -287,10 +276,8 @@ const collectionRecords = [
     balance: 0,
     status: 'Collected',
     date: '2025-01-16',
-  },
-  {
-    id: 'COL-010',
-    ticket: '#134867',
+  }),
+  createCollectionRecord({
     branch: 'Makati Avenue',
     department: 'IT',
     service: 'POS System Maintenance',
@@ -299,10 +286,8 @@ const collectionRecords = [
     balance: 4000,
     status: 'Partial',
     date: '2025-01-19',
-  },
-  {
-    id: 'COL-011',
-    ticket: '#134812',
+  }),
+  createCollectionRecord({
     branch: 'Fairview',
     department: 'Security',
     service: 'Access Control System Install',
@@ -311,10 +296,8 @@ const collectionRecords = [
     balance: 0,
     status: 'Collected',
     date: '2025-01-11',
-  },
-  {
-    id: 'COL-012',
-    ticket: '#134889',
+  }),
+  createCollectionRecord({
     branch: 'Bagong Barrio',
     department: 'Security',
     service: 'Emergency Response Training',
@@ -323,7 +306,7 @@ const collectionRecords = [
     balance: 5500,
     status: 'Pending',
     date: '2025-01-21',
-  },
+  }),
 ]
 
 const departmentOptions = ['All Departments', ...new Set(servicesData.map((s) => s.department))]
@@ -1265,7 +1248,6 @@ function SectionE() {
                   <table className="min-w-[1024px] w-full text-sm">
                     <thead className="bg-gray-50 text-gray-600 uppercase text-[11px] tracking-[0.2em]">
                       <tr>
-                        <th className="text-left px-4 py-3">Collection ID</th>
                         <th className="text-left px-4 py-3">Ticket #</th>
                         <th className="text-left px-4 py-3">Branch</th>
                         <th className="text-left px-4 py-3">Department</th>
@@ -1282,9 +1264,8 @@ function SectionE() {
                       {filteredCollections.map((record) => (
                         <tr key={record.id} className="border-t border-gray-100 hover:bg-gray-50">
                           <td className="px-4 py-3">
-                            <span className="px-3 py-1 rounded-md bg-emerald-50 text-emerald-700 font-semibold text-xs">{record.id}</span>
+                            <span className="px-3 py-1 rounded-md bg-emerald-50 text-emerald-700 font-semibold text-xs">{record.ticket}</span>
                           </td>
-                          <td className="px-4 py-3 font-semibold text-gray-900">{record.ticket}</td>
                           <td className="px-4 py-3 text-sm text-gray-700">
                             <span className="px-3 py-1 rounded-md bg-slate-100 text-slate-800 text-xs font-semibold">{record.branch}</span>
                           </td>
@@ -1450,7 +1431,7 @@ function SectionE() {
 
               <div className="p-6 space-y-5 bg-gray-50/80 overflow-y-auto flex-1">
                 <div className="flex flex-wrap items-center gap-3">
-                  <div className="px-3 py-1 rounded-md bg-slate-100 text-slate-800 text-xs font-semibold">Ticket: {selectedCollection.ticket}</div>
+                  <div className="px-3 py-1 rounded-md bg-slate-100 text-slate-800 text-xs font-semibold">Ticket #: {selectedCollection.ticket}</div>
                   <div className="px-3 py-1 rounded-md bg-white border border-gray-200 text-xs font-semibold text-gray-700">Service: {selectedCollection.service}</div>
                   <span
                     className={`px-3 py-1 rounded-full text-xs font-semibold ${

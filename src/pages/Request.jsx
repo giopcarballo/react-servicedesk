@@ -170,7 +170,7 @@ function Request() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [requests, setRequests] = useState(initialRequestsData)
   const [currentView, setCurrentView] = useState('requests')
-  const [filter, setFilter] = useState('assigned')
+  const [filter, setFilter] = useState('unassigned')
   const [showRequestModal, setShowRequestModal] = useState(false)
   const [showAssignModal, setShowAssignModal] = useState(false)
   const [showDeleteModal, setShowDeleteModal] = useState(false)
@@ -1084,9 +1084,9 @@ function Request() {
               </button>
               <div className="flex gap-2 bg-gray-100 rounded-2xl p-1 border border-gray-200">
                 {[
+                  { id: 'unassigned', label: 'Unassigned', icon: '🔓' },
                   { id: 'assigned', label: 'Assigned', icon: '👤' },
-                  { id: 'all', label: 'All', icon: '📁' },
-                  { id: 'unassigned', label: 'Unassigned', icon: '🔓' }
+                  { id: 'all', label: 'All', icon: '📁' }
                 ].map((tab) => (
                   <button
                     key={tab.id}
@@ -1109,9 +1109,6 @@ function Request() {
                 <table className="w-full text-[13px]">
                   <thead className="bg-[#f4f6fb] border-b border-gray-200 text-gray-600 uppercase text-[12px] tracking-wide">
                     <tr>
-                      <th className="text-left p-4" width="40">
-                        <input type="checkbox" className="w-4 h-4 accent-[#1f5cf4] cursor-pointer" />
-                      </th>
                       <th className="text-left p-4" width="120">ID</th>
                       <th className="text-left p-4">Subject</th>
                       <th className="text-left p-4">Requester</th>
@@ -1133,9 +1130,6 @@ function Request() {
                         }`}
                         onClick={() => openRequestModal(req.id)}
                       >
-                        <td className="px-4 py-3">
-                          <input type="checkbox" className="w-4 h-4 accent-[#1f5cf4]" onClick={(e) => e.stopPropagation()} />
-                        </td>
                         <td className="px-4 py-3 font-semibold text-[#1a3bb5] whitespace-nowrap">
                           <div className="flex items-center gap-2">
                             {/* <span className="text-lg"></span> */}
