@@ -56,7 +56,7 @@ function SectionC() {
         collapsed={sidebarCollapsed}
       />
 
-      <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
+      <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? 'sidebar-collapsed-margin' : 'with-sidebar'}`}>
         {/* Tab Navigation */}
         <div className="flex gap-2 mb-6 bg-white p-2 rounded-lg shadow-sm border border-gray-200">
           <button

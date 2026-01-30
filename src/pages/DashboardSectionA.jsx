@@ -125,7 +125,7 @@ function DashboardSectionA() {
 
       {isUnderMaintenance ? (
         // Maintenance Mode View
-        <div className={`transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
+        <div className={`transition-all duration-300 ${sidebarCollapsed ? 'sidebar-collapsed-margin' : 'with-sidebar'}`}>
           <div className="flex items-center justify-center min-h-screen p-6">
             <div className="text-center max-w-3xl mx-auto">
               <div className="mb-8">
@@ -191,7 +191,7 @@ function DashboardSectionA() {
             collapsed={sidebarCollapsed}
           />
 
-      <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
+      <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? 'sidebar-collapsed-margin' : 'with-sidebar'}`}>
         {/* Landing Page View */}
         {currentView === 'landing' && (
           <div>

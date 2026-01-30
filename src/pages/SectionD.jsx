@@ -55,7 +55,7 @@ function SectionD() {
         collapsed={sidebarCollapsed}
       />
 
-      <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
+      <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? 'sidebar-collapsed-margin' : 'with-sidebar'}`}>
         {/* Section Toggle */}
         <div className="flex gap-4 mb-6">
           <button

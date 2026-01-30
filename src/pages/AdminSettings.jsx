@@ -252,7 +252,7 @@ function AdminSettings() {
         collapsed={sidebarCollapsed}
       />
 
-      <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
+      <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? 'sidebar-collapsed-margin' : 'with-sidebar'}`}>
         {/* Module Cards */}
         <div className="grid grid-cols-4 gap-4 mb-8">
           {adminModules.map((module) => (

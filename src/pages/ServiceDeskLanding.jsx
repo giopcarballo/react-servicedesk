@@ -206,7 +206,7 @@ function ServiceDeskLanding() {
       />
 
       {/* Main Content */}
-      <div className={`p-6 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
+      <div className={`p-6 transition-all duration-300 ${sidebarCollapsed ? 'sidebar-collapsed-margin' : 'with-sidebar'}`}>
         {/* View Navigation */}
         <div className="flex gap-2 mb-6 bg-white p-2 rounded-lg shadow-sm">
           <button 

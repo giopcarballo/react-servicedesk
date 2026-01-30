@@ -18,8 +18,9 @@ body {
   transition: margin-left 0.3s ease;
 }
 
-.with-sidebar.sidebar-collapsed {
-  margin-left: 0;
+.sidebar-collapsed-margin {
+  margin-left: 60px;
+  transition: margin-left 0.3s ease;
 }
 
 .scheduler-view, .backup-approver-view, .resource-management-view {

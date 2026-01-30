@@ -75,7 +75,7 @@ function SectionB() {
         collapsed={sidebarCollapsed}
       />
 
-      <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
+      <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? 'sidebar-collapsed-margin' : 'with-sidebar'}`}>
         {/* Auto-Assignment Engine */}
         <div className="bg-gradient-to-br from-violet-500 to-violet-600 rounded-xl p-6 mb-6 text-white">
           <div className="flex justify-between items-center">

@@ -940,7 +940,7 @@ function Request() {
         collapsed={sidebarCollapsed}
       />
 
-      <div className={`transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>
+      <div className={`transition-all duration-300 ${sidebarCollapsed ? 'sidebar-collapsed-margin' : 'with-sidebar'}`}>
         {/* Main Content */}
         <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 w-full">
             {/* Landing Page View */}
