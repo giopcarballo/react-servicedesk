@@ -30,7 +30,7 @@ function DashboardSectionA() {
   const navigate = useNavigate()
   
   // Maintenance Mode - Set to false to restore normal functionality
-  const isUnderMaintenance = false
+  const isUnderMaintenance = true
   
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const [currentView, setCurrentView] = useState('landing')

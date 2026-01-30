@@ -92,12 +92,7 @@ function TicketIntake() {
       <Header 
         collapsed={sidebarCollapsed}
         subtitle="Ticket Intake & Classification"
-        stats={[
-          { label: 'New Tickets', value: '12', icon: '📥' },
-          { label: 'In Triage', value: '5', icon: '🔄' },
-          { label: 'Categorized', value: '42', icon: '📋' },
-          { label: 'Templates', value: '16', icon: '📄' }
-        ]}
+        showStats={false}
       />
 
       <div className={`max-w-7xl mx-auto py-8 px-4 sm:px-6 lg:px-8 transition-all duration-300 ${sidebarCollapsed ? '' : 'with-sidebar'}`}>

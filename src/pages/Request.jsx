@@ -1059,16 +1059,16 @@ function Request() {
               <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent opacity-60" aria-hidden="true"></div>
               <div className="px-6 md:px-8 py-7 flex flex-wrap items-center justify-between gap-6 text-white relative">
                 <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 rounded-[22px] bg-white/15 flex items-center justify-center text-3xl border border-white/20">📋</div>
+                  <div className="w-14 h-14 rounded-[22px] bg-white/15 flex items-center justify-center text-3xl border border-white/20">📋</div>
                   <div>
-                    <h2 className="text-3xl font-semibold mt-1">Job Order Requests</h2>
+                    <h2 className="text-2xl font-semibold mt-1">Job Order Requests</h2>
                   </div>
                 </div>
                 <div className="flex flex-wrap gap-3">
                   {summaryStats.map((stat) => (
-                    <div key={stat.label} className="bg-[#5e667c] text-white px-6 py-3 rounded-2xl border border-white/10 shadow-md min-w-[120px] text-center">
-                      <p className="text-2xl font-bold leading-none">{stat.value}</p>
-                      <p className="text-xs uppercase tracking-wide text-white/90 mt-1">{stat.label}</p>
+                    <div key={stat.label} className="bg-[#5e667c] text-white px-4 py-2.5 rounded-xl border border-white/10 shadow-md min-w-[100px] text-center">
+                      <p className="text-lg font-bold leading-none">{stat.value}</p>
+                      <p className="text-[11px] uppercase tracking-wide text-white/90 mt-1">{stat.label}</p>
                     </div>
                   ))}
                 </div>
