@@ -168,7 +168,7 @@ function ServiceDeskLanding() {
   const generateResourceTimeline = () => {
     return resourceTechnicians.map((techName, idx) => (
       <tr key={idx}>
-        <td className="sticky left-0 bg-white z-[5] p-2 border-r-2 border-gray-300 border border-gray-200">
+        <td className="sticky left-0 bg-white z-[5] p-2 border-r-2 border-gray-200">
           <div className="flex items-center gap-2">
             <div className="w-9 h-9 rounded-full bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600 flex-shrink-0">
               {techName.substring(0, 2).toUpperCase()}

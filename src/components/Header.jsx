@@ -43,7 +43,7 @@ function Header({
           </div>
         </div>
         {showStats && stats && stats.length > 0 && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-7">
             {stats.map((card, index) => (
               <div
                 key={card.label}
