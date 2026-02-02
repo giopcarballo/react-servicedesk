@@ -4,6 +4,27 @@ import Sidebar from '../components/Sidebar'
 import SidebarToggle from '../components/SidebarToggle'
 import Header from '../components/Header'
 
+const departments = [
+  { id: 'accounting', name: 'Accounting Department', code: 'AD' },
+  { id: 'audit', name: 'Audit', code: 'CAD' },
+  { id: 'business-dev', name: 'Business Development', code: 'BD' },
+  { id: 'business-intel', name: 'Business Intelligence Group', code: 'BIG' },
+  { id: 'caremasters', name: 'CareMasters Inc', code: 'CMI' },
+  { id: 'procurement', name: 'Corporate Procurement Department', code: 'CPD' },
+  { id: 'credit', name: 'Credit and Collection', code: 'C&C' },
+  { id: 'engineering', name: 'Engineering', code: 'CED' },
+  { id: 'executive', name: 'Executive', code: 'EXEC' },
+  { id: 'finance', name: 'Finance', code: 'FIN' },
+  { id: 'fp-analysis', name: 'Financial Planning & Analysis', code: 'FP&A' },
+  { id: 'food-bev', name: 'Food and Beverages', code: 'F&B' },
+  { id: 'hr', name: 'Human Resources', code: 'HR' },
+  { id: 'it', name: 'Information Technology', code: 'IT' },
+  { id: 'legal', name: 'Legal', code: 'LEGAL' },
+  { id: 'marketing', name: 'Marketing', code: 'MKT' },
+  { id: 'operations', name: 'Operations', code: 'OPS' },
+  { id: 'sales', name: 'Sales', code: 'SALES' },
+];
+
 const serviceCategories = [
   {
       id: 'ad',
@@ -901,14 +922,72 @@ function TicketIntake() {
       )}
 
       {addCategoryModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowTicketModal(false)}>
-          <div className="bg-white rounded-xl w-full max-w-2xl m-4 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <button
-              className='p-3 bg-slate-500 text-white'
-              onClick={() => setAddCategoryModal(false)}
-            >
-              Close
-            </button>
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setAddCategoryModal(false)}>
+          <div className="bg-white rounded-xl w-full max-w-lg m-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            
+            {/* Header */}
+            <div className="sticky top-0 z-10 p-4 border-b border-gray-200 flex items-end justify-between bg-white">
+              <h2 className="text-lg font-bold text-gray-800">Service Categories</h2>
+              <span className='cursor-pointer hover:text-slate-500 text-3xl' onClick={() => setAddCategoryModal(false)}>&times;</span>
+            </div>
+
+            {/* Form Content */}
+            <div className='p-4 space-y-4 max-h-[70vh] overflow-y-auto'>
+              <div>
+                <label className="flex items-start text-sm font-semibold text-gray-700">
+                  <p>Category Name</p>
+                  <p className='text-red-600'>*</p>
+                </label>
+                <input 
+                  type="text" 
+                  placeholder="Enter category name"
+                  className='pl-3 border border-solid border-gray-300 outline-blue-500 mt-2 w-full h-[2.5rem] rounded-sm text-sm' 
+                />
+              </div>
+
+              <div>
+                <label className="flex items-start text-sm font-semibold text-gray-700">
+                  <p>Department</p>
+                  <p className='text-red-600'>*</p>
+                </label>
+                <select className='pl-3 border border-solid border-gray-300 outline-blue-500 mt-2 w-full h-[2.5rem] rounded-sm bg-white text-sm'>
+                  <option value="">Select Department</option>
+                  {departments.map((dept) => (
+                    <option key={dept.id} value={dept.id}>{dept.name} [{dept.code}]</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="flex items-start text-sm font-semibold text-gray-700">
+                  <p>Category Code</p>
+                  <p className='text-red-600'>*</p>
+                </label>
+                <input 
+                  type="text" 
+                  placeholder="Enter category code"
+                  className='pl-3 border border-solid border-gray-300 outline-blue-500 mt-2 w-full h-[2.5rem] rounded-sm text-sm' 
+                />
+              </div>
+
+              <div>
+                {/* <label className="flex items-start text-sm font-semibold text-gray-700">
+                  <p>Description</p>
+                </label>
+                <textarea  
+                  placeholder="Enter category description"
+                  rows="3" 
+                  className='w-full pl-3 pt-2 border border-solid border-gray-300 outline-blue-500 rounded-sm mt-2 text-sm'
+                /> */}
+              </div>
+            </div>
+
+            {/* Footer */}
+            <div className="p-4 border-t border-gray-200 flex justify-end gap-2">
+              <button className="px-3 py-1.5 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 text-sm" onClick={() => setAddCategoryModal(false)}>Cancel</button>
+              <button className="px-3 py-1.5 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 cursor-pointer text-sm">✓ Add Category</button>
+            </div>
+
           </div>
         </div>
       )}
