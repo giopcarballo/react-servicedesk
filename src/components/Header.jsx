@@ -6,7 +6,7 @@ const defaultStats = [
   { label: 'Active Requests', value: '6', icon: '📋' },
   { label: 'Tasks Due Today', value: '4', icon: '✅' },
   { label: 'Open Problems', value: '7', icon: '⚠️' },
-  { label: 'Received Today', value: '10', icon: '📥' }
+  { label: 'Total Requests', value: '10', icon: '📥' }
 ]
 
 function Header({ 
@@ -31,7 +31,7 @@ function Header({
       <div className={`max-w-7xl mx-auto px-4 ${showStats ? 'pt-5 pb-6' : 'pt-4 pb-4'} sm:px-6 lg:px-8 relative`}>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">
-            <img src={logo} alt="Global Comfort Group" className="h-16" />
+            {/* <img src={logo} alt="Global Comfort Group" className="h-16" /> */}
             <div className="flex flex-col leading-tight">
               <p className="text-2xl font-semibold text-white">Global Comfort Group</p>
               <p className="text-white/80 text-md italic">IT Service Management Platform</p>

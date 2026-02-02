@@ -781,13 +781,13 @@ function AdminSettings() {
                     })
                   }
                 >
-                  <option value="">Select department...</option>
-                  <option>IT Department</option>
-                  <option>Finance Division</option>
-                  <option>HR Section</option>
-                  <option>Operations Division</option>
-                  <option>Marketing Department</option>
-                  <option>Development Section</option>
+                    <option value="">Select department...</option>
+                    <option value="Engineering">Engineering</option>
+                    <option value="House Keeping">House Keeping</option>
+                    <option value="Front Office">Front Office</option>
+                    <option value="F & B">F & B</option>
+                    <option value="IT">IT</option>
+                    <option value="Security">Security</option>
                 </select>
               </div>
               <div>

@@ -330,7 +330,7 @@ function ServiceDeskLanding() {
                 <div className="text-5xl mb-4">📋</div>
                 <div className="text-lg font-semibold text-gray-800 mb-2">There are no tasks in this view</div>
                 <div className="text-sm text-gray-500 mb-4">Tasks will appear here when they are assigned to you</div>
-                <button className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600" onClick={() => setShowTaskModal(true)}>+ New Task</button>
+                <button className="px-4 py-2 bg-blue-500 text-white rounded-lg text-sm font-medium hover:bg-blue-600" onClick={() => setShowTaskModal(true)}>+ New Request</button>
               </div>
             </div>
             <div>
