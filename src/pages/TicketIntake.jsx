@@ -208,6 +208,7 @@ function TicketIntake() {
   const [addCategoryModal, setAddCategoryModal] = useState(false)
   const [addTemplateModal, setAddTemplateModal] = useState(false)
   const [moreFieldsModal, setMoreFieldsModal] = useState(false)
+  const [isCreatingNewTemplate, setIsCreatingNewTemplate] = useState(false)
 
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -371,7 +372,10 @@ function TicketIntake() {
               {/* Create Ticket Button - Matching the blue in the image */}
               <button
                 className="flex items-center gap-2 px-4 py-2 bg-[#2563eb] text-white rounded-md text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm"
-                onClick={() => setAddTemplateModal(true)}
+                onClick={() => {
+                  setIsCreatingNewTemplate(true);
+                  setAddTemplateModal(true);
+                }}
               >
                 <span className="text-lg font-light">+</span> Create Template
               </button>
@@ -412,6 +416,7 @@ function TicketIntake() {
                       }`}
                       onClick={() => {
                         setSelectedTemplate(template);
+                        setIsCreatingNewTemplate(false);
                         setAddTemplateModal(true);
                       }}
                     >
@@ -719,17 +724,17 @@ function TicketIntake() {
 
       {addTemplateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setAddTemplateModal(false)}>
-          <div className="bg-white rounded-xl w-full max-w-5xl m-4 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-xl w-full max-w-3xl m-4 shadow-2xl max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             
             {/* Header */}
-            <div className="sticky top-0 z-10 p-6 border-b border-gray-200 flex items-end justify-between bg-white">
-              <h2 className="text-xl font-bold text-gray-800">Create New Ticket</h2>
-              <span className='cursor-pointer hover:text-slate-500 text-4xl' onClick={() => setAddTemplateModal(false)}>&times;</span>
+            <div className="sticky top-0 z-10 p-4 border-b border-gray-200 flex items-end justify-between bg-white">
+              <h2 className="text-lg font-bold text-gray-800">{isCreatingNewTemplate ? 'Create New Template' : 'Service Template'}</h2>
+              <span className='cursor-pointer hover:text-slate-500 text-3xl' onClick={() => setAddTemplateModal(false)}>&times;</span>
             </div>
 
-            <div className='p-6 grid grid-cols-1 md:grid-cols-2 gap-6'>
+            <div className='p-4 grid grid-cols-1 md:grid-cols-2 gap-4'>
               <div>
-                <label className="flex items-start text-xl font-semibold text-gray-700">
+                <label className="flex items-start text-sm font-semibold text-gray-700">
                   <p>Title</p>
                   <p className='text-red-600'>*</p>
                 </label>
@@ -737,72 +742,72 @@ function TicketIntake() {
                   type="text" 
                   readOnly
                   value={selectedTemplate?.name || ''} 
-                  className='pl-3 border border-solid border-gray-200 bg-gray-50 text-gray-600 outline-none mt-4 w-full h-[3rem] rounded-sm' 
+                  className='pl-3 border border-solid border-gray-200 bg-gray-50 text-gray-600 outline-none mt-2 w-full h-[2.5rem] rounded-sm text-sm' 
                 />
               </div>
 
               <div>
-                <label className="flex items-start text-xl font-semibold text-gray-700">
+                <label className="flex items-start text-sm font-semibold text-gray-700">
                   <p>Status</p>
                   <p className='text-red-600'>*</p>
                 </label>
-                <select className='pl-3 border border-solid border-gray-200 outline-gray-400 mt-4 w-full h-[3rem] rounded-sm bg-white'>
+                <select className='pl-3 border border-solid border-gray-200 outline-gray-400 mt-2 w-full h-[2.5rem] rounded-sm bg-white text-sm'>
                   <option value="active">Active</option>
                   <option value="inactive">Inactive</option>
                 </select>
               </div>
             </div>
 
-            <div className='pl-6 pr-6 pb-6'>
+            <div className='pl-4 pr-4 pb-3'>
               <div>
-                <label className="flex items-start text-xl font-semibold text-gray-700">
+                <label className="flex items-start text-sm font-semibold text-gray-700">
                   <p>Service Category</p>
                 </label>
                 <input 
                   type="text"
                   readOnly
                   value={parentCategory ? `${parentCategory.name} [${parentCategory.code}]` : ''}
-                  className='pl-3 border border-solid border-gray-200 bg-gray-50 text-gray-600 mt-4 w-full h-[3rem] rounded-sm'
+                  className='pl-3 border border-solid border-gray-200 bg-gray-50 text-gray-600 mt-2 w-full h-[2.5rem] rounded-sm text-sm'
                 />
               </div>
             </div>
 
-            <div className='pl-6 pr-6 pb-6'>
+            <div className='pl-4 pr-4 pb-3'>
               <div>
-                <label className="flex items-start text-xl font-semibold text-gray-700">
+                <label className="flex items-start text-sm font-semibold text-gray-700">
                   <p>Description</p>
                 </label>
                 <textarea  
                   readOnly
                   value={selectedTemplate?.desc || ''}
-                  rows="4" 
-                  className='w-full pl-3 pt-3 border border-solid border-gray-200 bg-gray-50 text-gray-600 outline-none rounded-sm mt-4'
+                  rows="3" 
+                  className='w-full pl-3 pt-2 border border-solid border-gray-200 bg-gray-50 text-gray-600 outline-none rounded-sm mt-2 text-sm'
                 />
               </div>
             </div>
 
-            <div className='pl-6 pr-6 pb-6'>
+            <div className='pl-4 pr-4 pb-3'>
               <div>
-                <label className="flex items-start text-xl font-semibold text-gray-700">
+                <label className="flex items-start text-sm font-semibold text-gray-700">
                   <p>SLA (Days)</p>
                 </label>
                 <input 
                   type="text" 
                   readOnly
                   value={selectedTemplate?.sla || ''}
-                  className='pl-3 border border-solid border-gray-200 bg-gray-50 text-gray-600 mt-4 w-full h-[3rem] rounded-sm' 
+                  className='pl-3 border border-solid border-gray-200 bg-gray-50 text-gray-600 mt-2 w-full h-[2.5rem] rounded-sm text-sm' 
                 />
               </div>
             </div>
 
 
-            <div className='pl-6 pr-6 pb-6 grid grid-cols-1 md:grid-cols-2 gap-6'>
+            <div className='pl-4 pr-4 pb-3 grid grid-cols-1 md:grid-cols-2 gap-4'>
               <div>
-                <label className="flex items-start text-xl font-semibold text-gray-700">
+                <label className="flex items-start text-sm font-semibold text-gray-700">
                   <p>Priority</p>
                   <p className='text-red-600'>*</p>
                 </label>
-                <select className='pl-3 border border-solid border-gray-200 outline-gray-400 mt-4 w-full h-[3rem] rounded-sm bg-white'>
+                <select className='pl-3 border border-solid border-gray-200 outline-gray-400 mt-2 w-full h-[2.5rem] rounded-sm bg-white text-sm'>
                   <option value="">Select Priority</option>
                   <option value="p1-urgent">P1 - Urgent</option>
                   <option value="p2-high">P2 - High</option>
@@ -812,7 +817,7 @@ function TicketIntake() {
               </div>
 
               <div>
-                <label className="flex items-start text-xl font-semibold text-gray-700">
+                <label className="flex items-start text-sm font-semibold text-gray-700">
                   <p>Task Type</p>
                   <p className='text-red-600'>*</p>
                 </label>
@@ -820,22 +825,22 @@ function TicketIntake() {
                   type="text" 
                   readOnly
                   value={selectedTemplate?.type || ''}
-                  className='pl-3 border border-solid border-gray-200 bg-gray-50 text-gray-600 mt-4 w-full h-[3rem] rounded-sm' 
+                  className='pl-3 border border-solid border-gray-200 bg-gray-50 text-gray-600 mt-2 w-full h-[2.5rem] rounded-sm text-sm' 
                 />
               </div>
             </div>
 
-            <div className='pl-6 pr-6 pb-6'>
-              <p className='text-xl font-semibold text-gray-700'>Scheduled Start</p>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                <input type="date" className='pl-3 border border-solid border-gray-200 outline-gray-400 mt-4 w-full h-[3rem] rounded-sm bg-white'/>
-                <input type="date" className='pl-3 border border-solid border-gray-200 outline-gray-400 mt-4 w-full h-[3rem] rounded-sm bg-white'/>
+            <div className='pl-4 pr-4 pb-3'>
+              <p className='text-sm font-semibold text-gray-700'>Scheduled Start</p>
+              <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                <input type="date" className='pl-3 border border-solid border-gray-200 outline-gray-400 mt-2 w-full h-[2.5rem] rounded-sm bg-white text-sm'/>
+                <input type="date" className='pl-3 border border-solid border-gray-200 outline-gray-400 mt-2 w-full h-[2.5rem] rounded-sm bg-white text-sm'/>
               </div>
             </div>
 
-            <div className='pl-6 pr-6 pb-2'>
+            <div className='pl-4 pr-4 pb-2'>
               <p 
-                className="p-2 bg-gray-200 w-fit px-4 rounded-md cursor-pointer font-semibold"
+                className="p-1.5 bg-gray-200 w-fit px-3 rounded-md cursor-pointer font-semibold text-sm"
                 onClick={() => setMoreFieldsModal(!moreFieldsModal)}
               >
                 More fields
@@ -843,9 +848,9 @@ function TicketIntake() {
             </div>
 
             {moreFieldsModal && (
-              <div className="mx-6 mb-6 p-4 bg-gray-50 border border-gray-200 rounded-sm">
-                <div className='pt-3 pb-3'>
-                  <label className="block text-base font-bold text-gray-500 tracking-tight mb-2">Service Code</label>
+              <div className="mx-4 mb-3 p-3 bg-gray-50 border border-gray-200 rounded-sm">
+                <div className='pt-2 pb-2'>
+                  <label className="block text-sm font-bold text-gray-500 tracking-tight mb-2">Service Code</label>
                   <input 
                     type="text" 
                     readOnly
@@ -853,8 +858,8 @@ function TicketIntake() {
                     className="w-full h-[2.5rem] pl-3 bg-white border border-gray-200 rounded-sm text-gray-600 text-sm focus:outline-none"
                   />
                 </div>
-                <div className='pt-3 pb-10'>
-                  <label className="block text-base font-bold text-gray-500 tracking-tight mb-2">Base Rate (₱)</label>
+                <div className='pt-2 pb-2'>
+                  <label className="block text-sm font-bold text-gray-500 tracking-tight mb-2">Base Rate (₱)</label>
                   <input 
                     type="text" 
                     readOnly
@@ -865,19 +870,19 @@ function TicketIntake() {
               </div>
             )}
 
-            <div className='pl-6 pr-6 pb-6'>
-              <h1 className='text-xl font-semibold'>Attachments</h1>
-              <div className='mt-4'>
+            <div className='pl-4 pr-4 pb-4'>
+              <h1 className='text-sm font-semibold'>Attachments</h1>
+              <div className='mt-2'>
                 <input type="file" ref={fileInputRef} onChange={handleFileChange} className="hidden" accept=".png,.jpg,.pdf" />
                 <div 
                   onClick={handleBoxClick}
-                  className='border-2 border-dashed rounded-md border-gray-400 cursor-pointer hover:border-blue-500 p-8 hover:bg-blue-50 transition-colors group text-center'
+                  className='border-2 border-dashed rounded-md border-gray-400 cursor-pointer hover:border-blue-500 p-5 hover:bg-blue-50 transition-colors group text-center'
                 >
-                  <p className='inline-block font-semibold text-black bg-gray-200 border border-gray-300 px-4 py-2 rounded-md group-hover:bg-blue-100 transition-all'>
+                  <p className='inline-block font-semibold text-black bg-gray-200 border border-gray-300 px-3 py-1.5 rounded-md group-hover:bg-blue-100 transition-all text-sm'>
                     📎 {file ? file.name : "Attach file"}
                   </p>
                   {file && (
-                    <div className="mt-4 text-sm text-gray-600">
+                    <div className="mt-3 text-xs text-gray-600">
                       {(file.size / (1024 * 1024)).toFixed(2)} MB — <span className="text-red-500 font-bold" onClick={(e) => { e.stopPropagation(); setFile(null); }}>Remove</span>
                     </div>
                   )}
@@ -886,9 +891,9 @@ function TicketIntake() {
             </div>
 
             {/* Footer */}
-            <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
-              <button className="px-4 py-2 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50" onClick={() => setAddTemplateModal(false)}>Cancel</button>
-              <button className="px-4 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 cursor-pointer" onClick={handleCreateTicket} disabled={!selectedTemplate}>✓ Create Ticket</button>
+            <div className="p-4 border-t border-gray-200 flex justify-end gap-2">
+              <button className="px-3 py-1.5 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 text-sm" onClick={() => setAddTemplateModal(false)}>Cancel</button>
+              <button className="px-3 py-1.5 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 cursor-pointer text-sm" onClick={handleCreateTicket} disabled={!selectedTemplate}>✓ Create Ticket</button>
             </div>
 
           </div>
