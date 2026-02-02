@@ -89,6 +89,7 @@ function AdminSettings() {
   const [activeSection, setActiveSection] = useState("users");
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [showAddPermissionModal, setShowAddPermissionModal] = useState(false);
+  const [roleFilter, setRoleFilter] = useState("all");
   const [permissions, setPermissions] = useState([
     {
       id: 1,
@@ -309,18 +310,35 @@ function AdminSettings() {
   const renderContent = () => {
     switch (activeSection) {
       case "users":
+        const filteredUsers = roleFilter === "all" 
+          ? usersData 
+          : usersData.filter(user => user.role === roleFilter);
+        
         return (
           <div>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-bold text-gray-800">
                 User Management
               </h2>
-              <button
-                className="px-4 py-2 bg-gray-800 text-white rounded-lg font-semibold hover:bg-gray-900"
-                onClick={() => setShowAddUserModal(true)}
-              >
-                + Add User
-              </button>
+              <div className="flex gap-3 items-center">
+                <select
+                  value={roleFilter}
+                  onChange={(e) => setRoleFilter(e.target.value)}
+                  className="px-4 py-2 border border-gray-800 rounded-lg text-sm font-medium bg-white hover:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900"
+                >
+                  <option value="all">All Roles</option>
+                  <option value="Admin">Admin</option>
+                  <option value="Manager">Manager</option>
+                  <option value="Technician">Technician</option>
+                  <option value="Viewer">Viewer</option>
+                </select>
+                <button
+                  className="px-4 py-2 bg-gray-800 text-white rounded-lg font-semibold hover:bg-gray-900"
+                  onClick={() => setShowAddUserModal(true)}
+                >
+                  + Add User
+                </button>
+              </div>
             </div>
             <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
               <table className="w-full text-sm">
@@ -344,7 +362,7 @@ function AdminSettings() {
                   </tr>
                 </thead>
                 <tbody>
-                  {usersData.map((user) => (
+                  {filteredUsers.map((user) => (
                     <tr
                       key={user.id}
                       className="border-b border-gray-100 hover:bg-gray-50"
@@ -406,14 +424,14 @@ function AdminSettings() {
               </h2>
               <div className="flex gap-3">
                 <button
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
+                  className="px-4 py-2 bg-gray-800 text-white rounded-lg font-semibold hover:bg-gray-900"
                   onClick={() => setShowAddPermissionModal(true)}
                 >
-                  + Add Permission
-                </button>
-                <button className="px-4 py-2 bg-gray-800 text-white rounded-lg font-semibold hover:bg-gray-900">
                   + Create Role
                 </button>
+                {/* <button className="px-4 py-2 bg-gray-800 text-white rounded-lg font-semibold hover:bg-gray-900">
+                  + Create Role
+                </button> */}
               </div>
             </div>
 
@@ -745,14 +763,14 @@ function AdminSettings() {
             onClick={(e) => e.stopPropagation()}
           >
             <h3 className="text-lg font-bold text-gray-800 mb-6">
-              Add New Permission Set
+              Add New Role & Permission
             </h3>
 
             {/* Form Fields */}
             <div className="space-y-4 mb-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Permission Set Name *
+                  Name *
                 </label>
                 <input
                   type="text"
@@ -905,10 +923,10 @@ function AdminSettings() {
                 Cancel
               </button>
               <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700"
+                className="px-4 py-2 bg-gray-800 text-white rounded-lg font-semibold hover:bg-gray-900"
                 onClick={handleAddPermission}
               >
-                Add Permission
+                Add New Role & Permission
               </button>
             </div>
           </div>

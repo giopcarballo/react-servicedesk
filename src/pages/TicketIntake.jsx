@@ -501,40 +501,40 @@ function TicketIntake() {
       {/* Create Ticket Modal */}
       {showTicketModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowTicketModal(false)}>
-          <div className="bg-white rounded-xl w-full max-w-5xl m-4 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
-            <div className="sticky top-0 z-10 p-6 border-b border-gray-200 flex items-end justify-between bg-white">
-              <h2 className="text-xl font-bold text-gray-800">Create New Ticket</h2>
+          <div className="bg-white rounded-xl w-full max-w-2xl m-4 shadow-2xl max-h-[90vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+            <div className="sticky top-0 z-10 p-4 border-b border-gray-200 flex items-end justify-between bg-white">
+              <h2 className="text-lg font-bold text-gray-800">Create New Ticket</h2>
               <span  
-                className='cursor-pointer hover:text-slate-500 text-4xl'
+                className='cursor-pointer hover:text-slate-500 text-3xl'
                 onClick={() => setShowTicketModal(false)}
               >
                 &times;
               </span>
             </div>
-            <div className="p-6 space-y-6">
+            <div className="p-4 space-y-4">
               {/* Ticket Type */}
               <div>
-                <h1 className='text-xl font-semibold mb-5'>🎫 Ticket Type</h1>
+                <h1 className='text-base font-semibold mb-3'>🎫 Ticket Type</h1>
                 <label className="flex items-start text-sm font-semibold text-gray-700 mb-2 ">
                   <p>Select Ticket Type</p>
                   <p className='text-red-600'>*</p>
                 </label>
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2">
                   <div
-                    className={`p-4 border-2 rounded-lg cursor-pointer text-center transition-all ${ticketType === 'incident' ? 'border-blue-800 bg-blue-50' : 'border-gray-500 hover:border-blue-800 hover:bg-blue-50 hover:border-5'}`}
+                    className={`p-3 border-2 rounded-lg cursor-pointer text-center transition-all ${ticketType === 'incident' ? 'border-blue-800 bg-blue-50' : 'border-gray-500 hover:border-blue-800 hover:bg-blue-50 hover:border-5'}`}
                     onClick={() => setTicketType('incident')}
                   >
-                    <div className="text-6xl mb-2 mt-5">🚨</div>
-                    <div className="font-semibold text-xl pt-3 pb-3">Incident Report</div>
-                    <div className="text-lg text-gray-500 mb-5">Unexpected issues or emergencies</div>
+                    <div className="text-4xl mb-2 mt-2">🚨</div>
+                    <div className="font-semibold text-base pt-2 pb-2">Incident Report</div>
+                    <div className="text-sm text-gray-500 mb-2">Unexpected issues or emergencies</div>
                   </div>
                   <div
-                    className={`p-4 border-2 rounded-lg cursor-pointer text-center transition-all ${ticketType === 'service' ? 'border-blue-800 bg-blue-50' : 'border-gray-500 hover:border-blue-800 hover:bg-blue-50 hover:border-5'}`}
+                    className={`p-3 border-2 rounded-lg cursor-pointer text-center transition-all ${ticketType === 'service' ? 'border-blue-800 bg-blue-50' : 'border-gray-500 hover:border-blue-800 hover:bg-blue-50 hover:border-5'}`}
                     onClick={() => setTicketType('service')}
                   >
-                    <div className="text-6xl mb-2 mt-5">🔧</div>
-                    <div className="font-semibold text-xl pt-3 pb-3">Service Request</div>
-                    <div className="text-lg text-gray-500 mb-5">Planned service request</div>
+                    <div className="text-4xl mb-2 mt-2">🔧</div>
+                    <div className="font-semibold text-base pt-2 pb-2">Service Request</div>
+                    <div className="text-sm text-gray-500 mb-2">Planned service request</div>
                   </div>
                 </div>
               </div>
@@ -544,18 +544,18 @@ function TicketIntake() {
               {/* Location */}
               <div>
                 <div className='flex items-start justify-start'>
-                  <h1 className='text-xl font-semibold pr-2'>📍 Location</h1>
+                  <h1 className='text-base font-semibold pr-2'>📍 Location</h1>
                   <p className='text-green-800 bg-green-100 w-24 px-2 py-1 text-xs text-center font-semibold rounded-md mt-1'>AUTO-FILLED</p>
                 </div>
 
                 {/* Location */}
-                <div className='mt-4'>
-                  <p className='font-semibold'>Room / Area</p>
+                <div className='mt-3'>
+                  <p className='font-semibold text-sm'>Room / Area</p>
                   <input 
                     type="text" 
                     placeholder="Corporate Office - 5th Floor" 
                     readOnly 
-                    className='bg-green-50 border-green-300 border-2 border-solid w-full rounded-[3px] h-[3rem] pl-5 placeholder:text-black' 
+                    className='bg-green-50 border-green-300 border-2 border-solid w-full rounded-[3px] h-[2.5rem] pl-4 placeholder:text-black text-sm' 
                   />
                   <p className='text-xs text-gray-400 pt-2'>Auto-populated from current location/branch</p>
                 </div>              
@@ -564,18 +564,18 @@ function TicketIntake() {
               {/* Service Provider & Request Details */}
               <div className='mt-2'>
                 <div className='flex items-start justify-start'>
-                  <h1 className='text-xl font-semibold pr-2'>🖥️ Service Provider & Request Details</h1>
+                  <h1 className='text-base font-semibold pr-2'>🖥️ Service Provider & Request Details</h1>
                 </div>
 
                 {/* Service Provider */}
-                <div className='mt-4'>
+                <div className='mt-3'>
                   <div>
                     <label className="flex items-start text-sm font-semibold text-gray-700 mb-2 ">
                       <p>Service Provider</p>
                       <p className='text-red-600'>*</p>
                     </label>
                     <select 
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-blue-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-blue-500 text-sm"
                       value={selectedCategory || ''}
                       onChange={(e) => { setSelectedCategory(e.target.value); setSelectedTemplate(null); }}
                     >
@@ -588,14 +588,14 @@ function TicketIntake() {
                 </div>
 
                 {/* Service */}
-                <div className='mt-5'>
+                <div className='mt-3'>
                   <div>
                     <label className="flex items-start text-sm font-semibold text-gray-700 mb-2 ">
                       <p>Service</p>
                       <p className='text-red-600'>*</p>
                     </label>
                     <select 
-                      className="w-full border border-gray-300 rounded-lg px-4 py-2.5 outline-blue-500"
+                      className="w-full border border-gray-300 rounded-lg px-3 py-2 outline-blue-500 text-sm"
                       value={selectedTemplate?.id || ''}
                       onChange={(e) => {
                         const cat = serviceCategories.find(c => c.id === selectedCategory)
@@ -616,7 +616,7 @@ function TicketIntake() {
 
               {/* Subject */}
               <div className="">
-                <div className='mt-4'>
+                <div className='mt-3'>
                 <label className="flex items-start text-sm font-semibold text-gray-700 mb-2 ">
                       <p>Subject</p>
                       <p className='text-red-600'>*</p>
@@ -624,7 +624,7 @@ function TicketIntake() {
                     <input 
                       type="text" 
                       placeholder="Enter ticket subject..." 
-                      className='border-gray-300 border border-solid w-full rounded-[3px] h-[3rem] pl-5 outline-blue-500' 
+                      className='border-gray-300 border border-solid w-full rounded-[3px] h-[2.5rem] pl-4 outline-blue-500 text-sm' 
                     />
                   </div>
                 
@@ -636,31 +636,31 @@ function TicketIntake() {
                   <p>Description</p>
                   <p className='text-red-600'>*</p>
                 </label>
-                <textarea className="w-full border border-gray-300 rounded-lg px-4 py-2.5 h-32 outline-blue-500" placeholder="Provide detailed description of the request..."></textarea>
+                <textarea className="w-full border border-gray-300 rounded-lg px-3 py-2 h-24 outline-blue-500 text-sm" placeholder="Provide detailed description of the request..."></textarea>
               </div>
 
               {/* Pricing Preview */}
               {selectedTemplate && (
-                <div className="rounded-lg p-4 border border-gray-200">
-                  <div className="text-lg font-semibold mb-2">💰 Service Pricing</div>
-                  <div className="grid grid-cols-3 gap-4 text-center">
-                    <div className='border-1 bg-gray-100 p-4 rounded-md'>
-                      <div className="text-lg text-gray-500 font-semibold">Service Code</div>
-                      <div className="text-2xl font-bold text-red-600 pt-2">{selectedTemplate.code}</div>
+                <div className="rounded-lg p-3 border border-gray-200">
+                  <div className="text-base font-semibold mb-2">💰 Service Pricing</div>
+                  <div className="grid grid-cols-3 gap-3 text-center">
+                    <div className='border-1 bg-gray-100 p-3 rounded-md'>
+                      <div className="text-sm text-gray-500 font-semibold">Service Code</div>
+                      <div className="text-lg font-bold text-red-600 pt-1">{selectedTemplate.code}</div>
                     </div>
-                    <div className='border-1 bg-gray-100 p-4 rounded-md'>
-                      <div className="text-lg text-gray-500 font-semibold">SLA</div>
-                      <div className="text-2xl font-bold text-green-600 pt-2">{selectedTemplate.sla}</div>
+                    <div className='border-1 bg-gray-100 p-3 rounded-md'>
+                      <div className="text-sm text-gray-500 font-semibold">SLA</div>
+                      <div className="text-lg font-bold text-green-600 pt-1">{selectedTemplate.sla}</div>
                     </div>
-                    <div className='border-1 bg-gray-100 p-4 rounded-md'>
-                      <div className="text-lg text-gray-500 font-semibold">Base Rate</div>
-                      <div className="text-2xl font-bold text-blue-600 pt-2">₱{selectedTemplate.baseRate.toLocaleString()}</div>
+                    <div className='border-1 bg-gray-100 p-3 rounded-md'>
+                      <div className="text-sm text-gray-500 font-semibold">Base Rate</div>
+                      <div className="text-lg font-bold text-blue-600 pt-1">₱{selectedTemplate.baseRate.toLocaleString()}</div>
                     </div>           
                   </div>
-                  <div className='mt-5'>
-                    <p className='font-semibold mb-2'>Severity Adjustment</p>
+                  <div className='mt-3'>
+                    <p className='font-semibold mb-2 text-sm'>Severity Adjustment</p>
                     <select 
-                      className='w-full rounded-[3px] h-[3rem] pl-5 border border-solid border-gray-300 outline-blue-400'
+                      className='w-full rounded-[3px] h-[2.5rem] pl-4 border border-solid border-gray-300 outline-blue-400 text-sm'
                       onChange={(e) => setSeverityMultiplier(parseFloat(e.target.value))}
                       value={severityMultiplier}
                     >
@@ -669,15 +669,15 @@ function TicketIntake() {
                       <option value="1.5">Urgent (+50%)</option>
                     </select>
                   </div>
-                  <div className='mt-5 flex justify-between items-center p-6 bg-red-50 border border-red-200 border-l-[6px] border-l-red-500 rounded-md shadow-sm'>
+                  <div className='mt-3 flex justify-between items-center p-4 bg-red-50 border border-red-200 border-l-[6px] border-l-red-500 rounded-md shadow-sm'>
                     {/* Left Side: Label */}
-                    <p className="text-[13px] uppercase tracking-widest text-red-800 font-bold">
+                    <p className="text-[11px] uppercase tracking-widest text-red-800 font-bold">
                       Total Cost
                     </p>
 
                     {/* Right Side: Price */}
                     <div className="text-right">
-                      <span className="text-4xl font-black text-red-600">
+                      <span className="text-2xl font-black text-red-600">
                         ₱{((selectedTemplate?.baseRate || 0) * severityMultiplier).toLocaleString()}
                       </span>
                     </div>
@@ -688,11 +688,11 @@ function TicketIntake() {
               {/* Attachments */}
               <div>
                 <div className='flex items-start justify-start'>
-                  <h1 className='text-xl font-semibold pr-2'>📎 Attachments</h1>
+                  <h1 className='text-base font-semibold pr-2'>📎 Attachments</h1>
                 </div>
 
                 {/* Attachment Body */}
-                <div className='mt-4'>
+                <div className='mt-3'>
                   {/* Hidden File Input */}
                   <input 
                     type="file" 
@@ -705,10 +705,10 @@ function TicketIntake() {
                   {/* Styled Drop Zone */}
                   <div 
                     onClick={handleBoxClick}
-                    className='border-2 border-dashed rounded-md border-gray-400 cursor-pointer hover:border-blue-500 p-8 hover:bg-blue-50 transition-colors group'
+                    className='border-2 border-dashed rounded-md border-gray-400 cursor-pointer hover:border-blue-500 p-5 hover:bg-blue-50 transition-colors group'
                   >
                     <div className='flex flex-col items-center justify-center text-center'>
-                      <p className='font-semibold text-black bg-gray-200 border border-gray-300 px-4 py-2 rounded-md group-hover:bg-blue-100 group-hover:border-blue-300 transition-all'>
+                      <p className='font-semibold text-black bg-gray-200 border border-gray-300 px-3 py-1.5 rounded-md group-hover:bg-blue-100 group-hover:border-blue-300 transition-all text-sm'>
                         📁 {file ? file.name : "Click to upload or drag and drop"}
                       </p>
                       
@@ -733,9 +733,9 @@ function TicketIntake() {
                 </div>             
               </div>
             </div>
-            <div className="p-6 border-t border-gray-200 flex justify-end gap-3">
-              <button className="px-4 py-2 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50" onClick={() => setShowTicketModal(false)}>Cancel</button>
-              <button className="px-4 py-2 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 cursor-pointer" onClick={handleCreateTicket} disabled={!selectedTemplate}>✓ Create Ticket</button>
+            <div className="p-4 border-t border-gray-200 flex justify-end gap-2">
+              <button className="px-3 py-1.5 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 text-sm" onClick={() => setShowTicketModal(false)}>Cancel</button>
+              <button className="px-3 py-1.5 bg-green-500 text-white rounded-lg font-semibold hover:bg-green-600 cursor-pointer text-sm" onClick={handleCreateTicket} disabled={!selectedTemplate}>✓ Create Ticket</button>
             </div>
           </div>
         </div>
