@@ -3,17 +3,17 @@ import { useNavigate } from 'react-router-dom'
 import logo from '../assets/GCG.png'
 
 const defaultStats = [
-  { label: 'Active Requests', value: '0', icon: '📋' },
-  { label: 'Tasks Due Today', value: '0', icon: '✅' },
-  { label: 'Open Problems', value: '0', icon: '⚠️' },
-  { label: 'Received Today', value: '0', icon: '📥' }
+  { label: 'Active Requests', value: '6', icon: '📋' },
+  { label: 'Tasks Due Today', value: '4', icon: '✅' },
+  { label: 'Open Problems', value: '7', icon: '⚠️' },
+  { label: 'Received Today', value: '10', icon: '📥' }
 ]
 
 function Header({ 
   collapsed, 
   stats = defaultStats,
   showStats = true,
-  gradient = 'from-[#071330] via-[#102a63] to-[#1f63f3]'
+  bgColor = 'bg-[#0f1d3d]'
 }) {
   const navigate = useNavigate()
   const [showUserMenu, setShowUserMenu] = useState(false)
@@ -24,8 +24,10 @@ function Header({
   }
 
   return (
-    <div className={`relative overflow-hidden bg-gradient-to-r ${gradient} text-white shadow-lg transition-all duration-300 ${collapsed ? 'sidebar-collapsed-margin' : 'with-sidebar'}`}>
-      <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.35),_transparent_55%)] pointer-events-none" aria-hidden="true"></div>
+    <div className={`relative overflow-hidden ${bgColor} text-white shadow-lg transition-all duration-300 ${
+    collapsed ? 'sidebar-collapsed-margin' : 'with-sidebar'
+  }`}>
+      <div className="absolute inset-0 opacity-40 pointer-events-none" aria-hidden="true"></div>
       <div className={`max-w-7xl mx-auto px-4 ${showStats ? 'pt-5 pb-6' : 'pt-4 pb-4'} sm:px-6 lg:px-8 relative`}>
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-4">

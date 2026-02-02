@@ -96,7 +96,7 @@ function Sidebar({ collapsed, onNavigate }) {
               ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
               : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'
           }`}
-          onClick={() => handleNavigate('financial', '/section-e')}
+          onClick={() => handleNavigate('financial', '/section-e')} 
           title="Financials"
         >
           <span className="text-lg w-6 text-center flex-shrink-0">💳</span>
