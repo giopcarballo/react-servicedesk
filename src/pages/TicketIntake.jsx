@@ -745,7 +745,7 @@ function TicketIntake() {
 
       {addTemplateModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setAddTemplateModal(false)}>
-          <div className="bg-white rounded-xl w-full max-w-3xl m-4 shadow-2xl max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
+          <div className="bg-white rounded-xl w-full max-w-xl m-4 shadow-2xl max-h-[85vh] overflow-y-auto" onClick={(e) => e.stopPropagation()}>
             
             {/* Header */}
             <div className="sticky top-0 z-10 p-4 border-b border-gray-200 flex items-end justify-between bg-white">

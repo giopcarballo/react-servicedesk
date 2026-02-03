@@ -176,7 +176,7 @@ function AdminSettings() {
         view: false,
         edit: false,
         create: false,
-        enabled: true,
+        enabled: false,
       },
       {
         id: 5,
@@ -184,7 +184,7 @@ function AdminSettings() {
         view: false,
         edit: false,
         create: false,
-        enabled: true,
+        enabled: false,
       },
       {
         id: 6,
@@ -192,7 +192,7 @@ function AdminSettings() {
         view: false,
         edit: false,
         create: false,
-        enabled: true,
+        enabled: false,
       },
     ],
   });
