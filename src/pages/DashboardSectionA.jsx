@@ -776,39 +776,67 @@ function DashboardSectionA() {
                       <span className="text-base">📈</span>
                       <h3 className="text-sm font-bold text-gray-800">Volume Comparison</h3>
                     </div>
-                    <div className="relative" style={{ height: '180px', padding: '12px' }}>
-                      <div className="h-full flex items-end justify-between gap-1">
-                        {yoyData.volumeComparison.map((data, idx) => {
-                          const maxValue = Math.max(...yoyData.volumeComparison.map(d => Math.max(d.year2025, d.year2024)))
-                          return (
-                            <div key={idx} className="flex flex-col items-center gap-1 flex-1 min-w-0">
-                              <div className="flex gap-0.5 items-end w-full justify-center">
-                                <div 
-                                  className="rounded-t bg-[#FF4E45] hover:bg-[#ff3830] transition-all flex-1 max-w-[14px]"
-                                  style={{ height: `${(data.year2025 / maxValue) * 140}px` }}
-                                  title={`2025: ${data.year2025}`}
-                                ></div>
-                                <div 
-                                  className="rounded-t bg-gray-300 hover:bg-gray-200 transition-all flex-1 max-w-[14px]"
-                                  style={{ height: `${(data.year2024 / maxValue) * 140}px` }}
-                                  title={`2024: ${data.year2024}`}
-                                ></div>
-                              </div>
-                              <div className="text-[10px] font-semibold text-gray-500 mt-1">{data.month}</div>
+                    {(() => {
+                      const maxValue = Math.max(...yoyData.volumeComparison.map(d => Math.max(d.year2025, d.year2024)))
+                      const yMax = Math.ceil(maxValue / 50) * 50 + 50
+                      const yTicks = Array.from({ length: Math.floor(yMax / 50) + 1 }, (_, i) => i * 50)
+                      return (
+                        <div className="relative" style={{ height: '240px' }}>
+                          {/* Grid lines */}
+                          <div className="absolute inset-x-3 left-10 top-3 bottom-16 flex flex-col justify-between pointer-events-none">
+                            {yTicks.map((tick) => (
+                              <div key={tick} className="border-t border-gray-100 flex-1"></div>
+                            ))}
+                          </div>
+                          {/* Y labels */}
+                          <div className="absolute left-0 top-3 bottom-16 flex flex-col justify-between text-[10px] font-semibold text-gray-400">
+                            {yTicks.map((tick) => (
+                              <div key={tick} className="-mt-[1px]">{tick}</div>
+                            ))}
+                          </div>
+                          {/* Legend */}
+                          <div className="absolute left-0 right-0 -top-1 flex justify-center items-center gap-4 text-xs font-semibold text-gray-600">
+                            <div className="flex items-center gap-2">
+                              <span className="w-3 h-3 rounded-full bg-[#FF4E45]"></span>
+                              <span>2025</span>
                             </div>
-                          )
-                        })}
-                      </div>
-                    </div>
-                    <div className="flex justify-around pt-2.5 px-4 border-t-2 border-gray-100">
+                            <div className="flex items-center gap-2">
+                              <span className="w-3 h-3 rounded-full bg-gray-300"></span>
+                              <span>2024</span>
+                            </div>
+                          </div>
+                          {/* Bars */}
+                          <div className="absolute left-10 right-3 top-6 bottom-16 flex items-end gap-2">
+                            {yoyData.volumeComparison.map((data, idx) => (
+                              <div key={idx} className="flex flex-col items-center gap-1 flex-1 min-w-[22px]">
+                                <div className="flex items-end gap-1">
+                                  <div
+                                    className="w-[18px] rounded-t-lg bg-[#FF4E45] hover:bg-[#ff3830] transition-all"
+                                    style={{ height: `${(data.year2025 / yMax) * 160}px` }}
+                                    title={`2025: ${data.year2025}`}
+                                  ></div>
+                                  <div
+                                    className="w-[18px] rounded-t-lg bg-gray-300 hover:bg-gray-200 transition-all"
+                                    style={{ height: `${(data.year2024 / yMax) * 160}px` }}
+                                    title={`2024: ${data.year2024}`}
+                                  ></div>
+                                </div>
+                                <div className="text-[10px] font-semibold text-gray-500 mt-1">{data.month}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )
+                    })()}
+                    <div className="flex justify-around pt-4 px-6 mt-2 border-t-2 border-gray-100">
                       <div className="text-center">
                         <div className="text-[10px] text-gray-500 uppercase mb-1 font-semibold">2025</div>
-                        <div className="text-lg font-extrabold text-[#FF4E45]">{yoyData.totals.volume2025.toLocaleString()}</div>
+                        <div className="text-xl font-extrabold text-[#FF4E45]">{yoyData.totals.volume2025.toLocaleString()}</div>
                         <div className="text-[10px] text-emerald-600 font-semibold mt-0.5">↑ {yoyData.totals.volumeChange}%</div>
                       </div>
                       <div className="text-center">
                         <div className="text-[10px] text-gray-500 uppercase mb-1 font-semibold">2024</div>
-                        <div className="text-lg font-extrabold text-gray-500">{yoyData.totals.volume2024.toLocaleString()}</div>
+                        <div className="text-xl font-extrabold text-gray-500">{yoyData.totals.volume2024.toLocaleString()}</div>
                       </div>
                     </div>
                   </div>
@@ -819,79 +847,104 @@ function DashboardSectionA() {
                       <span className="text-base">⏱️</span>
                       <h3 className="text-sm font-bold text-gray-800">Resolution Time</h3>
                     </div>
-                    <div className="relative" style={{ height: '180px', padding: '12px' }}>
-                      <svg className="w-full h-full">
-                        {/* Y-axis grid lines */}
-                        {[0, 1, 2, 3, 4, 5, 6].map((val) => (
-                          <g key={val}>
-                            <line 
-                              x1="40" 
-                              y1={`${100 - (val / 6) * 100}%`} 
-                              x2="100%" 
-                              y2={`${100 - (val / 6) * 100}%`} 
-                              stroke="#f3f4f6" 
-                              strokeWidth="1"
+                    {(() => {
+                      const yMax = 6
+                      const yTicks = [0, 1, 2, 3, 4, 5, 6]
+                      const months = yoyData.resolutionTime.map(d => d.month)
+                      const xStep = 100 / (months.length - 1)
+                      const xOffset = 8 // left padding percent for labels
+                      const areaPoints = yoyData.resolutionTime.map((d, i) => {
+                        const x = xOffset + i * xStep
+                        const y = 100 - (d.year2025 / yMax) * 100
+                        return `${x},${y}`
+                      })
+                      const areaPath = `0,100 ${areaPoints.join(' ')} ${xOffset + (months.length - 1) * xStep},100`
+                      return (
+                        <div className="relative" style={{ height: '220px' }}>
+                          {/* Grid + y labels */}
+                          <div className="absolute inset-x-3 left-8 top-4 bottom-16 flex flex-col justify-between pointer-events-none">
+                            {yTicks.map((tick) => (
+                              <div key={tick} className="border-t border-gray-100 flex-1"></div>
+                            ))}
+                          </div>
+                          <div className="absolute left-0 top-4 bottom-16 flex flex-col justify-between text-[10px] font-semibold text-gray-400">
+                            {yTicks.map((tick) => (
+                              <div key={tick} className="-mt-[1px]">{tick}h</div>
+                            ))}
+                          </div>
+                          {/* Legend */}
+                          <div className="absolute left-0 right-0 -top-1 flex justify-center items-center gap-4 text-xs font-semibold text-gray-700">
+                            <div className="flex items-center gap-2">
+                              <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
+                              <span>2025 (hours)</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="w-3 h-3 rounded-full bg-gray-300"></span>
+                              <span>2024 (hours)</span>
+                            </div>
+                          </div>
+                          {/* Lines + area */}
+                          <svg className="absolute inset-x-6 top-6 bottom-28 w-[calc(100%-48px)] h-[calc(100%-80px)]">
+                            <polygon
+                              points={areaPath}
+                              fill="rgba(16,185,129,0.08)"
+                              stroke="none"
                             />
-                            <text 
-                              x="30" 
-                              y={`${100 - (val / 6) * 100}%`} 
-                              fill="#9ca3af" 
-                              fontSize="9" 
-                              textAnchor="end" 
-                              dominantBaseline="middle"
-                            >
-                              {val}h
-                            </text>
-                          </g>
-                        ))}
-                        {/* 2024 Line (dashed) */}
-                        <polyline
-                          fill="none"
-                          stroke="#d1d5db"
-                          strokeWidth="2"
-                          strokeDasharray="4,4"
-                          points={yoyData.resolutionTime.map((d, i) => {
-                            const x = 40 + ((i / (yoyData.resolutionTime.length - 1)) * (100 - 40))
-                            const y = 100 - (d.year2024 / 6) * 100
-                            return `${x}%,${y}%`
-                          }).join(' ')}
-                        />
-                        {/* 2025 Line (solid) */}
-                        <polyline
-                          fill="none"
-                          stroke="#10b981"
-                          strokeWidth="3"
-                          points={yoyData.resolutionTime.map((d, i) => {
-                            const x = 40 + ((i / (yoyData.resolutionTime.length - 1)) * (100 - 40))
-                            const y = 100 - (d.year2025 / 6) * 100
-                            return `${x}%,${y}%`
-                          }).join(' ')}
-                        />
-                        {/* 2025 Points */}
-                        {yoyData.resolutionTime.map((d, i) => {
-                          const x = 40 + ((i / (yoyData.resolutionTime.length - 1)) * (100 - 40))
-                          const y = 100 - (d.year2025 / 6) * 100
-                          return (
-                            <circle
-                              key={i}
-                              cx={`${x}%`}
-                              cy={`${y}%`}
-                              r="3"
-                              fill="#10b981"
+                            <polyline
+                              fill="none"
+                              stroke="#d1d5db"
+                              strokeWidth="2"
+                              strokeDasharray="4,4"
+                              points={yoyData.resolutionTime.map((d, i) => {
+                                const x = xOffset + i * xStep
+                                const y = 100 - (d.year2024 / yMax) * 100
+                                return `${x},${y}`
+                              }).join(' ')}
                             />
-                          )
-                        })}
-                      </svg>
-                    </div>
-                    <div className="flex justify-around pt-2.5 px-4 border-t-2 border-gray-100">
+                            <polyline
+                              fill="none"
+                              stroke="#10b981"
+                              strokeWidth="3"
+                              points={yoyData.resolutionTime.map((d, i) => {
+                                const x = xOffset + i * xStep
+                                const y = 100 - (d.year2025 / yMax) * 100
+                                return `${x},${y}`
+                              }).join(' ')}
+                            />
+                            {yoyData.resolutionTime.map((d, i) => {
+                              const x = xOffset + i * xStep
+                              const y = 100 - (d.year2025 / yMax) * 100
+                              return (
+                                <circle
+                                  key={i}
+                                  cx={`${x}%`}
+                                  cy={`${y}%`}
+                                  r="3.5"
+                                  fill="#10b981"
+                                  stroke="#fff"
+                                  strokeWidth="1"
+                                />
+                              )
+                            })}
+                          </svg>
+                          {/* X labels */}
+                          <div className="absolute left-8 right-3 bottom-6 flex justify-between text-[10px] font-semibold text-gray-600">
+                            {months.map((m) => (
+                              <div key={m}>{m}</div>
+                            ))}
+                          </div>
+                        </div>
+                      )
+                    })()}
+                    <div className="flex justify-around pt-4 px-6 mt-2 border-t-2 border-gray-100">
                       <div className="text-center">
                         <div className="text-[10px] text-gray-500 uppercase mb-1 font-semibold">2025</div>
-                        <div className="text-lg font-extrabold text-emerald-500">{yoyData.totals.resolution2025}h</div>
+                        <div className="text-xl font-extrabold text-emerald-500">{yoyData.totals.resolution2025}h</div>
                         <div className="text-[10px] text-emerald-600 font-semibold mt-0.5">↓ {Math.abs(yoyData.totals.resolutionChange)}%</div>
                       </div>
                       <div className="text-center">
                         <div className="text-[10px] text-gray-500 uppercase mb-1 font-semibold">2024</div>
-                        <div className="text-lg font-extrabold text-gray-500">{yoyData.totals.resolution2024}h</div>
+                        <div className="text-xl font-extrabold text-gray-500">{yoyData.totals.resolution2024}h</div>
                       </div>
                     </div>
                   </div>
