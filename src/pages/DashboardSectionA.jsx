@@ -460,27 +460,144 @@ function DashboardSectionA() {
               </div>
             </div>
 
-                {/* Executive Summary */}
-                <div className="bg-white rounded-xl p-6 border border-gray-200">
-                  <div className="flex justify-between items-center mb-5 pb-4 border-b-2 border-gray-100">
-                    <h3 className="text-base font-bold text-gray-800">📋 Executive Summary</h3>
+                {/* Three Column Grid: Team Performance, SLA Alerts, Real-Time Tickets */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+                  {/* Team Performance */}
+                  <div className="bg-white rounded-xl p-6 border border-gray-200">
+                    <div className="flex items-center gap-2 mb-6">
+                      <span className="text-xl">👥</span>
+                      <h3 className="text-lg font-bold text-gray-800">Team Performance</h3>
+                    </div>
+                    <div className="space-y-5">
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-semibold text-gray-700">Engineering</span>
+                          <span className="text-sm font-bold text-gray-800">92%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                          <div className="bg-emerald-500 h-2.5 rounded-full" style={{ width: '92%' }}></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-semibold text-gray-700">Housekeeping</span>
+                          <span className="text-sm font-bold text-gray-800">96%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                          <div className="bg-emerald-500 h-2.5 rounded-full" style={{ width: '96%' }}></div>
+                        </div>
+                      </div>
+                      <div>
+                        <div className="flex justify-between items-center mb-2">
+                          <span className="text-sm font-semibold text-gray-700">IT Support</span>
+                          <span className="text-sm font-bold text-gray-800">88%</span>
+                        </div>
+                        <div className="w-full bg-gray-200 rounded-full h-2.5">
+                          <div className="bg-amber-500 h-2.5 rounded-full" style={{ width: '88%' }}></div>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-                    <div className="flex flex-col gap-1">
-                      <span className="uppercase text-xs tracking-wide text-gray-500 font-medium">First Response Time</span>
-                      <span className="text-[15px] font-semibold text-gray-900">3.2 minutes</span>
+
+                  {/* SLA Alerts */}
+                  <div className="bg-white rounded-xl p-6 border border-gray-200">
+                    <div className="flex items-center gap-2 mb-6">
+                      <span className="text-xl">🚨</span>
+                      <h3 className="text-lg font-bold text-gray-800">SLA Alerts</h3>
                     </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="uppercase text-xs tracking-wide text-gray-500 font-medium">Resolution Rate</span>
-                      <span className="text-[15px] font-semibold text-gray-900">87.5%</span>
+                    <div className="space-y-3">
+                      <div className="p-4 bg-red-50 rounded-lg border border-red-100">
+                        <div className="flex items-start gap-3">
+                          <div className="w-3 h-3 bg-red-500 rounded-full mt-1 flex-shrink-0"></div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <span className="font-bold text-gray-800">TKT-145 • P1</span>
+                              <span className="text-xs text-red-600 font-semibold">2h overdue</span>
+                            </div>
+                            <p className="text-sm text-gray-600">AC failure Room 405</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-4 bg-amber-50 rounded-lg border border-amber-100">
+                        <div className="flex items-start gap-3">
+                          <div className="w-3 h-3 bg-amber-500 rounded-full mt-1 flex-shrink-0"></div>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <span className="font-bold text-gray-800">TKT-143 • P2</span>
+                              <span className="text-xs text-amber-600 font-semibold">30m warning</span>
+                            </div>
+                            <p className="text-sm text-gray-600">Water leak Room 302</p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="uppercase text-xs tracking-wide text-gray-500 font-medium">Escalation Rate</span>
-                      <span className="text-[15px] font-semibold text-gray-900">4.2%</span>
+                  </div>
+
+                  {/* Real-Time Tickets */}
+                  <div className="bg-white rounded-xl p-6 border border-gray-200">
+                    <div className="flex items-center gap-2 mb-6">
+                      <span className="text-xl">⚡</span>
+                      <h3 className="text-lg font-bold text-gray-800">Real-Time Tickets</h3>
                     </div>
-                    <div className="flex flex-col gap-1">
-                      <span className="uppercase text-xs tracking-wide text-gray-500 font-medium">Active Staff</span>
-                      <span className="text-[15px] font-semibold text-gray-900">42 on duty</span>
+                    <div className="space-y-3">
+                      <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-red-300 transition-colors">
+                        <div className="flex items-start gap-3">
+                          <div className="w-1 h-full bg-red-500 rounded-full absolute left-0"></div>
+                          <div className="flex-1 min-w-0 pl-3">
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <span className="font-bold text-gray-800">TKT-150</span>
+                              <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded">P1</span>
+                            </div>
+                            <p className="text-sm text-gray-600">Elevator stuck 3-4</p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-amber-300 transition-colors">
+                        <div className="flex items-start gap-3">
+                          <div className="w-1 h-full bg-amber-500 rounded-full absolute left-0"></div>
+                          <div className="flex-1 min-w-0 pl-3">
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <span className="font-bold text-gray-800">TKT-149</span>
+                              <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-bold rounded">P2</span>
+                            </div>
+                            <p className="text-sm text-gray-600">Room service delay</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Guest Satisfaction & Executive Summary */}
+                <div className="bg-white rounded-xl p-6 border border-gray-200">
+                  <div className="flex items-center gap-2 mb-6 pb-4 border-b-2 border-gray-100">
+                    <span className="text-xl">⭐</span>
+                    <h3 className="text-lg font-bold text-gray-800">Guest Satisfaction & Executive Summary</h3>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
+                    <div className="text-center">
+                      <div className="text-4xl font-extrabold text-emerald-500 mb-1">4.7</div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">CSAT Score</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-4xl font-extrabold text-amber-500 mb-1">68</div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">NPS Score</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-4xl font-extrabold text-red-500 mb-1">3.2m</div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">First Response</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-4xl font-extrabold text-emerald-500 mb-1">87.5%</div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">Resolution Rate</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-4xl font-extrabold text-violet-500 mb-1">42</div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">Active Staff</div>
+                    </div>
+                    <div className="text-center">
+                      <div className="text-4xl font-extrabold text-amber-500 mb-1">93.2%</div>
+                      <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">Productivity</div>
                     </div>
                   </div>
                 </div>
