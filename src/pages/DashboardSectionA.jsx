@@ -26,14 +26,21 @@ const volumeChartData = {
   ]
 }
 
+const dashboardTabs = [
+  { id: 'bi', title: 'Business Intelligence Dashboard', description: 'Real-time monitoring and executive insights', icon: '📊' },
+  { id: 'yoy', title: 'Year-over-Year Analysis', description: 'Current vs previous year performance', icon: '📈' },
+  { id: 'financial', title: 'Financial Dashboard', description: 'Service operations expenses and profitability', icon: '💰' }
+]
+
 function DashboardSectionA() {
   const navigate = useNavigate()
   
   // Maintenance Mode - Set to false to restore normal functionality
-  const isUnderMaintenance = true
+  const isUnderMaintenance = false
   
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
-  const [currentView, setCurrentView] = useState('landing')
+  const [currentView, setCurrentView] = useState('dashboard')
+  const [dashboardTab, setDashboardTab] = useState('bi')
   const [activeTab, setActiveTab] = useState('dispatch')
   const [selectedBar, setSelectedBar] = useState(null)
   
@@ -117,6 +124,7 @@ function DashboardSectionA() {
   const chartMax = Math.max(...volumeChartData.week.map(d => d.value))
   const chartAvg = Math.round(chartTotal / volumeChartData.week.length)
   const peakDay = volumeChartData.week.reduce((max, d) => d.value > max.value ? d : max, volumeChartData.week[0])
+  const selectedDashboardTab = dashboardTabs.find(tab => tab.id === dashboardTab) || dashboardTabs[0]
 
   return (
     <div className="font-sans bg-gray-50 min-h-screen text-gray-800">
@@ -243,16 +251,44 @@ function DashboardSectionA() {
             <div className="flex items-center gap-2 text-sm text-gray-500 mb-6">
               <span className="text-red-500 cursor-pointer hover:text-red-600 hover:underline" onClick={showLanding}>🏠 Home</span>
               <span className="text-gray-300">›</span>
-              <span>Business Intelligence Dashboard</span>
+              <span>{selectedDashboardTab.title}</span>
             </div>
 
-            <div className="bg-white p-6 rounded-xl mb-6 border-l-4 border-violet-500">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2">📊 Business Intelligence Dashboard</h2>
-              <p className="text-gray-500 text-sm">Real-time ticket monitoring, performance metrics, and executive insights</p>
+            {/* Dashboard Tabs */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
+              {dashboardTabs.map((tab) => (
+                <div
+                  key={tab.id}
+                  className={`relative rounded-2xl bg-white p-5 cursor-pointer transition-all duration-200 ${
+                    dashboardTab === tab.id
+                      ? 'border-2 border-red-300 ring-4 ring-red-100 shadow-lg'
+                      : 'border border-gray-200 hover:border-red-200 hover:shadow-md'
+                  }`}
+                  onClick={() => setDashboardTab(tab.id)}
+                >
+                  <div className="absolute inset-y-0 left-0 w-[6px] rounded-l-2xl bg-red-400"></div>
+                  <div className="flex items-start gap-3 pl-1">
+                    <span className="text-2xl leading-none mt-[2px]">{tab.icon}</span>
+                    <div className="space-y-1">
+                      <h3 className="text-lg font-bold text-gray-900">{tab.title}</h3>
+                      <p className="text-sm text-gray-500">{tab.description}</p>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
 
-            {/* Dashboard Filters */}
-            <div className="bg-white p-5 rounded-xl mb-6 border border-gray-200 flex gap-4 flex-wrap items-center">
+            <div className="bg-white p-6 rounded-xl mb-6 border-l-4 border-red-400">
+              <h2 className="text-2xl font-bold text-gray-800 mb-2 flex items-center gap-2">
+                <span>{selectedDashboardTab.icon}</span> {selectedDashboardTab.title}
+              </h2>
+              <p className="text-gray-500 text-sm">{selectedDashboardTab.description}</p>
+            </div>
+
+            {dashboardTab === 'bi' ? (
+              <>
+                {/* Dashboard Filters */}
+                <div className="bg-white p-5 rounded-xl mb-6 border border-gray-200 flex gap-4 flex-wrap items-center">
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-semibold text-gray-500 uppercase">Property</label>
                 <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]">
@@ -424,30 +460,39 @@ function DashboardSectionA() {
               </div>
             </div>
 
-            {/* Executive Summary */}
-            <div className="bg-white rounded-xl p-6 border border-gray-200">
-              <div className="flex justify-between items-center mb-5 pb-4 border-b-2 border-gray-100">
-                <h3 className="text-base font-bold text-gray-800">📋 Executive Summary</h3>
+                {/* Executive Summary */}
+                <div className="bg-white rounded-xl p-6 border border-gray-200">
+                  <div className="flex justify-between items-center mb-5 pb-4 border-b-2 border-gray-100">
+                    <h3 className="text-base font-bold text-gray-800">📋 Executive Summary</h3>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
+                    <div className="flex flex-col gap-1">
+                      <span className="uppercase text-xs tracking-wide text-gray-500 font-medium">First Response Time</span>
+                      <span className="text-[15px] font-semibold text-gray-900">3.2 minutes</span>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span className="uppercase text-xs tracking-wide text-gray-500 font-medium">Resolution Rate</span>
+                      <span className="text-[15px] font-semibold text-gray-900">87.5%</span>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span className="uppercase text-xs tracking-wide text-gray-500 font-medium">Escalation Rate</span>
+                      <span className="text-[15px] font-semibold text-gray-900">4.2%</span>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                      <span className="uppercase text-xs tracking-wide text-gray-500 font-medium">Active Staff</span>
+                      <span className="text-[15px] font-semibold text-gray-900">42 on duty</span>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="bg-white p-12 rounded-xl border border-gray-200 text-center">
+                <div className="text-5xl mb-4">{selectedDashboardTab.icon}</div>
+                <h3 className="text-xl font-bold text-gray-800 mb-2">{selectedDashboardTab.title}</h3>
+                <p className="text-gray-500 mb-1">{selectedDashboardTab.description}</p>
+                <p className="text-sm text-gray-400 mt-4">No data available for this dashboard yet.</p>
               </div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 p-6 bg-white border border-gray-200 rounded-xl shadow-sm">
-                <div className="flex flex-col gap-1">
-                  <span className="uppercase text-xs tracking-wide text-gray-500 font-medium">First Response Time</span>
-                  <span className="text-[15px] font-semibold text-gray-900">3.2 minutes</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="uppercase text-xs tracking-wide text-gray-500 font-medium">Resolution Rate</span>
-                  <span className="text-[15px] font-semibold text-gray-900">87.5%</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="uppercase text-xs tracking-wide text-gray-500 font-medium">Escalation Rate</span>
-                  <span className="text-[15px] font-semibold text-gray-900">4.2%</span>
-                </div>
-                <div className="flex flex-col gap-1">
-                  <span className="uppercase text-xs tracking-wide text-gray-500 font-medium">Active Staff</span>
-                  <span className="text-[15px] font-semibold text-gray-900">42 on duty</span>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
         )}
 
