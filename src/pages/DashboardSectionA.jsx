@@ -63,6 +63,47 @@ const dashboardTabs = [
   { id: 'financial', title: 'Financial Dashboard', description: 'Service operations expenses and profitability', icon: '💰' }
 ]
 
+const yoyData = {
+  volumeComparison: [
+    { month: 'Jan', year2025: 235, year2024: 218 },
+    { month: 'Feb', year2025: 268, year2024: 245 },
+    { month: 'Mar', year2025: 312, year2024: 289 },
+    { month: 'Apr', year2025: 295, year2024: 267 },
+    { month: 'May', year2025: 328, year2024: 298 },
+    { month: 'Jun', year2025: 318, year2024: 285 },
+    { month: 'Jul', year2025: 342, year2024: 312 },
+    { month: 'Aug', year2025: 298, year2024: 276 },
+    { month: 'Sep', year2025: 315, year2024: 289 },
+    { month: 'Oct', year2025: 265, year2024: 245 }
+  ],
+  resolutionTime: [
+    { month: 'Jan', year2025: 4.2, year2024: 5.1 },
+    { month: 'Feb', year2025: 4.0, year2024: 5.0 },
+    { month: 'Mar', year2025: 3.9, year2024: 4.9 },
+    { month: 'Apr', year2025: 3.8, year2024: 4.8 },
+    { month: 'May', year2025: 3.7, year2024: 4.9 },
+    { month: 'Jun', year2025: 3.9, year2024: 5.0 },
+    { month: 'Jul', year2025: 4.0, year2024: 5.2 },
+    { month: 'Aug', year2025: 3.8, year2024: 5.1 },
+    { month: 'Sep', year2025: 4.1, year2024: 5.3 },
+    { month: 'Oct', year2025: 3.9, year2024: 5.0 }
+  ],
+  kpiComparison: {
+    sla: { year2025: 94.2, year2024: 87.5, change: 6.7 },
+    csat: { year2025: 4.7, year2024: 4.3, change: 0.4 },
+    response: { year2025: 3.2, year2024: 4.8, change: -33 },
+    resolution: { year2025: 92.8, year2024: 85.2, change: 7.6 }
+  },
+  totals: {
+    volume2025: 2847,
+    volume2024: 2412,
+    volumeChange: 18,
+    resolution2025: 3.8,
+    resolution2024: 4.9,
+    resolutionChange: -22
+  }
+}
+
 function DashboardSectionA() {
   const navigate = useNavigate()
   
@@ -721,6 +762,179 @@ function DashboardSectionA() {
                     <div className="text-center">
                       <div className="text-4xl font-extrabold text-amber-500 mb-1">{stats.productivity}%</div>
                       <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">Productivity</div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : dashboardTab === 'yoy' ? (
+              <>
+                {/* Year-over-Year Analysis Content */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
+                  {/* Volume Comparison */}
+                  <div className="bg-white rounded-xl p-3 border border-gray-200">
+                    <div className="flex items-center gap-2 mb-3 pb-3 border-b-2 border-gray-100">
+                      <span className="text-base">📈</span>
+                      <h3 className="text-sm font-bold text-gray-800">Volume Comparison</h3>
+                    </div>
+                    <div className="relative" style={{ height: '180px', padding: '12px' }}>
+                      <div className="h-full flex items-end justify-between gap-1">
+                        {yoyData.volumeComparison.map((data, idx) => {
+                          const maxValue = Math.max(...yoyData.volumeComparison.map(d => Math.max(d.year2025, d.year2024)))
+                          return (
+                            <div key={idx} className="flex flex-col items-center gap-1 flex-1 min-w-0">
+                              <div className="flex gap-0.5 items-end w-full justify-center">
+                                <div 
+                                  className="rounded-t bg-[#FF4E45] hover:bg-[#ff3830] transition-all flex-1 max-w-[14px]"
+                                  style={{ height: `${(data.year2025 / maxValue) * 140}px` }}
+                                  title={`2025: ${data.year2025}`}
+                                ></div>
+                                <div 
+                                  className="rounded-t bg-gray-300 hover:bg-gray-200 transition-all flex-1 max-w-[14px]"
+                                  style={{ height: `${(data.year2024 / maxValue) * 140}px` }}
+                                  title={`2024: ${data.year2024}`}
+                                ></div>
+                              </div>
+                              <div className="text-[10px] font-semibold text-gray-500 mt-1">{data.month}</div>
+                            </div>
+                          )
+                        })}
+                      </div>
+                    </div>
+                    <div className="flex justify-around pt-2.5 px-4 border-t-2 border-gray-100">
+                      <div className="text-center">
+                        <div className="text-[10px] text-gray-500 uppercase mb-1 font-semibold">2025</div>
+                        <div className="text-lg font-extrabold text-[#FF4E45]">{yoyData.totals.volume2025.toLocaleString()}</div>
+                        <div className="text-[10px] text-emerald-600 font-semibold mt-0.5">↑ {yoyData.totals.volumeChange}%</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-[10px] text-gray-500 uppercase mb-1 font-semibold">2024</div>
+                        <div className="text-lg font-extrabold text-gray-500">{yoyData.totals.volume2024.toLocaleString()}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Resolution Time */}
+                  <div className="bg-white rounded-xl p-3 border border-gray-200">
+                    <div className="flex items-center gap-2 mb-3 pb-3 border-b-2 border-gray-100">
+                      <span className="text-base">⏱️</span>
+                      <h3 className="text-sm font-bold text-gray-800">Resolution Time</h3>
+                    </div>
+                    <div className="relative" style={{ height: '180px', padding: '12px' }}>
+                      <svg className="w-full h-full">
+                        {/* Y-axis grid lines */}
+                        {[0, 1, 2, 3, 4, 5, 6].map((val) => (
+                          <g key={val}>
+                            <line 
+                              x1="40" 
+                              y1={`${100 - (val / 6) * 100}%`} 
+                              x2="100%" 
+                              y2={`${100 - (val / 6) * 100}%`} 
+                              stroke="#f3f4f6" 
+                              strokeWidth="1"
+                            />
+                            <text 
+                              x="30" 
+                              y={`${100 - (val / 6) * 100}%`} 
+                              fill="#9ca3af" 
+                              fontSize="9" 
+                              textAnchor="end" 
+                              dominantBaseline="middle"
+                            >
+                              {val}h
+                            </text>
+                          </g>
+                        ))}
+                        {/* 2024 Line (dashed) */}
+                        <polyline
+                          fill="none"
+                          stroke="#d1d5db"
+                          strokeWidth="2"
+                          strokeDasharray="4,4"
+                          points={yoyData.resolutionTime.map((d, i) => {
+                            const x = 40 + ((i / (yoyData.resolutionTime.length - 1)) * (100 - 40))
+                            const y = 100 - (d.year2024 / 6) * 100
+                            return `${x}%,${y}%`
+                          }).join(' ')}
+                        />
+                        {/* 2025 Line (solid) */}
+                        <polyline
+                          fill="none"
+                          stroke="#10b981"
+                          strokeWidth="3"
+                          points={yoyData.resolutionTime.map((d, i) => {
+                            const x = 40 + ((i / (yoyData.resolutionTime.length - 1)) * (100 - 40))
+                            const y = 100 - (d.year2025 / 6) * 100
+                            return `${x}%,${y}%`
+                          }).join(' ')}
+                        />
+                        {/* 2025 Points */}
+                        {yoyData.resolutionTime.map((d, i) => {
+                          const x = 40 + ((i / (yoyData.resolutionTime.length - 1)) * (100 - 40))
+                          const y = 100 - (d.year2025 / 6) * 100
+                          return (
+                            <circle
+                              key={i}
+                              cx={`${x}%`}
+                              cy={`${y}%`}
+                              r="3"
+                              fill="#10b981"
+                            />
+                          )
+                        })}
+                      </svg>
+                    </div>
+                    <div className="flex justify-around pt-2.5 px-4 border-t-2 border-gray-100">
+                      <div className="text-center">
+                        <div className="text-[10px] text-gray-500 uppercase mb-1 font-semibold">2025</div>
+                        <div className="text-lg font-extrabold text-emerald-500">{yoyData.totals.resolution2025}h</div>
+                        <div className="text-[10px] text-emerald-600 font-semibold mt-0.5">↓ {Math.abs(yoyData.totals.resolutionChange)}%</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="text-[10px] text-gray-500 uppercase mb-1 font-semibold">2024</div>
+                        <div className="text-lg font-extrabold text-gray-500">{yoyData.totals.resolution2024}h</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* KPI Comparison */}
+                <div className="bg-white rounded-xl p-3 border border-gray-200 mb-3">
+                  <div className="flex items-center gap-2 mb-3 pb-3 border-b-2 border-gray-100">
+                    <span className="text-base">📊</span>
+                    <h3 className="text-sm font-bold text-gray-800">KPI Comparison</h3>
+                  </div>
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 px-4">
+                    <div className="bg-gray-50 p-3 rounded-lg border-l-3 border-[#FF4E45]" style={{ borderLeftWidth: '3px' }}>
+                      <div className="text-[10px] text-gray-500 font-semibold mb-1.5">SLA</div>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xl font-extrabold text-[#FF4E45]">{yoyData.kpiComparison.sla.year2025}%</span>
+                        <span className="text-base font-bold text-gray-300">{yoyData.kpiComparison.sla.year2024}%</span>
+                      </div>
+                      <div className="text-[10px] text-emerald-600 font-semibold">↑ {yoyData.kpiComparison.sla.change}%</div>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-lg border-l-3 border-emerald-500" style={{ borderLeftWidth: '3px' }}>
+                      <div className="text-[10px] text-gray-500 font-semibold mb-1.5">CSAT</div>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xl font-extrabold text-emerald-500">{yoyData.kpiComparison.csat.year2025}</span>
+                        <span className="text-base font-bold text-gray-300">{yoyData.kpiComparison.csat.year2024}</span>
+                      </div>
+                      <div className="text-[10px] text-emerald-600 font-semibold">↑ {yoyData.kpiComparison.csat.change}</div>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-lg border-l-3 border-amber-500" style={{ borderLeftWidth: '3px' }}>
+                      <div className="text-[10px] text-gray-500 font-semibold mb-1.5">RESPONSE</div>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xl font-extrabold text-amber-500">{yoyData.kpiComparison.response.year2025}m</span>
+                        <span className="text-base font-bold text-gray-300">{yoyData.kpiComparison.response.year2024}m</span>
+                      </div>
+                      <div className="text-[10px] text-emerald-600 font-semibold">↓ {Math.abs(yoyData.kpiComparison.response.change)}%</div>
+                    </div>
+                    <div className="bg-gray-50 p-3 rounded-lg border-l-3 border-indigo-500" style={{ borderLeftWidth: '3px' }}>
+                      <div className="text-[10px] text-gray-500 font-semibold mb-1.5">RESOLUTION</div>
+                      <div className="flex justify-between items-center mb-1">
+                        <span className="text-xl font-extrabold text-indigo-500">{yoyData.kpiComparison.resolution.year2025}%</span>
+                        <span className="text-base font-bold text-gray-300">{yoyData.kpiComparison.resolution.year2024}%</span>
+                      </div>
+                      <div className="text-[10px] text-emerald-600 font-semibold">↑ {yoyData.kpiComparison.resolution.change}%</div>
                     </div>
                   </div>
                 </div>
