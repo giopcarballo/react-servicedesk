@@ -15,6 +15,16 @@ const modules = [
 ]
 
 const volumeChartData = {
+  day: [
+    { day: '00:00', value: 5, resolved: 4, pending: 1 },
+    { day: '03:00', value: 3, resolved: 3, pending: 0 },
+    { day: '06:00', value: 8, resolved: 6, pending: 2 },
+    { day: '09:00', value: 15, resolved: 12, pending: 3 },
+    { day: '12:00', value: 22, resolved: 18, pending: 4 },
+    { day: '15:00', value: 19, resolved: 16, pending: 3 },
+    { day: '18:00', value: 17, resolved: 14, pending: 3 },
+    { day: '21:00', value: 11, resolved: 9, pending: 2 }
+  ],
   week: [
     { day: 'Mon', value: 32, resolved: 28, pending: 4 },
     { day: 'Tue', value: 41, resolved: 35, pending: 6 },
@@ -23,7 +33,28 @@ const volumeChartData = {
     { day: 'Fri', value: 51, resolved: 44, pending: 7 },
     { day: 'Sat', value: 28, resolved: 25, pending: 3 },
     { day: 'Sun', value: 24, resolved: 22, pending: 2 }
+  ],
+  month: [
+    { day: 'Wk1', value: 145, resolved: 127, pending: 18 },
+    { day: 'Wk2', value: 168, resolved: 142, pending: 26 },
+    { day: 'Wk3', value: 152, resolved: 135, pending: 17 },
+    { day: 'Wk4', value: 178, resolved: 158, pending: 20 }
   ]
+}
+
+const propertyData = {
+  'all': { totalTickets: 247, critical: 8, slaCompliance: 94.2, avgResolution: 4.2, csat: 4.7, nps: 68, activeStaff: 42, productivity: 93.2 },
+  'manila': { totalTickets: 98, critical: 3, slaCompliance: 95.1, avgResolution: 3.8, csat: 4.8, nps: 72, activeStaff: 18, productivity: 94.5 },
+  'quezon': { totalTickets: 87, critical: 2, slaCompliance: 93.5, avgResolution: 4.5, csat: 4.6, nps: 65, activeStaff: 15, productivity: 92.1 },
+  'makati': { totalTickets: 62, critical: 3, slaCompliance: 94.0, avgResolution: 4.4, csat: 4.7, nps: 68, activeStaff: 9, productivity: 93.0 }
+}
+
+const departmentData = {
+  'all': { engineering: 92, housekeeping: 96, itSupport: 88, fnbService: 94 },
+  'engineering': { engineering: 92, housekeeping: 0, itSupport: 0, fnbService: 0 },
+  'housekeeping': { engineering: 0, housekeeping: 96, itSupport: 0, fnbService: 0 },
+  'it': { engineering: 0, housekeeping: 0, itSupport: 88, fnbService: 0 },
+  'fnb': { engineering: 0, housekeeping: 0, itSupport: 0, fnbService: 94 }
 }
 
 const dashboardTabs = [
@@ -43,6 +74,14 @@ function DashboardSectionA() {
   const [dashboardTab, setDashboardTab] = useState('bi')
   const [activeTab, setActiveTab] = useState('dispatch')
   const [selectedBar, setSelectedBar] = useState(null)
+  
+  // Dashboard filters and chart period
+  const [chartPeriod, setChartPeriod] = useState('week')
+  const [property, setProperty] = useState('all')
+  const [dateRange, setDateRange] = useState('today')
+  const [department, setDepartment] = useState('all')
+  const [autoRefresh, setAutoRefresh] = useState(0)
+  const [refreshing, setRefreshing] = useState(false)
   
   // Form state for intake
   const [channel, setChannel] = useState('')
@@ -120,11 +159,27 @@ function DashboardSectionA() {
     setValidationError('')
   }
 
-  const chartTotal = volumeChartData.week.reduce((sum, d) => sum + d.value, 0)
-  const chartMax = Math.max(...volumeChartData.week.map(d => d.value))
-  const chartAvg = Math.round(chartTotal / volumeChartData.week.length)
-  const peakDay = volumeChartData.week.reduce((max, d) => d.value > max.value ? d : max, volumeChartData.week[0])
+  // Compute stats based on selected filters
+  const currentChartData = volumeChartData[chartPeriod]
+  const chartTotal = currentChartData.reduce((sum, d) => sum + d.value, 0)
+  const chartMax = Math.max(...currentChartData.map(d => d.value))
+  const chartAvg = Math.round(chartTotal / currentChartData.length)
+  const peakDay = currentChartData.reduce((max, d) => d.value > max.value ? d : max, currentChartData[0])
   const selectedDashboardTab = dashboardTabs.find(tab => tab.id === dashboardTab) || dashboardTabs[0]
+  
+  // Get stats based on property filter
+  const stats = propertyData[property]
+  const teamPerf = departmentData[department]
+
+  const handleRefreshChart = () => {
+    setRefreshing(true)
+    // Simulate API call delay
+    setTimeout(() => {
+      setRefreshing(false)
+      // Force re-render by updating a state that triggers chart recalculation
+      setSelectedBar(null)
+    }, 1000)
+  }
 
   return (
     <div className="font-sans bg-gray-50 min-h-screen text-gray-800">
@@ -291,34 +346,35 @@ function DashboardSectionA() {
                 <div className="bg-white p-5 rounded-xl mb-6 border border-gray-200 flex gap-4 flex-wrap items-center">
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-semibold text-gray-500 uppercase">Property</label>
-                <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]">
-                  <option>All Properties</option>
-                  <option>SOGO Hotel Manila</option>
-                  <option>SOGO Hotel Quezon City</option>
-                  <option>SOGO Hotel Makati</option>
+                <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]" value={property} onChange={(e) => setProperty(e.target.value)}>
+                  <option value="all">All Properties</option>
+                  <option value="manila">SOGO Hotel Manila</option>
+                  <option value="quezon">SOGO Hotel Quezon City</option>
+                  <option value="makati">SOGO Hotel Makati</option>
                 </select>
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-semibold text-gray-500 uppercase">Date Range</label>
-                <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]">
-                  <option>Today</option>
-                  <option>Last 7 Days</option>
-                  <option>Last 30 Days</option>
-                  <option>This Month</option>
+                <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]" value={dateRange} onChange={(e) => setDateRange(e.target.value)}>
+                  <option value="today">Today</option>
+                  <option value="7days">Last 7 Days</option>
+                  <option value="30days">Last 30 Days</option>
+                  <option value="month">This Month</option>
                 </select>
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-semibold text-gray-500 uppercase">Department</label>
-                <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]">
-                  <option>All Departments</option>
-                  <option>Engineering</option>
-                  <option>Housekeeping</option>
-                  <option>IT Support</option>
+                <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]" value={department} onChange={(e) => setDepartment(e.target.value)}>
+                  <option value="all">All Departments</option>
+                  <option value="engineering">Engineering</option>
+                  <option value="housekeeping">Housekeeping</option>
+                  <option value="it">IT Support</option>
+                  <option value="fnb">F&B Service</option>
                 </select>
               </div>
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-semibold text-gray-500 uppercase">Auto-Refresh</label>
-                <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]">
+                <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]" value={autoRefresh} onChange={(e) => setAutoRefresh(Number(e.target.value))}>
                   <option value="0">Off</option>
                   <option value="30">30 seconds</option>
                   <option value="60">1 minute</option>
@@ -335,7 +391,7 @@ function DashboardSectionA() {
                   <div className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide">Total Tickets</div>
                   <div className="text-2xl opacity-60">📋</div>
                 </div>
-                <div className="text-3xl font-extrabold text-gray-800 mb-2">247</div>
+                <div className="text-3xl font-extrabold text-gray-800 mb-2">{stats.totalTickets}</div>
                 <div className="inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-0.5 rounded bg-green-100 text-green-800">
                   ↑ 12% <span className="font-normal opacity-70">vs last period</span>
                 </div>
@@ -346,9 +402,9 @@ function DashboardSectionA() {
                   <div className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide">Critical (P1)</div>
                   <div className="text-2xl opacity-60">🚨</div>
                 </div>
-                <div className="text-3xl font-extrabold text-gray-800 mb-2">8</div>
+                <div className="text-3xl font-extrabold text-gray-800 mb-2">{stats.critical}</div>
                 <div className="inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-0.5 rounded bg-red-100 text-red-800">
-                  ↑ 3 <span className="font-normal opacity-70">needs attention</span>
+                  ↑ {stats.critical} <span className="font-normal opacity-70">needs attention</span>
                 </div>
               </div>
               <div className="bg-white rounded-xl p-5 border border-gray-200 relative overflow-hidden">
@@ -357,7 +413,7 @@ function DashboardSectionA() {
                   <div className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide">SLA Compliance</div>
                   <div className="text-2xl opacity-60">✅</div>
                 </div>
-                <div className="text-3xl font-extrabold text-gray-800 mb-2">94.2%</div>
+                <div className="text-3xl font-extrabold text-gray-800 mb-2">{stats.slaCompliance}%</div>
                 <div className="inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-0.5 rounded bg-green-100 text-green-800">
                   ↑ 2.1% <span className="font-normal opacity-70">improved</span>
                 </div>
@@ -368,7 +424,7 @@ function DashboardSectionA() {
                   <div className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide">Avg Resolution Time</div>
                   <div className="text-2xl opacity-60">⏱️</div>
                 </div>
-                <div className="text-3xl font-extrabold text-gray-800 mb-2">4.2h</div>
+                <div className="text-3xl font-extrabold text-gray-800 mb-2">{stats.avgResolution}h</div>
                 <div className="inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-0.5 rounded bg-green-100 text-green-800">
                   ↓ 18min <span className="font-normal opacity-70">faster</span>
                 </div>
@@ -387,13 +443,63 @@ function DashboardSectionA() {
                     </div>
                   </div>
                   <div className="flex gap-2 flex-wrap">
-                    <button className="px-3 py-1.5 border border-gray-200 bg-white rounded-md text-xs font-semibold text-gray-500 hover:border-red-500 hover:text-red-500">📅 Day</button>
-                    <button className="px-3 py-1.5 border border-red-500 bg-red-500 text-white rounded-md text-xs font-semibold">📊 Week</button>
-                    <button className="px-3 py-1.5 border border-gray-200 bg-white rounded-md text-xs font-semibold text-gray-500 hover:border-red-500 hover:text-red-500">📆 Month</button>
+                    <button 
+                      className={`px-3 py-1.5 border rounded-md text-xs font-semibold transition-all ${
+                        chartPeriod === 'day'
+                          ? 'border-red-500 bg-red-500 text-white'
+                          : 'border-gray-200 bg-white text-gray-500 hover:border-red-500 hover:text-red-500'
+                      }`}
+                      onClick={() => setChartPeriod('day')}
+                    >
+                      📅 Day
+                    </button>
+                    <button 
+                      className={`px-3 py-1.5 border rounded-md text-xs font-semibold transition-all ${
+                        chartPeriod === 'week'
+                          ? 'border-red-500 bg-red-500 text-white'
+                          : 'border-gray-200 bg-white text-gray-500 hover:border-red-500 hover:text-red-500'
+                      }`}
+                      onClick={() => setChartPeriod('week')}
+                    >
+                      📊 Week
+                    </button>
+                    <button 
+                      className={`px-3 py-1.5 border rounded-md text-xs font-semibold transition-all ${
+                        chartPeriod === 'month'
+                          ? 'border-red-500 bg-red-500 text-white'
+                          : 'border-gray-200 bg-white text-gray-500 hover:border-red-500 hover:text-red-500'
+                      }`}
+                      onClick={() => setChartPeriod('month')}
+                    >
+                      📆 Month
+                    </button>
+                    <div className="w-px h-6 bg-gray-300 mx-1"></div>
+                    <button 
+                      className="px-3 py-1.5 border border-emerald-500 bg-emerald-500 text-white rounded-md text-xs font-semibold hover:bg-emerald-600 transition-all flex items-center gap-1"
+                      onClick={() => {
+                        const csvContent = 'Period,Total,Resolved,Pending\n' + 
+                          currentChartData.map(d => `${d.day},${d.value},${d.resolved},${d.pending}`).join('\n');
+                        const blob = new Blob([csvContent], { type: 'text/csv' });
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.href = url;
+                        a.download = `ticket-volume-${chartPeriod}-${new Date().toISOString().split('T')[0]}.csv`;
+                        a.click();
+                      }}
+                    >
+                      📥 Export Excel
+                    </button>
+                    <button 
+                      className="px-3 py-1.5 border border-blue-500 bg-blue-500 text-white rounded-md text-xs font-semibold hover:bg-blue-600 transition-all flex items-center gap-1 disabled:opacity-50"
+                      onClick={handleRefreshChart}
+                      disabled={refreshing}
+                    >
+                      <span className={refreshing ? 'inline-block animate-spin' : ''}>🔄</span> {refreshing ? 'Refreshing...' : 'Refresh'}
+                    </button>
                   </div>
                 </div>
-                <div className="h-64 flex items-end justify-around gap-3 px-4 py-5">
-                  {volumeChartData.week.map((data, idx) => (
+                <div className={`h-64 flex items-end justify-around gap-3 px-4 py-5 transition-opacity duration-300 ${refreshing ? 'opacity-50' : 'opacity-100'}`}>
+                  {currentChartData.map((data, idx) => (
                     <div 
                       key={idx} 
                       className="flex flex-col items-center gap-2 flex-1 cursor-pointer"
@@ -469,33 +575,50 @@ function DashboardSectionA() {
                       <h3 className="text-lg font-bold text-gray-800">Team Performance</h3>
                     </div>
                     <div className="space-y-5">
-                      <div>
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-semibold text-gray-700">Engineering</span>
-                          <span className="text-sm font-bold text-gray-800">92%</span>
+                      {teamPerf.engineering > 0 && (
+                        <div>
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-semibold text-gray-700">Engineering</span>
+                            <span className="text-sm font-bold text-gray-800">{teamPerf.engineering}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2.5">
+                            <div className="bg-emerald-500 h-2.5 rounded-full" style={{ width: `${teamPerf.engineering}%` }}></div>
+                          </div>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2.5">
-                          <div className="bg-emerald-500 h-2.5 rounded-full" style={{ width: '92%' }}></div>
+                      )}
+                      {teamPerf.housekeeping > 0 && (
+                        <div>
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-semibold text-gray-700">Housekeeping</span>
+                            <span className="text-sm font-bold text-gray-800">{teamPerf.housekeeping}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2.5">
+                            <div className="bg-emerald-500 h-2.5 rounded-full" style={{ width: `${teamPerf.housekeeping}%` }}></div>
+                          </div>
                         </div>
-                      </div>
-                      <div>
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-semibold text-gray-700">Housekeeping</span>
-                          <span className="text-sm font-bold text-gray-800">96%</span>
+                      )}
+                      {teamPerf.itSupport > 0 && (
+                        <div>
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-semibold text-gray-700">IT Support</span>
+                            <span className="text-sm font-bold text-gray-800">{teamPerf.itSupport}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2.5">
+                            <div className="bg-amber-500 h-2.5 rounded-full" style={{ width: `${teamPerf.itSupport}%` }}></div>
+                          </div>
                         </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2.5">
-                          <div className="bg-emerald-500 h-2.5 rounded-full" style={{ width: '96%' }}></div>
+                      )}
+                      {teamPerf.fnbService > 0 && (
+                        <div>
+                          <div className="flex justify-between items-center mb-2">
+                            <span className="text-sm font-semibold text-gray-700">F&B Service</span>
+                            <span className="text-sm font-bold text-gray-800">{teamPerf.fnbService}%</span>
+                          </div>
+                          <div className="w-full bg-gray-200 rounded-full h-2.5">
+                            <div className="bg-emerald-500 h-2.5 rounded-full" style={{ width: `${teamPerf.fnbService}%` }}></div>
+                          </div>
                         </div>
-                      </div>
-                      <div>
-                        <div className="flex justify-between items-center mb-2">
-                          <span className="text-sm font-semibold text-gray-700">IT Support</span>
-                          <span className="text-sm font-bold text-gray-800">88%</span>
-                        </div>
-                        <div className="w-full bg-gray-200 rounded-full h-2.5">
-                          <div className="bg-amber-500 h-2.5 rounded-full" style={{ width: '88%' }}></div>
-                        </div>
-                      </div>
+                      )}
                     </div>
                   </div>
 
@@ -576,11 +699,11 @@ function DashboardSectionA() {
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6">
                     <div className="text-center">
-                      <div className="text-4xl font-extrabold text-emerald-500 mb-1">4.7</div>
+                      <div className="text-4xl font-extrabold text-emerald-500 mb-1">{stats.csat}</div>
                       <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">CSAT Score</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-4xl font-extrabold text-amber-500 mb-1">68</div>
+                      <div className="text-4xl font-extrabold text-amber-500 mb-1">{stats.nps}</div>
                       <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">NPS Score</div>
                     </div>
                     <div className="text-center">
@@ -588,15 +711,15 @@ function DashboardSectionA() {
                       <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">First Response</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-4xl font-extrabold text-emerald-500 mb-1">87.5%</div>
+                      <div className="text-4xl font-extrabold text-emerald-500 mb-1">{stats.slaCompliance}%</div>
                       <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">Resolution Rate</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-4xl font-extrabold text-violet-500 mb-1">42</div>
+                      <div className="text-4xl font-extrabold text-violet-500 mb-1">{stats.activeStaff}</div>
                       <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">Active Staff</div>
                     </div>
                     <div className="text-center">
-                      <div className="text-4xl font-extrabold text-amber-500 mb-1">93.2%</div>
+                      <div className="text-4xl font-extrabold text-amber-500 mb-1">{stats.productivity}%</div>
                       <div className="text-xs text-gray-500 uppercase tracking-wide font-medium">Productivity</div>
                     </div>
                   </div>
