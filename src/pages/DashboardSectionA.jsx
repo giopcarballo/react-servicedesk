@@ -104,6 +104,39 @@ const yoyData = {
   }
 }
 
+const financialData = {
+  kpis: {
+    expenses: { value: 2.45, change: 8.2 },
+    revenue: { value: 3.87, change: 12.4 },
+    netProfit: { value: 1.42, change: 18.5 },
+    margin: { value: 36.7, change: 2.1 }
+  },
+  expensesVsProfit: [
+    { month: 'Jan', expenses: 2.2, profit: 0.9 },
+    { month: 'Feb', expenses: 2.4, profit: 1.1 },
+    { month: 'Mar', expenses: 2.3, profit: 1.0 },
+    { month: 'Apr', expenses: 2.5, profit: 1.2 },
+    { month: 'May', expenses: 2.4, profit: 1.3 },
+    { month: 'Jun', expenses: 2.6, profit: 1.2 },
+    { month: 'Jul', expenses: 2.5, profit: 1.3 },
+    { month: 'Aug', expenses: 2.3, profit: 1.1 },
+    { month: 'Sep', expenses: 2.5, profit: 1.3 },
+    { month: 'Oct', expenses: 2.4, profit: 1.2 }
+  ],
+  expenseBreakdown: [
+    { category: 'Labor', percentage: 51, color: '#EF4444' },
+    { category: 'Materials', percentage: 24, color: '#F59E0B' },
+    { category: 'Utilities', percentage: 16, color: '#6366F1' },
+    { category: 'Other', percentage: 9, color: '#8B5CF6' }
+  ],
+  metrics: {
+    costPerTicket: { value: 992, change: -12 },
+    revenuePerTicket: { value: 1567, change: 8 },
+    profitPerTicket: { value: 575, change: 22 },
+    roi: { value: 58, change: 5 }
+  }
+}
+
 function DashboardSectionA() {
   const navigate = useNavigate()
   
@@ -133,6 +166,9 @@ function DashboardSectionA() {
   const [description, setDescription] = useState('')
   const [triageData, setTriageData] = useState({ priority: 'P3', sla: '4 hours', team: 'General Pool' })
   const [validationError, setValidationError] = useState('')
+  const [hoveredVolumeBar, setHoveredVolumeBar] = useState(null)
+  const [hoveredResolutionPoint, setHoveredResolutionPoint] = useState(null)
+  const [hoveredFinancialBar, setHoveredFinancialBar] = useState(null)
 
   const showLanding = () => setCurrentView('landing')
   const showDashboard = () => setCurrentView('dashboard')
@@ -789,7 +825,7 @@ function DashboardSectionA() {
                             ))}
                           </div>
                           {/* Y labels */}
-                          <div className="absolute left-0 top-3 bottom-16 flex flex-col justify-between text-[10px] font-semibold text-gray-400">
+                          <div className="absolute left-0 top-3 bottom-16 flex flex-col-reverse justify-between text-[10px] font-semibold text-gray-400">
                             {yTicks.map((tick) => (
                               <div key={tick} className="-mt-[1px]">{tick}</div>
                             ))}
@@ -808,17 +844,28 @@ function DashboardSectionA() {
                           {/* Bars */}
                           <div className="absolute left-10 right-3 top-6 bottom-16 flex items-end gap-2">
                             {yoyData.volumeComparison.map((data, idx) => (
-                              <div key={idx} className="flex flex-col items-center gap-1 flex-1 min-w-[22px]">
+                              <div 
+                                key={idx} 
+                                className="flex flex-col items-center gap-1 flex-1 min-w-[22px] relative"
+                                onMouseEnter={() => setHoveredVolumeBar(idx)}
+                                onMouseLeave={() => setHoveredVolumeBar(null)}
+                              >
+                                {/* Tooltip */}
+                                {hoveredVolumeBar === idx && (
+                                  <div className="absolute bottom-full mb-2 bg-gray-800 text-white px-3 py-2 rounded-lg shadow-lg z-10 whitespace-nowrap text-xs font-semibold">
+                                    <div className="mb-1">{data.month}</div>
+                                    <div className="text-[#FF4E45]">2024: {data.year2024}</div>
+                                    <div className="absolute bottom-[-4px] left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                                  </div>
+                                )}
                                 <div className="flex items-end gap-1">
                                   <div
-                                    className="w-[18px] rounded-t-lg bg-[#FF4E45] hover:bg-[#ff3830] transition-all"
+                                    className="w-[18px] rounded-t-lg bg-[#FF4E45] hover:bg-[#ff3830] transition-all cursor-pointer"
                                     style={{ height: `${(data.year2025 / yMax) * 160}px` }}
-                                    title={`2025: ${data.year2025}`}
                                   ></div>
                                   <div
-                                    className="w-[18px] rounded-t-lg bg-gray-300 hover:bg-gray-200 transition-all"
+                                    className="w-[18px] rounded-t-lg bg-gray-300 hover:bg-gray-200 transition-all cursor-pointer"
                                     style={{ height: `${(data.year2024 / yMax) * 160}px` }}
-                                    title={`2024: ${data.year2024}`}
                                   ></div>
                                 </div>
                                 <div className="text-[10px] font-semibold text-gray-500 mt-1">{data.month}</div>
@@ -867,7 +914,7 @@ function DashboardSectionA() {
                               <div key={tick} className="border-t border-gray-100 flex-1"></div>
                             ))}
                           </div>
-                          <div className="absolute left-0 top-4 bottom-16 flex flex-col justify-between text-[10px] font-semibold text-gray-400">
+                          <div className="absolute left-0 top-4 bottom-16 flex flex-col-reverse justify-between text-[10px] font-semibold text-gray-400">
                             {yTicks.map((tick) => (
                               <div key={tick} className="-mt-[1px]">{tick}h</div>
                             ))}
@@ -923,10 +970,34 @@ function DashboardSectionA() {
                                   fill="#10b981"
                                   stroke="#fff"
                                   strokeWidth="1"
+                                  className="cursor-pointer hover:r-5"
+                                  onMouseEnter={() => setHoveredResolutionPoint(i)}
+                                  onMouseLeave={() => setHoveredResolutionPoint(null)}
                                 />
                               )
                             })}
                           </svg>
+                          {/* Tooltips */}
+                          {hoveredResolutionPoint !== null && (() => {
+                            const d = yoyData.resolutionTime[hoveredResolutionPoint]
+                            const x = xOffset + hoveredResolutionPoint * xStep
+                            const y = 100 - (d.year2025 / yMax) * 100
+                            return (
+                              <div 
+                                className="absolute bg-gray-800 text-white px-3 py-2 rounded-lg shadow-lg z-10 whitespace-nowrap text-xs font-semibold pointer-events-none"
+                                style={{
+                                  left: `${x}%`,
+                                  top: `calc(${y}% - 50px)`,
+                                  transform: 'translateX(-50%)'
+                                }}
+                              >
+                                <div className="mb-1">{d.month}</div>
+                                <div className="text-emerald-400">2025: {d.year2025}h</div>
+                                <div className="text-gray-300">2024: {d.year2024}h</div>
+                                <div className="absolute bottom-[-4px] left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                              </div>
+                            )
+                          })()}
                           {/* X labels */}
                           <div className="absolute left-8 right-3 bottom-6 flex justify-between text-[10px] font-semibold text-gray-600">
                             {months.map((m) => (
@@ -988,6 +1059,270 @@ function DashboardSectionA() {
                         <span className="text-base font-bold text-gray-300">{yoyData.kpiComparison.resolution.year2024}%</span>
                       </div>
                       <div className="text-[10px] text-emerald-600 font-semibold">↑ {yoyData.kpiComparison.resolution.change}%</div>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : dashboardTab === 'financial' ? (
+              <>
+                {/* Financial KPI Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                  {/* Expenses */}
+                  <div className="bg-gradient-to-br from-red-500 to-red-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                    <div className="absolute top-4 right-4 text-4xl opacity-40">💸</div>
+                    <div className="relative z-10">
+                      <div className="text-sm font-semibold uppercase tracking-wider mb-3 opacity-90">EXPENSES</div>
+                      <div className="text-4xl font-extrabold mb-2">₱{financialData.kpis.expenses.value}M</div>
+                      <div className="inline-flex items-center gap-1 text-sm font-semibold">
+                        ↑ {financialData.kpis.expenses.change}%
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Revenue */}
+                  <div className="bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                    <div className="absolute top-4 right-4 text-4xl opacity-40">💰</div>
+                    <div className="relative z-10">
+                      <div className="text-sm font-semibold uppercase tracking-wider mb-3 opacity-90">REVENUE</div>
+                      <div className="text-4xl font-extrabold mb-2">₱{financialData.kpis.revenue.value}M</div>
+                      <div className="inline-flex items-center gap-1 text-sm font-semibold">
+                        ↑ {financialData.kpis.revenue.change}%
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Net Profit */}
+                  <div className="bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                    <div className="absolute top-4 right-4 text-4xl opacity-40">📈</div>
+                    <div className="relative z-10">
+                      <div className="text-sm font-semibold uppercase tracking-wider mb-3 opacity-90">NET PROFIT</div>
+                      <div className="text-4xl font-extrabold mb-2">₱{financialData.kpis.netProfit.value}M</div>
+                      <div className="inline-flex items-center gap-1 text-sm font-semibold">
+                        ↑ {financialData.kpis.netProfit.change}%
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Margin */}
+                  <div className="bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-2xl p-6 text-white shadow-lg relative overflow-hidden">
+                    <div className="absolute top-4 right-4 text-4xl opacity-40">📊</div>
+                    <div className="relative z-10">
+                      <div className="text-sm font-semibold uppercase tracking-wider mb-3 opacity-90">MARGIN</div>
+                      <div className="text-4xl font-extrabold mb-2">{financialData.kpis.margin.value}%</div>
+                      <div className="inline-flex items-center gap-1 text-sm font-semibold">
+                        ↑ {financialData.kpis.margin.change}%
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Charts Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                  {/* Expenses vs Profit Chart */}
+                  <div className="lg:col-span-2 bg-white rounded-xl p-6 border border-gray-200">
+                    <div className="flex items-center gap-2 mb-6 pb-4 border-b-2 border-gray-100">
+                      <span className="text-xl">💸</span>
+                      <h3 className="text-lg font-bold text-gray-800">Expenses vs Profit</h3>
+                    </div>
+                    {(() => {
+                      const maxValue = Math.max(...financialData.expensesVsProfit.map(d => Math.max(d.expenses, d.profit)))
+                      const yMax = Math.ceil(maxValue) + 0.5
+                      const yTicks = [0, 0.5, 1.0, 1.5, 2.0, 2.5, 3.0]
+                      return (
+                        <div className="relative" style={{ height: '280px' }}>
+                          {/* Legend */}
+                          <div className="absolute left-0 right-0 -top-1 flex justify-center items-center gap-4 text-xs font-semibold text-gray-600">
+                            <div className="flex items-center gap-2">
+                              <span className="w-3 h-3 rounded-full bg-[#EF4444]"></span>
+                              <span>Expenses</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <span className="w-3 h-3 rounded-full bg-[#10B981]"></span>
+                              <span>Profit</span>
+                            </div>
+                          </div>
+                          {/* Grid lines */}
+                          <div className="absolute inset-x-3 left-10 top-6 bottom-20 flex flex-col justify-between pointer-events-none">
+                            {yTicks.map((tick) => (
+                              <div key={tick} className="border-t border-gray-100 flex-1"></div>
+                            ))}
+                          </div>
+                          {/* Y labels */}
+                          <div className="absolute left-0 top-6 bottom-20 flex flex-col-reverse justify-between text-[10px] font-semibold text-gray-400">
+                            {yTicks.map((tick) => (
+                              <div key={tick} className="-mt-[1px]">₱{tick}M</div>
+                            ))}
+                          </div>
+                          {/* Bars */}
+                          <div className="absolute left-10 right-3 top-9 bottom-20 flex items-end gap-3">
+                            {financialData.expensesVsProfit.map((data, idx) => (
+                              <div 
+                                key={idx} 
+                                className="flex flex-col items-center gap-1 flex-1 relative"
+                                onMouseEnter={() => setHoveredFinancialBar(idx)}
+                                onMouseLeave={() => setHoveredFinancialBar(null)}
+                              >
+                                {/* Tooltip */}
+                                {hoveredFinancialBar === idx && (
+                                  <div className="absolute bottom-full mb-2 bg-gray-800 text-white px-3 py-2 rounded-lg shadow-lg z-10 whitespace-nowrap text-xs font-semibold">
+                                    <div className="mb-1">{data.month}</div>
+                                    <div className="text-[#EF4444]">Expenses: ₱{data.expenses}M</div>
+                                    <div className="text-[#10B981]">Profit: ₱{data.profit}M</div>
+                                    <div className="absolute bottom-[-4px] left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                                  </div>
+                                )}
+                                <div className="flex items-end gap-1.5 w-full justify-center">
+                                  <div
+                                    className="w-[14px] rounded-t-md bg-[#EF4444] hover:bg-[#DC2626] transition-all cursor-pointer"
+                                    style={{ height: `${(data.expenses / yMax) * 170}px` }}
+                                  ></div>
+                                  <div
+                                    className="w-[14px] rounded-t-md bg-[#10B981] hover:bg-[#059669] transition-all cursor-pointer"
+                                    style={{ height: `${(data.profit / yMax) * 170}px` }}
+                                  ></div>
+                                </div>
+                                <div className="text-[10px] font-semibold text-gray-500 mt-1">{data.month}</div>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )
+                    })()}
+                    {/* Totals */}
+                    <div className="flex justify-around pt-4 px-6 mt-2 border-t-2 border-gray-100">
+                      <div className="text-center">
+                        <div className="flex items-center gap-2 justify-center mb-1">
+                          <span className="w-2 h-2 bg-[#EF4444] rounded-full"></span>
+                          <div className="text-[10px] text-gray-500 uppercase font-semibold">EXPENSES</div>
+                        </div>
+                        <div className="text-2xl font-extrabold text-[#EF4444]">₱{financialData.kpis.expenses.value}M</div>
+                      </div>
+                      <div className="text-center">
+                        <div className="flex items-center gap-2 justify-center mb-1">
+                          <span className="w-2 h-2 bg-[#10B981] rounded-full"></span>
+                          <div className="text-[10px] text-gray-500 uppercase font-semibold">PROFIT</div>
+                        </div>
+                        <div className="text-2xl font-extrabold text-[#10B981]">₱{financialData.kpis.netProfit.value}M</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Expense Breakdown Donut Chart */}
+                  <div className="bg-white rounded-xl p-6 border border-gray-200">
+                    <div className="flex items-center gap-2 mb-6 pb-4 border-b-2 border-gray-100">
+                      <span className="text-xl">📊</span>
+                      <h3 className="text-lg font-bold text-gray-800">Expense Breakdown</h3>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      {/* Donut Chart */}
+                      <div className="relative w-56 h-56 mb-6">
+                        <svg viewBox="0 0 100 100" className="transform -rotate-90">
+                          {(() => {
+                            let currentAngle = 0
+                            return financialData.expenseBreakdown.map((item, idx) => {
+                              const percentage = item.percentage
+                              const angle = (percentage / 100) * 360
+                              const startAngle = currentAngle
+                              const endAngle = currentAngle + angle
+                              
+                              // Convert to radians
+                              const startRad = (startAngle * Math.PI) / 180
+                              const endRad = (endAngle * Math.PI) / 180
+                              
+                              // Calculate path for donut segment
+                              const outerRadius = 45
+                              const innerRadius = 28
+                              
+                              const x1 = 50 + outerRadius * Math.cos(startRad)
+                              const y1 = 50 + outerRadius * Math.sin(startRad)
+                              const x2 = 50 + outerRadius * Math.cos(endRad)
+                              const y2 = 50 + outerRadius * Math.sin(endRad)
+                              const x3 = 50 + innerRadius * Math.cos(endRad)
+                              const y3 = 50 + innerRadius * Math.sin(endRad)
+                              const x4 = 50 + innerRadius * Math.cos(startRad)
+                              const y4 = 50 + innerRadius * Math.sin(startRad)
+                              
+                              const largeArc = angle > 180 ? 1 : 0
+                              
+                              const pathData = [
+                                `M ${x1} ${y1}`,
+                                `A ${outerRadius} ${outerRadius} 0 ${largeArc} 1 ${x2} ${y2}`,
+                                `L ${x3} ${y3}`,
+                                `A ${innerRadius} ${innerRadius} 0 ${largeArc} 0 ${x4} ${y4}`,
+                                'Z'
+                              ].join(' ')
+                              
+                              currentAngle = endAngle
+                              
+                              return (
+                                <path
+                                  key={idx}
+                                  d={pathData}
+                                  fill={item.color}
+                                  className="transition-opacity hover:opacity-80 cursor-pointer"
+                                />
+                              )
+                            })
+                          })()}
+                        </svg>
+                      </div>
+                      {/* Legend */}
+                      <div className="flex flex-col gap-3 w-full">
+                        {financialData.expenseBreakdown.map((item, idx) => (
+                          <div key={idx} className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <div className="w-3 h-3 rounded" style={{ backgroundColor: item.color }}></div>
+                              <span className="text-sm text-gray-600">{item.category}</span>
+                            </div>
+                            <span className="text-sm font-bold text-gray-800">{item.percentage}%</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Financial Metrics Section */}
+                <div className="bg-white rounded-xl p-6 border border-gray-200 mt-6">
+                  <div className="flex items-center gap-2 mb-6 pb-4 border-b-2 border-gray-100">
+                    <span className="text-xl">💼</span>
+                    <h3 className="text-lg font-bold text-gray-800">Financial Metrics</h3>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    {/* Cost per Ticket */}
+                    <div className="bg-red-50 rounded-xl text-center p-6 border border-red-100">
+                      <div className="text-xs font-semibold text-red-600 uppercase tracking-wider mb-3">COST/TICKET</div>
+                      <div className="text-3xl font-extrabold text-red-600 mb-2">₱{financialData.metrics.costPerTicket.value.toLocaleString()}</div>
+                      <div className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600">
+                        ↓ {Math.abs(financialData.metrics.costPerTicket.change)}%
+                      </div>
+                    </div>
+
+                    {/* Revenue per Ticket */}
+                    <div className="bg-emerald-50 text-center rounded-xl p-6 border border-emerald-100">
+                      <div className="text-xs font-semibold text-emerald-600 uppercase tracking-wider mb-3">REVENUE/TICKET</div>
+                      <div className="text-3xl font-extrabold text-emerald-600 mb-2">₱{financialData.metrics.revenuePerTicket.value.toLocaleString()}</div>
+                      <div className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600">
+                        ↑ {financialData.metrics.revenuePerTicket.change}%
+                      </div>
+                    </div>
+
+                    {/* Profit per Ticket */}
+                    <div className="bg-amber-50 text-center rounded-xl p-6 border border-amber-100">
+                      <div className="text-xs font-semibold text-amber-600 uppercase tracking-wider mb-3">PROFIT/TICKET</div>
+                      <div className="text-3xl font-extrabold text-amber-600 mb-2">₱{financialData.metrics.profitPerTicket.value.toLocaleString()}</div>
+                      <div className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600">
+                        ↑ {financialData.metrics.profitPerTicket.change}%
+                      </div>
+                    </div>
+
+                    {/* ROI */}
+                    <div className="bg-indigo-50 text-center rounded-xl p-6 border border-indigo-100">
+                      <div className="text-xs font-semibold text-indigo-600 uppercase tracking-wider mb-3">ROI</div>
+                      <div className="text-3xl font-extrabold text-indigo-600 mb-2">{financialData.metrics.roi.value}%</div>
+                      <div className="inline-flex items-center gap-1 text-sm font-semibold text-emerald-600">
+                        ↑ {financialData.metrics.roi.change}%
+                      </div>
                     </div>
                   </div>
                 </div>
