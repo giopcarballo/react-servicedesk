@@ -410,17 +410,10 @@ function DashboardSectionA() {
               ))}
             </div>
 
-            <div className="bg-white p-6 rounded-xl mb-6 border-l-4 border-red-400">
-              <h2 className="text-2xl font-bold text-gray-800 mb-2 flex items-center gap-2">
-                <span>{selectedDashboardTab.icon}</span> {selectedDashboardTab.title}
-              </h2>
-              <p className="text-gray-500 text-sm">{selectedDashboardTab.description}</p>
-            </div>
-
             {dashboardTab === 'bi' ? (
               <>
                 {/* Dashboard Filters */}
-                <div className="bg-white p-5 rounded-xl mb-6 border border-gray-200 flex gap-4 flex-wrap items-center">
+                <div className="bg-white p-5 rounded-xl mb-4 border border-gray-200 flex gap-4 flex-wrap items-center">
               <div className="flex flex-col gap-1">
                 <label className="text-xs font-semibold text-gray-500 uppercase">Property</label>
                 <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]" value={property} onChange={(e) => setProperty(e.target.value)}>
@@ -805,9 +798,9 @@ function DashboardSectionA() {
             ) : dashboardTab === 'yoy' ? (
               <>
                 {/* Year-over-Year Analysis Content */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 mb-3">
+                <div className="grid grid-cols-1 lg:grid-cols-5 gap-3 mb-3">
                   {/* Volume Comparison */}
-                  <div className="bg-white rounded-xl p-3 border border-gray-200">
+                  <div className="bg-white rounded-xl p-3 border border-gray-200 lg:col-span-3">
                     <div className="flex items-center gap-2 mb-3 pb-3 border-b-2 border-gray-100">
                       <span className="text-base">📈</span>
                       <h3 className="text-sm font-bold text-gray-800">Volume Comparison</h3>
@@ -854,7 +847,8 @@ function DashboardSectionA() {
                                 {hoveredVolumeBar === idx && (
                                   <div className="absolute bottom-full mb-2 bg-gray-800 text-white px-3 py-2 rounded-lg shadow-lg z-10 whitespace-nowrap text-xs font-semibold">
                                     <div className="mb-1">{data.month}</div>
-                                    <div className="text-[#FF4E45]">2024: {data.year2024}</div>
+                                    <div className="text-[#FF4E45]">2025: {data.year2025}</div>
+                                    <div className="text-gray-300">2024: {data.year2024}</div>
                                     <div className="absolute bottom-[-4px] left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
                                   </div>
                                 )}
@@ -889,7 +883,7 @@ function DashboardSectionA() {
                   </div>
 
                   {/* Resolution Time */}
-                  <div className="bg-white rounded-xl p-3 border border-gray-200">
+                  <div className="bg-white rounded-xl p-3 border border-gray-200 lg:col-span-2">
                     <div className="flex items-center gap-2 mb-3 pb-3 border-b-2 border-gray-100">
                       <span className="text-base">⏱️</span>
                       <h3 className="text-sm font-bold text-gray-800">Resolution Time</h3>
@@ -931,17 +925,19 @@ function DashboardSectionA() {
                             </div>
                           </div>
                           {/* Lines + area */}
-                          <svg className="absolute inset-x-6 top-6 bottom-28 w-[calc(100%-48px)] h-[calc(100%-80px)]">
+                          <svg className="absolute left-8 right-3 top-6 bottom-24 w-[calc(100%-44px)] h-[calc(100%-96px)]" viewBox="0 0 100 100" preserveAspectRatio="none">
                             <polygon
                               points={areaPath}
                               fill="rgba(16,185,129,0.08)"
                               stroke="none"
+                              vectorEffect="non-scaling-stroke"
                             />
                             <polyline
                               fill="none"
                               stroke="#d1d5db"
-                              strokeWidth="2"
-                              strokeDasharray="4,4"
+                              strokeWidth="0.8"
+                              strokeDasharray="2,2"
+                              vectorEffect="non-scaling-stroke"
                               points={yoyData.resolutionTime.map((d, i) => {
                                 const x = xOffset + i * xStep
                                 const y = 100 - (d.year2024 / yMax) * 100
@@ -951,32 +947,34 @@ function DashboardSectionA() {
                             <polyline
                               fill="none"
                               stroke="#10b981"
-                              strokeWidth="3"
+                              strokeWidth="1.2"
+                              vectorEffect="non-scaling-stroke"
                               points={yoyData.resolutionTime.map((d, i) => {
                                 const x = xOffset + i * xStep
                                 const y = 100 - (d.year2025 / yMax) * 100
                                 return `${x},${y}`
                               }).join(' ')}
                             />
+                          </svg>
+                          {/* Data points overlay */}
+                          <div className="absolute left-8 right-3 top-6 bottom-24" style={{ height: 'calc(100% - 96px)' }}>
                             {yoyData.resolutionTime.map((d, i) => {
                               const x = xOffset + i * xStep
                               const y = 100 - (d.year2025 / yMax) * 100
                               return (
-                                <circle
+                                <div
                                   key={i}
-                                  cx={`${x}%`}
-                                  cy={`${y}%`}
-                                  r="3.5"
-                                  fill="#10b981"
-                                  stroke="#fff"
-                                  strokeWidth="1"
-                                  className="cursor-pointer hover:r-5"
+                                  className="absolute w-3 h-3 bg-emerald-500 border-2 border-white rounded-full cursor-pointer hover:w-4 hover:h-4 transition-all"
+                                  style={{
+                                    left: `calc(${x}% - 6px)`,
+                                    top: `calc(${y}% - 6px)`
+                                  }}
                                   onMouseEnter={() => setHoveredResolutionPoint(i)}
                                   onMouseLeave={() => setHoveredResolutionPoint(null)}
                                 />
                               )
                             })}
-                          </svg>
+                          </div>
                           {/* Tooltips */}
                           {hoveredResolutionPoint !== null && (() => {
                             const d = yoyData.resolutionTime[hoveredResolutionPoint]
