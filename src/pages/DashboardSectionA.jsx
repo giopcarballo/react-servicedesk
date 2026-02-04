@@ -414,232 +414,236 @@ function DashboardSectionA() {
               <>
                 {/* Dashboard Filters */}
                 <div className="bg-white p-5 rounded-xl mb-4 border border-gray-200 flex gap-4 flex-wrap items-center">
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-gray-500 uppercase">Property</label>
-                <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]" value={property} onChange={(e) => setProperty(e.target.value)}>
-                  <option value="all">All Properties</option>
-                  <option value="manila">SOGO Hotel Manila</option>
-                  <option value="quezon">SOGO Hotel Quezon City</option>
-                  <option value="makati">SOGO Hotel Makati</option>
-                </select>
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-gray-500 uppercase">Date Range</label>
-                <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]" value={dateRange} onChange={(e) => setDateRange(e.target.value)}>
-                  <option value="today">Today</option>
-                  <option value="7days">Last 7 Days</option>
-                  <option value="30days">Last 30 Days</option>
-                  <option value="month">This Month</option>
-                </select>
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-gray-500 uppercase">Department</label>
-                <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]" value={department} onChange={(e) => setDepartment(e.target.value)}>
-                  <option value="all">All Departments</option>
-                  <option value="engineering">Engineering</option>
-                  <option value="housekeeping">Housekeeping</option>
-                  <option value="it">IT Support</option>
-                  <option value="fnb">F&B Service</option>
-                </select>
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-xs font-semibold text-gray-500 uppercase">Auto-Refresh</label>
-                <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]" value={autoRefresh} onChange={(e) => setAutoRefresh(Number(e.target.value))}>
-                  <option value="0">Off</option>
-                  <option value="30">30 seconds</option>
-                  <option value="60">1 minute</option>
-                  <option value="300">5 minutes</option>
-                </select>
-              </div>
-            </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-semibold text-gray-500 uppercase">Property</label>
+                    <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]" value={property} onChange={(e) => setProperty(e.target.value)}>
+                      <option value="all">All Properties</option>
+                      <option value="manila">SOGO Hotel Manila</option>
+                      <option value="quezon">SOGO Hotel Quezon City</option>
+                      <option value="makati">SOGO Hotel Makati</option>
+                    </select>
+                  </div>
 
-            {/* KPI Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-              <div className="bg-white rounded-xl p-5 border border-gray-200 relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-red-600"></div>
-                <div className="flex justify-between items-start mb-3">
-                  <div className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide">Total Tickets</div>
-                  <div className="text-2xl opacity-60">📋</div>
-                </div>
-                <div className="text-3xl font-extrabold text-gray-800 mb-2">{stats.totalTickets}</div>
-                <div className="inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-0.5 rounded bg-green-100 text-green-800">
-                  ↑ 12% <span className="font-normal opacity-70">vs last period</span>
-                </div>
-              </div>
-              <div className="bg-white rounded-xl p-5 border border-gray-200 relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-400 to-red-600"></div>
-                <div className="flex justify-between items-start mb-3">
-                  <div className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide">Critical (P1)</div>
-                  <div className="text-2xl opacity-60">🚨</div>
-                </div>
-                <div className="text-3xl font-extrabold text-gray-800 mb-2">{stats.critical}</div>
-                <div className="inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-0.5 rounded bg-red-100 text-red-800">
-                  ↑ {stats.critical} <span className="font-normal opacity-70">needs attention</span>
-                </div>
-              </div>
-              <div className="bg-white rounded-xl p-5 border border-gray-200 relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-600"></div>
-                <div className="flex justify-between items-start mb-3">
-                  <div className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide">SLA Compliance</div>
-                  <div className="text-2xl opacity-60">✅</div>
-                </div>
-                <div className="text-3xl font-extrabold text-gray-800 mb-2">{stats.slaCompliance}%</div>
-                <div className="inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-0.5 rounded bg-green-100 text-green-800">
-                  ↑ 2.1% <span className="font-normal opacity-70">improved</span>
-                </div>
-              </div>
-              <div className="bg-white rounded-xl p-5 border border-gray-200 relative overflow-hidden">
-                <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-amber-600"></div>
-                <div className="flex justify-between items-start mb-3">
-                  <div className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide">Avg Resolution Time</div>
-                  <div className="text-2xl opacity-60">⏱️</div>
-                </div>
-                <div className="text-3xl font-extrabold text-gray-800 mb-2">{stats.avgResolution}h</div>
-                <div className="inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-0.5 rounded bg-green-100 text-green-800">
-                  ↓ 18min <span className="font-normal opacity-70">faster</span>
-                </div>
-              </div>
-            </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-semibold text-gray-500 uppercase">Date Range</label>
+                    <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]" value={dateRange} onChange={(e) => setDateRange(e.target.value)}>
+                      <option value="today">Today</option>
+                      <option value="7days">Last 7 Days</option>
+                      <option value="30days">Last 30 Days</option>
+                      <option value="month">This Month</option>
+                    </select>
+                  </div>
 
-            {/* Charts Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
-              <div className="lg:col-span-2 bg-white rounded-xl p-6 border border-gray-200">
-                <div className="flex justify-between items-center mb-5 pb-4 border-b-2 border-gray-100 flex-wrap gap-3">
-                  <div className="flex items-center gap-3">
-                    <h3 className="text-base font-bold text-gray-800">📈 Ticket Volume Trend</h3>
-                    <div className="flex items-center gap-1.5 text-[11px] text-gray-500">
-                      <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
-                      <span className="font-semibold">Live</span>
-                    </div>
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-semibold text-gray-500 uppercase">Department</label>
+                    <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]" value={department} onChange={(e) => setDepartment(e.target.value)}>
+                      <option value="all">All Departments</option>
+                      <option value="engineering">Engineering</option>
+                      <option value="housekeeping">Housekeeping</option>
+                      <option value="it">IT Support</option>
+                      <option value="fnb">F&B Service</option>
+                    </select>
                   </div>
-                  <div className="flex gap-2 flex-wrap">
-                    <button 
-                      className={`px-3 py-1.5 border rounded-md text-xs font-semibold transition-all ${
-                        chartPeriod === 'day'
-                          ? 'border-red-500 bg-red-500 text-white'
-                          : 'border-gray-200 bg-white text-gray-500 hover:border-red-500 hover:text-red-500'
-                      }`}
-                      onClick={() => setChartPeriod('day')}
-                    >
-                      📅 Day
-                    </button>
-                    <button 
-                      className={`px-3 py-1.5 border rounded-md text-xs font-semibold transition-all ${
-                        chartPeriod === 'week'
-                          ? 'border-red-500 bg-red-500 text-white'
-                          : 'border-gray-200 bg-white text-gray-500 hover:border-red-500 hover:text-red-500'
-                      }`}
-                      onClick={() => setChartPeriod('week')}
-                    >
-                      📊 Week
-                    </button>
-                    <button 
-                      className={`px-3 py-1.5 border rounded-md text-xs font-semibold transition-all ${
-                        chartPeriod === 'month'
-                          ? 'border-red-500 bg-red-500 text-white'
-                          : 'border-gray-200 bg-white text-gray-500 hover:border-red-500 hover:text-red-500'
-                      }`}
-                      onClick={() => setChartPeriod('month')}
-                    >
-                      📆 Month
-                    </button>
-                    <div className="w-px h-6 bg-gray-300 mx-1"></div>
-                    <button 
-                      className="px-3 py-1.5 border border-emerald-500 bg-emerald-500 text-white rounded-md text-xs font-semibold hover:bg-emerald-600 transition-all flex items-center gap-1"
-                      onClick={() => {
-                        const csvContent = 'Period,Total,Resolved,Pending\n' + 
-                          currentChartData.map(d => `${d.day},${d.value},${d.resolved},${d.pending}`).join('\n');
-                        const blob = new Blob([csvContent], { type: 'text/csv' });
-                        const url = window.URL.createObjectURL(blob);
-                        const a = document.createElement('a');
-                        a.href = url;
-                        a.download = `ticket-volume-${chartPeriod}-${new Date().toISOString().split('T')[0]}.csv`;
-                        a.click();
-                      }}
-                    >
-                      📥 Export Excel
-                    </button>
-                    <button 
-                      className="px-3 py-1.5 border border-blue-500 bg-blue-500 text-white rounded-md text-xs font-semibold hover:bg-blue-600 transition-all flex items-center gap-1 disabled:opacity-50"
-                      onClick={handleRefreshChart}
-                      disabled={refreshing}
-                    >
-                      <span className={refreshing ? 'inline-block animate-spin' : ''}>🔄</span> {refreshing ? 'Refreshing...' : 'Refresh'}
-                    </button>
+
+                  <div className="flex flex-col gap-1">
+                    <label className="text-xs font-semibold text-gray-500 uppercase">Auto-Refresh</label>
+                    <select className="px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-800 min-w-[150px]" value={autoRefresh} onChange={(e) => setAutoRefresh(Number(e.target.value))}>
+                      <option value="0">Off</option>
+                      <option value="30">30 seconds</option>
+                      <option value="60">1 minute</option>
+                      <option value="300">5 minutes</option>
+                    </select>
                   </div>
                 </div>
-                <div className={`h-64 flex items-end justify-around gap-3 px-4 py-5 transition-opacity duration-300 ${refreshing ? 'opacity-50' : 'opacity-100'}`}>
-                  {currentChartData.map((data, idx) => (
-                    <div 
-                      key={idx} 
-                      className="flex flex-col items-center gap-2 flex-1 cursor-pointer"
-                      onClick={() => setSelectedBar(idx)}
-                    >
-                      <div className="text-sm font-bold text-gray-800">{data.value}</div>
-                      <div 
-                        className={`w-full rounded-t-lg transition-all duration-300 bg-gradient-to-t from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 ${selectedBar === idx ? 'ring-2 ring-red-300' : ''}`}
-                        style={{ height: `${(data.value / chartMax) * 180}px` }}
-                      ></div>
-                      <div className="text-xs font-semibold text-gray-500">{data.day}</div>
+
+                {/* KPI Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                  <div className="bg-white rounded-xl p-5 border border-gray-200 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-500 to-red-600"></div>
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide">Total Tickets</div>
+                      <div className="text-2xl opacity-60">📋</div>
                     </div>
-                  ))}
-                </div>
-                <div className="flex justify-between px-6 pt-4 border-t-2 border-gray-100 mt-4 bg-gradient-to-b from-gray-50 to-white flex-wrap gap-4">
-                  <div className="text-center flex-1 min-w-[120px]">
-                    <div className="text-[11px] text-gray-500 uppercase tracking-wide mb-1.5 font-semibold">Total Tickets</div>
-                    <div className="text-3xl font-extrabold text-red-500">{chartTotal}</div>
-                  </div>
-                  <div className="text-center flex-1 min-w-[120px]">
-                    <div className="text-[11px] text-gray-500 uppercase tracking-wide mb-1.5 font-semibold">Average</div>
-                    <div className="text-3xl font-extrabold text-emerald-500">{chartAvg}</div>
-                  </div>
-                  <div className="text-center flex-1 min-w-[120px]">
-                    <div className="text-[11px] text-gray-500 uppercase tracking-wide mb-1.5 font-semibold">Peak Period</div>
-                    <div className="text-lg font-extrabold text-gray-800 mt-1.5">{peakDay.day}</div>
-                    <div className="text-[10px] text-amber-500 mt-0.5 font-semibold">{peakDay.value} tickets</div>
-                  </div>
-                  <div className="text-center flex-1 min-w-[120px]">
-                    <div className="text-[11px] text-gray-500 uppercase tracking-wide mb-1.5 font-semibold">Trend</div>
-                    <div className="text-2xl font-extrabold mt-1.5 text-emerald-500">↗</div>
-                    <div className="text-[10px] mt-0.5 font-semibold text-emerald-500">+12% growth</div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-white rounded-xl p-6 border border-gray-200">
-                <div className="flex justify-between items-center mb-5 pb-4 border-b-2 border-gray-100">
-                  <h3 className="text-base font-bold text-gray-800">🎯 Ticket Status Distribution</h3>
-                </div>
-                <div className="flex flex-col items-center">
-                  <div className="w-48 h-48 rounded-full relative mx-auto" style={{
-                    background: 'conic-gradient(#10b981 0deg 216deg, #f59e0b 216deg 288deg, #ef4444 288deg 360deg)'
-                  }}>
-                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] bg-white rounded-full"></div>
-                  </div>
-                  <div className="flex flex-col gap-3 mt-5 w-full">
-                    <div className="flex items-center gap-3">
-                      <div className="w-4 h-4 rounded bg-emerald-500"></div>
-                      <span className="flex-1 text-[13px] text-gray-500">Resolved</span>
-                      <span className="text-sm font-bold text-gray-800">148 (60%)</span>
+                    <div className="text-3xl font-extrabold text-gray-800 mb-2">{stats.totalTickets}</div>
+                    <div className="inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-0.5 rounded bg-green-100 text-green-800">
+                      ↑ 12% <span className="font-normal opacity-70">vs last period</span>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-4 h-4 rounded bg-amber-500"></div>
-                      <span className="flex-1 text-[13px] text-gray-500">In Progress</span>
-                      <span className="text-sm font-bold text-gray-800">74 (30%)</span>
+                  </div>
+                  <div className="bg-white rounded-xl p-5 border border-gray-200 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-red-400 to-red-600"></div>
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide">Critical (P1)</div>
+                      <div className="text-2xl opacity-60">🚨</div>
                     </div>
-                    <div className="flex items-center gap-3">
-                      <div className="w-4 h-4 rounded bg-red-500"></div>
-                      <span className="flex-1 text-[13px] text-gray-500">Open</span>
-                      <span className="text-sm font-bold text-gray-800">25 (10%)</span>
+                    <div className="text-3xl font-extrabold text-gray-800 mb-2">{stats.critical}</div>
+                    <div className="inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-0.5 rounded bg-red-100 text-red-800">
+                      ↑ {stats.critical} <span className="font-normal opacity-70">needs attention</span>
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-xl p-5 border border-gray-200 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 to-emerald-600"></div>
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide">SLA Compliance</div>
+                      <div className="text-2xl opacity-60">✅</div>
+                    </div>
+                    <div className="text-3xl font-extrabold text-gray-800 mb-2">{stats.slaCompliance}%</div>
+                    <div className="inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-0.5 rounded bg-green-100 text-green-800">
+                      ↑ 2.1% <span className="font-normal opacity-70">improved</span>
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-xl p-5 border border-gray-200 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-500 to-amber-600"></div>
+                    <div className="flex justify-between items-start mb-3">
+                      <div className="text-[13px] font-semibold text-gray-500 uppercase tracking-wide">Avg Resolution Time</div>
+                      <div className="text-2xl opacity-60">⏱️</div>
+                    </div>
+                    <div className="text-3xl font-extrabold text-gray-800 mb-2">{stats.avgResolution}h</div>
+                    <div className="inline-flex items-center gap-1 text-[13px] font-semibold px-2 py-0.5 rounded bg-green-100 text-green-800">
+                      ↓ 18min <span className="font-normal opacity-70">faster</span>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
+
+                {/* Charts Grid */}
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+                  <div className="lg:col-span-2 bg-white rounded-xl p-6 border border-gray-200">
+                    <div className="flex justify-between items-center mb-5 pb-4 border-b-2 border-gray-100 flex-wrap gap-3">
+                      <div className="flex items-center gap-3">
+                        <h3 className="text-base font-bold text-gray-800">📈 Ticket Volume Trend</h3>
+                        <div className="flex items-center gap-1.5 text-[11px] text-gray-500">
+                          <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                          <span className="font-semibold">Live</span>
+                        </div>
+                      </div>
+                      <div className="flex gap-2 flex-wrap">
+                        <button 
+                          className={`px-3 py-1.5 border rounded-md text-xs font-semibold transition-all ${
+                            chartPeriod === 'day'
+                              ? 'border-red-500 bg-red-500 text-white'
+                              : 'border-gray-200 bg-white text-gray-500 hover:border-red-500 hover:text-red-500'
+                          }`}
+                          onClick={() => setChartPeriod('day')}
+                        >
+                          📅 Day
+                        </button>
+                        <button 
+                          className={`px-3 py-1.5 border rounded-md text-xs font-semibold transition-all ${
+                            chartPeriod === 'week'
+                              ? 'border-red-500 bg-red-500 text-white'
+                              : 'border-gray-200 bg-white text-gray-500 hover:border-red-500 hover:text-red-500'
+                          }`}
+                          onClick={() => setChartPeriod('week')}
+                        >
+                          📊 Week
+                        </button>
+                        <button 
+                          className={`px-3 py-1.5 border rounded-md text-xs font-semibold transition-all ${
+                            chartPeriod === 'month'
+                              ? 'border-red-500 bg-red-500 text-white'
+                              : 'border-gray-200 bg-white text-gray-500 hover:border-red-500 hover:text-red-500'
+                          }`}
+                          onClick={() => setChartPeriod('month')}
+                        >
+                          📆 Month
+                        </button>
+                        <div className="w-px h-6 bg-gray-300 mx-1"></div>
+                        <button 
+                          className="px-3 py-1.5 border border-emerald-500 bg-emerald-500 text-white rounded-md text-xs font-semibold hover:bg-emerald-600 transition-all flex items-center gap-1"
+                          onClick={() => {
+                            const csvContent = 'Period,Total,Resolved,Pending\n' + 
+                              currentChartData.map(d => `${d.day},${d.value},${d.resolved},${d.pending}`).join('\n');
+                            const blob = new Blob([csvContent], { type: 'text/csv' });
+                            const url = window.URL.createObjectURL(blob);
+                            const a = document.createElement('a');
+                            a.href = url;
+                            a.download = `ticket-volume-${chartPeriod}-${new Date().toISOString().split('T')[0]}.csv`;
+                            a.click();
+                          }}
+                        >
+                          📥 Export Excel
+                        </button>
+                        <button 
+                          className="px-3 py-1.5 border border-blue-500 bg-blue-500 text-white rounded-md text-xs font-semibold hover:bg-blue-600 transition-all flex items-center gap-1 disabled:opacity-50"
+                          onClick={handleRefreshChart}
+                          disabled={refreshing}
+                        >
+                          <span className={refreshing ? 'inline-block animate-spin' : ''}>🔄</span> {refreshing ? 'Refreshing...' : 'Refresh'}
+                        </button>
+                      </div>
+                    </div>
+                    <div className={`h-64 flex items-end justify-around gap-3 px-4 py-5 transition-opacity duration-300 ${refreshing ? 'opacity-50' : 'opacity-100'}`}>
+                      {currentChartData.map((data, idx) => (
+                        <div 
+                          key={idx} 
+                          className="flex flex-col items-center gap-2 flex-1 cursor-pointer"
+                          onClick={() => setSelectedBar(idx)}
+                        >
+                          <div className="text-sm font-bold text-gray-800">{data.value}</div>
+                          <div 
+                            className={`w-full rounded-t-lg transition-all duration-300 bg-gradient-to-t from-red-600 to-red-500 hover:from-red-500 hover:to-red-400 ${selectedBar === idx ? 'ring-2 ring-red-300' : ''}`}
+                            style={{ height: `${(data.value / chartMax) * 180}px` }}
+                          ></div>
+                          <div className="text-xs font-semibold text-gray-500">{data.day}</div>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="flex justify-between px-6 pt-4 border-t-2 border-gray-100 mt-4 bg-gradient-to-b from-gray-50 to-white flex-wrap gap-4">
+                      <div className="text-center flex-1 min-w-[120px]">
+                        <div className="text-[11px] text-gray-500 uppercase tracking-wide mb-1.5 font-semibold">Total Tickets</div>
+                        <div className="text-3xl font-extrabold text-red-500">{chartTotal}</div>
+                      </div>
+                      <div className="text-center flex-1 min-w-[120px]">
+                        <div className="text-[11px] text-gray-500 uppercase tracking-wide mb-1.5 font-semibold">Average</div>
+                        <div className="text-3xl font-extrabold text-emerald-500">{chartAvg}</div>
+                      </div>
+                      <div className="text-center flex-1 min-w-[120px]">
+                        <div className="text-[11px] text-gray-500 uppercase tracking-wide mb-1.5 font-semibold">Peak Period</div>
+                        <div className="text-lg font-extrabold text-gray-800 mt-1.5">{peakDay.day}</div>
+                        <div className="text-[10px] text-amber-500 mt-0.5 font-semibold">{peakDay.value} tickets</div>
+                      </div>
+                      <div className="text-center flex-1 min-w-[120px]">
+                        <div className="text-[11px] text-gray-500 uppercase tracking-wide mb-1.5 font-semibold">Trend</div>
+                        <div className="text-2xl font-extrabold mt-1.5 text-emerald-500">↗</div>
+                        <div className="text-[10px] mt-0.5 font-semibold text-emerald-500">+12% growth</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="bg-white rounded-xl p-6 border border-gray-200">
+                    <div className="flex justify-between items-center mb-5 pb-4 border-b-2 border-gray-100">
+                      <h3 className="text-base font-bold text-gray-800">🎯 Ticket Status Distribution</h3>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="w-48 h-48 rounded-full relative mx-auto" style={{
+                        background: 'conic-gradient(#10b981 0deg 216deg, #f59e0b 216deg 288deg, #ef4444 288deg 360deg)'
+                      }}>
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] bg-white rounded-full"></div>
+                      </div>
+                      <div className="flex flex-col gap-3 mt-5 w-full">
+                        <div className="flex items-center gap-3">
+                          <div className="w-4 h-4 rounded bg-emerald-500"></div>
+                          <span className="flex-1 text-[13px] text-gray-500">Resolved</span>
+                          <span className="text-sm font-bold text-gray-800">148 (60%)</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-4 h-4 rounded bg-amber-500"></div>
+                          <span className="flex-1 text-[13px] text-gray-500">In Progress</span>
+                          <span className="text-sm font-bold text-gray-800">74 (30%)</span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <div className="w-4 h-4 rounded bg-red-500"></div>
+                          <span className="flex-1 text-[13px] text-gray-500">Open</span>
+                          <span className="text-sm font-bold text-gray-800">25 (10%)</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
                 {/* Three Column Grid: Team Performance, SLA Alerts, Real-Time Tickets */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 mb-6">
+                <div className="flex gap-5 mb-6 items-stretch">
+
                   {/* Team Performance */}
-                  <div className="bg-white rounded-xl p-6 border border-gray-200">
+                  <div className="flex-1 bg-white rounded-xl p-6 border border-gray-200">
                     <div className="flex items-center gap-2 mb-6">
                       <span className="text-xl">👥</span>
                       <h3 className="text-lg font-bold text-gray-800">Team Performance</h3>
@@ -693,7 +697,7 @@ function DashboardSectionA() {
                   </div>
 
                   {/* SLA Alerts */}
-                  <div className="bg-white rounded-xl p-6 border border-gray-200">
+                  <div className="flex-1 bg-white rounded-xl p-6 border border-gray-200">
                     <div className="flex items-center gap-2 mb-6">
                       <span className="text-xl">🚨</span>
                       <h3 className="text-lg font-bold text-gray-800">SLA Alerts</h3>
@@ -727,40 +731,37 @@ function DashboardSectionA() {
                   </div>
 
                   {/* Real-Time Tickets */}
-                  <div className="bg-white rounded-xl p-6 border border-gray-200">
+                  <div className="flex-1 bg-white rounded-xl p-6 border border-gray-200 relative">
                     <div className="flex items-center gap-2 mb-6">
                       <span className="text-xl">⚡</span>
                       <h3 className="text-lg font-bold text-gray-800">Real-Time Tickets</h3>
                     </div>
                     <div className="space-y-3">
-                      <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-red-300 transition-colors">
-                        <div className="flex items-start gap-3">
-                          <div className="w-1 h-full bg-red-500 rounded-full absolute left-0"></div>
-                          <div className="flex-1 min-w-0 pl-3">
-                            <div className="flex items-center justify-between gap-2 mb-1">
-                              <span className="font-bold text-gray-800">TKT-150</span>
-                              <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded">P1</span>
-                            </div>
-                            <p className="text-sm text-gray-600">Elevator stuck 3-4</p>
+                      <div className="relative p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-red-300 transition-colors">
+                        <div className="absolute left-0 top-0 h-full w-1 bg-red-500 rounded-l"></div>
+                        <div className="flex-1 min-w-0 pl-3">
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <span className="font-bold text-gray-800">TKT-150</span>
+                            <span className="px-2 py-0.5 bg-red-100 text-red-700 text-xs font-bold rounded">P1</span>
                           </div>
+                          <p className="text-sm text-gray-600">Elevator stuck 3-4</p>
                         </div>
                       </div>
-                      <div className="p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-amber-300 transition-colors">
-                        <div className="flex items-start gap-3">
-                          <div className="w-1 h-full bg-amber-500 rounded-full absolute left-0"></div>
-                          <div className="flex-1 min-w-0 pl-3">
-                            <div className="flex items-center justify-between gap-2 mb-1">
-                              <span className="font-bold text-gray-800">TKT-149</span>
-                              <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-bold rounded">P2</span>
-                            </div>
-                            <p className="text-sm text-gray-600">Room service delay</p>
+                      <div className="relative p-4 bg-gray-50 rounded-lg border border-gray-200 hover:border-amber-300 transition-colors">
+                        <div className="absolute left-0 top-0 h-full w-1 bg-amber-500 rounded-l"></div>
+                        <div className="flex-1 min-w-0 pl-3">
+                          <div className="flex items-center justify-between gap-2 mb-1">
+                            <span className="font-bold text-gray-800">TKT-149</span>
+                            <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-xs font-bold rounded">P2</span>
                           </div>
+                          <p className="text-sm text-gray-600">Room service delay</p>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
+                </div>
+                
                 {/* Guest Satisfaction & Executive Summary */}
                 <div className="bg-white rounded-xl p-6 border border-gray-200">
                   <div className="flex items-center gap-2 mb-6 pb-4 border-b-2 border-gray-100">
@@ -794,6 +795,7 @@ function DashboardSectionA() {
                     </div>
                   </div>
                 </div>
+                
               </>
             ) : dashboardTab === 'yoy' ? (
               <>
@@ -1061,6 +1063,7 @@ function DashboardSectionA() {
                   </div>
                 </div>
               </>
+
             ) : dashboardTab === 'financial' ? (
               <>
                 {/* Financial KPI Cards */}
