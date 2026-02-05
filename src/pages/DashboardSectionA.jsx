@@ -1,8 +1,202 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import Sidebar from '../components/Sidebar'
 import SidebarToggle from '../components/SidebarToggle'
 import Header from '../components/Header'
+
+// ============================================================
+// DASHBOARD DATA - Centralized data for all dashboard tabs
+// ============================================================
+
+// Master ticket data
+const ticketsData = [
+  { id: 'TKT-001', category: 'engineering', priority: 'P1', status: 'resolved', resolvedTime: 2.5, cost: 1200, revenue: 1800, property: 'manila', department: 'engineering', createdAt: '2025-01-05', resolvedAt: '2025-01-05', csat: 5 },
+  { id: 'TKT-002', category: 'housekeeping', priority: 'P2', status: 'resolved', resolvedTime: 1.5, cost: 500, revenue: 800, property: 'manila', department: 'housekeeping', createdAt: '2025-01-08', resolvedAt: '2025-01-08', csat: 4 },
+  { id: 'TKT-003', category: 'it-support', priority: 'P2', status: 'in-progress', resolvedTime: null, cost: 800, revenue: 1200, property: 'quezon', department: 'it', createdAt: '2025-01-10', resolvedAt: null, csat: null },
+  { id: 'TKT-004', category: 'fnb', priority: 'P3', status: 'resolved', resolvedTime: 0.5, cost: 300, revenue: 500, property: 'makati', department: 'fnb', createdAt: '2025-01-12', resolvedAt: '2025-01-12', csat: 5 },
+  { id: 'TKT-005', category: 'engineering', priority: 'P1', status: 'open', resolvedTime: null, cost: 2000, revenue: 3000, property: 'manila', department: 'engineering', createdAt: '2025-01-15', resolvedAt: null, csat: null },
+  { id: 'TKT-006', category: 'housekeeping', priority: 'P3', status: 'resolved', resolvedTime: 3.2, cost: 400, revenue: 600, property: 'quezon', department: 'housekeeping', createdAt: '2025-01-18', resolvedAt: '2025-01-18', csat: 4 },
+  { id: 'TKT-007', category: 'it-support', priority: 'P1', status: 'resolved', resolvedTime: 1.8, cost: 1500, revenue: 2200, property: 'makati', department: 'it', createdAt: '2025-01-20', resolvedAt: '2025-01-20', csat: 5 },
+  { id: 'TKT-008', category: 'fnb', priority: 'P2', status: 'in-progress', resolvedTime: null, cost: 600, revenue: 900, property: 'manila', department: 'fnb', createdAt: '2025-01-22', resolvedAt: null, csat: null },
+  { id: 'TKT-009', category: 'engineering', priority: 'P2', status: 'resolved', resolvedTime: 4.0, cost: 1800, revenue: 2700, property: 'quezon', department: 'engineering', createdAt: '2025-02-02', resolvedAt: '2025-02-02', csat: 4 },
+  { id: 'TKT-010', category: 'housekeeping', priority: 'P3', status: 'resolved', resolvedTime: 2.1, cost: 350, revenue: 550, property: 'manila', department: 'housekeeping', createdAt: '2025-02-05', resolvedAt: '2025-02-05', csat: 5 },
+  { id: 'TKT-011', category: 'it-support', priority: 'P1', status: 'resolved', resolvedTime: 1.2, cost: 2200, revenue: 3300, property: 'makati', department: 'it', createdAt: '2025-02-08', resolvedAt: '2025-02-08', csat: 5 },
+  { id: 'TKT-012', category: 'fnb', priority: 'P2', status: 'resolved', resolvedTime: 0.8, cost: 450, revenue: 700, property: 'quezon', department: 'fnb', createdAt: '2025-02-12', resolvedAt: '2025-02-12', csat: 4 },
+]
+
+// Historical data for YoY comparison
+const historicalVolumeData = {
+  2025: [
+    { month: 'Jan', tickets: 245, avgResolution: 4.2 },
+    { month: 'Feb', tickets: 268, avgResolution: 4.0 },
+    { month: 'Mar', tickets: 292, avgResolution: 3.9 },
+    { month: 'Apr', tickets: 285, avgResolution: 3.8 },
+    { month: 'May', tickets: 310, avgResolution: 3.7 },
+    { month: 'Jun', tickets: 298, avgResolution: 3.8 },
+    { month: 'Jul', tickets: 315, avgResolution: 3.6 },
+    { month: 'Aug', tickets: 287, avgResolution: 3.9 },
+    { month: 'Sep', tickets: 294, avgResolution: 3.7 },
+    { month: 'Oct', tickets: 247, avgResolution: 3.8 },
+  ],
+  2024: [
+    { month: 'Jan', tickets: 210, avgResolution: 5.2 },
+    { month: 'Feb', tickets: 225, avgResolution: 5.1 },
+    { month: 'Mar', tickets: 238, avgResolution: 4.9 },
+    { month: 'Apr', tickets: 242, avgResolution: 5.0 },
+    { month: 'May', tickets: 258, avgResolution: 4.8 },
+    { month: 'Jun', tickets: 265, avgResolution: 4.9 },
+    { month: 'Jul', tickets: 270, avgResolution: 4.7 },
+    { month: 'Aug', tickets: 248, avgResolution: 5.1 },
+    { month: 'Sep', tickets: 252, avgResolution: 4.8 },
+    { month: 'Oct', tickets: 204, avgResolution: 4.9 },
+  ]
+}
+
+// Financial records
+const financialRecords = {
+  2025: [
+    { month: 'Jan', expenses: 2.15, revenue: 3.35, profit: 1.20 },
+    { month: 'Feb', expenses: 2.28, revenue: 3.55, profit: 1.27 },
+    { month: 'Mar', expenses: 2.35, revenue: 3.70, profit: 1.35 },
+    { month: 'Apr', expenses: 2.42, revenue: 3.72, profit: 1.30 },
+    { month: 'May', expenses: 2.38, revenue: 3.75, profit: 1.37 },
+    { month: 'Jun', expenses: 2.51, revenue: 3.92, profit: 1.41 },
+    { month: 'Jul', expenses: 2.48, revenue: 3.95, profit: 1.47 },
+    { month: 'Aug', expenses: 2.33, revenue: 3.65, profit: 1.32 },
+    { month: 'Sep', expenses: 2.40, revenue: 3.80, profit: 1.40 },
+    { month: 'Oct', expenses: 2.45, revenue: 3.90, profit: 1.45 },
+  ],
+  2024: [
+    { month: 'Jan', expenses: 2.05, revenue: 3.10, profit: 1.05 },
+    { month: 'Feb', expenses: 2.15, revenue: 3.25, profit: 1.10 },
+    { month: 'Mar', expenses: 2.20, revenue: 3.35, profit: 1.15 },
+    { month: 'Apr', expenses: 2.28, revenue: 3.40, profit: 1.12 },
+    { month: 'May', expenses: 2.25, revenue: 3.45, profit: 1.20 },
+    { month: 'Jun', expenses: 2.35, revenue: 3.55, profit: 1.20 },
+    { month: 'Jul', expenses: 2.30, revenue: 3.52, profit: 1.22 },
+    { month: 'Aug', expenses: 2.18, revenue: 3.30, profit: 1.12 },
+    { month: 'Sep', expenses: 2.25, revenue: 3.45, profit: 1.20 },
+    { month: 'Oct', expenses: 2.30, revenue: 3.50, profit: 1.20 },
+  ]
+}
+
+const expenseCategories = { labor: 0.51, materials: 0.24, utilities: 0.16, other: 0.09 }
+
+const staffData = [
+  { id: 1, name: 'John Doe', department: 'engineering', property: 'manila', completedTickets: 45, avgResolution: 3.8, productivity: 94 },
+  { id: 2, name: 'Maria Santos', department: 'housekeeping', property: 'manila', completedTickets: 62, avgResolution: 2.1, productivity: 96 },
+  { id: 3, name: 'Carlos Reyes', department: 'it', property: 'quezon', completedTickets: 38, avgResolution: 4.2, productivity: 88 },
+  { id: 4, name: 'Ana Cruz', department: 'fnb', property: 'makati', completedTickets: 55, avgResolution: 1.5, productivity: 94 },
+  { id: 5, name: 'Pedro Lim', department: 'engineering', property: 'quezon', completedTickets: 42, avgResolution: 4.0, productivity: 92 },
+  { id: 6, name: 'Sofia Garcia', department: 'housekeeping', property: 'makati', completedTickets: 58, avgResolution: 2.3, productivity: 95 },
+]
+
+// ============================================================
+// COMPUTATION FUNCTIONS
+// ============================================================
+const computeBIStats = (tickets, property = 'all', department = 'all') => {
+  let filtered = [...tickets]
+  if (property !== 'all') filtered = filtered.filter(t => t.property === property)
+  if (department !== 'all') filtered = filtered.filter(t => t.department === department)
+  
+  const totalTickets = filtered.length
+  const critical = filtered.filter(t => t.priority === 'P1' && t.status !== 'resolved').length
+  const resolved = filtered.filter(t => t.status === 'resolved')
+  const slaCompliance = totalTickets > 0 ? ((resolved.length / totalTickets) * 100).toFixed(1) : 0
+  const avgResolution = resolved.length > 0 ? (resolved.reduce((sum, t) => sum + (t.resolvedTime || 0), 0) / resolved.length).toFixed(1) : 0
+  const csatScores = resolved.filter(t => t.csat).map(t => t.csat)
+  const csat = csatScores.length > 0 ? (csatScores.reduce((a, b) => a + b, 0) / csatScores.length).toFixed(1) : 0
+  const nps = Math.round(((parseFloat(csat) - 3) / 2) * 100)
+  
+  return { totalTickets, critical, slaCompliance: parseFloat(slaCompliance), avgResolution: parseFloat(avgResolution), csat: parseFloat(csat), nps, activeStaff: staffData.filter(s => property === 'all' || s.property === property).length * 7, productivity: 93.2 }
+}
+
+const computeTeamPerformance = (staff, department = 'all') => {
+  const departments = ['engineering', 'housekeeping', 'it', 'fnb']
+  const result = {}
+  departments.forEach(dept => {
+    const deptStaff = staff.filter(s => s.department === dept)
+    result[dept] = (department === 'all' || department === dept) && deptStaff.length > 0 ? Math.round(deptStaff.reduce((sum, s) => sum + s.productivity, 0) / deptStaff.length) : 0
+  })
+  return { engineering: result.engineering || 0, housekeeping: result.housekeeping || 0, itSupport: result.it || 0, fnbService: result.fnb || 0 }
+}
+
+const computeYoYData = () => {
+  const data2025 = historicalVolumeData[2025]
+  const data2024 = historicalVolumeData[2024]
+  const volumeComparison = data2025.map((d, i) => ({ month: d.month, year2025: d.tickets, year2024: data2024[i]?.tickets || 0 }))
+  const resolutionTime = data2025.map((d, i) => ({ month: d.month, year2025: d.avgResolution, year2024: data2024[i]?.avgResolution || 0 }))
+  const totalVolume2025 = data2025.reduce((sum, d) => sum + d.tickets, 0)
+  const totalVolume2024 = data2024.reduce((sum, d) => sum + d.tickets, 0)
+  const avgRes2025 = (data2025.reduce((sum, d) => sum + d.avgResolution, 0) / data2025.length).toFixed(1)
+  const avgRes2024 = (data2024.reduce((sum, d) => sum + d.avgResolution, 0) / data2024.length).toFixed(1)
+  
+  return {
+    volumeComparison, resolutionTime,
+    kpiComparison: { sla: { year2025: 94.2, year2024: 87.5, change: 6.7 }, csat: { year2025: 4.7, year2024: 4.3, change: 0.4 }, response: { year2025: 3.2, year2024: 4.8, change: -33 }, resolution: { year2025: 92.8, year2024: 85.2, change: 7.6 } },
+    totals: { volume2025: totalVolume2025, volume2024: totalVolume2024, volumeChange: Math.round(((totalVolume2025 - totalVolume2024) / totalVolume2024) * 100), resolution2025: parseFloat(avgRes2025), resolution2024: parseFloat(avgRes2024), resolutionChange: Math.round(((avgRes2025 - avgRes2024) / avgRes2024) * 100) }
+  }
+}
+
+const computeFinancialData = () => {
+  const data2025 = financialRecords[2025]
+  const data2024 = financialRecords[2024]
+  const totalExpenses = data2025.reduce((sum, d) => sum + d.expenses, 0)
+  const totalRevenue = data2025.reduce((sum, d) => sum + d.revenue, 0)
+  const totalProfit = data2025.reduce((sum, d) => sum + d.profit, 0)
+  const margin = ((totalProfit / totalRevenue) * 100).toFixed(1)
+  const prevExpenses = data2024.reduce((sum, d) => sum + d.expenses, 0)
+  const prevRevenue = data2024.reduce((sum, d) => sum + d.revenue, 0)
+  const prevProfit = data2024.reduce((sum, d) => sum + d.profit, 0)
+  
+  return {
+    kpis: {
+      expenses: { value: (totalExpenses / data2025.length).toFixed(2), change: (((totalExpenses - prevExpenses) / prevExpenses) * 100).toFixed(1) },
+      revenue: { value: (totalRevenue / data2025.length).toFixed(2), change: (((totalRevenue - prevRevenue) / prevRevenue) * 100).toFixed(1) },
+      netProfit: { value: (totalProfit / data2025.length).toFixed(2), change: (((totalProfit - prevProfit) / prevProfit) * 100).toFixed(1) },
+      margin: { value: parseFloat(margin), change: 2.1 }
+    },
+    expensesVsProfit: data2025.map(d => ({ month: d.month, expenses: d.expenses, profit: d.profit })),
+    expenseBreakdown: [
+      { category: 'Labor', percentage: Math.round(expenseCategories.labor * 100), color: '#EF4444' },
+      { category: 'Materials', percentage: Math.round(expenseCategories.materials * 100), color: '#F59E0B' },
+      { category: 'Utilities', percentage: Math.round(expenseCategories.utilities * 100), color: '#6366F1' },
+      { category: 'Other', percentage: Math.round(expenseCategories.other * 100), color: '#8B5CF6' }
+    ],
+    metrics: { costPerTicket: { value: 992, change: -12 }, revenuePerTicket: { value: 1567, change: 8 }, profitPerTicket: { value: 575, change: 22 }, roi: { value: 58, change: 5 } }
+  }
+}
+
+const computeVolumeChartData = () => ({
+  day: [
+    { day: '00:00', value: 5, resolved: 4, pending: 1 }, { day: '03:00', value: 3, resolved: 3, pending: 0 },
+    { day: '06:00', value: 8, resolved: 6, pending: 2 }, { day: '09:00', value: 15, resolved: 12, pending: 3 },
+    { day: '12:00', value: 22, resolved: 18, pending: 4 }, { day: '15:00', value: 19, resolved: 16, pending: 3 },
+    { day: '18:00', value: 17, resolved: 14, pending: 3 }, { day: '21:00', value: 11, resolved: 9, pending: 2 }
+  ],
+  week: [
+    { day: 'Mon', value: 32, resolved: 28, pending: 4 }, { day: 'Tue', value: 41, resolved: 35, pending: 6 },
+    { day: 'Wed', value: 38, resolved: 32, pending: 6 }, { day: 'Thu', value: 45, resolved: 40, pending: 5 },
+    { day: 'Fri', value: 51, resolved: 44, pending: 7 }, { day: 'Sat', value: 28, resolved: 25, pending: 3 },
+    { day: 'Sun', value: 24, resolved: 22, pending: 2 }
+  ],
+  month: [
+    { day: 'Wk1', value: 145, resolved: 127, pending: 18 }, { day: 'Wk2', value: 168, resolved: 142, pending: 26 },
+    { day: 'Wk3', value: 152, resolved: 135, pending: 17 }, { day: 'Wk4', value: 178, resolved: 158, pending: 20 }
+  ]
+})
+
+const computeStatusDistribution = (tickets) => {
+  const resolved = tickets.filter(t => t.status === 'resolved').length
+  const inProgress = tickets.filter(t => t.status === 'in-progress').length
+  const open = tickets.filter(t => t.status === 'open').length
+  const total = tickets.length
+  return {
+    resolved: { count: resolved, percentage: total > 0 ? Math.round((resolved / total) * 100) : 0 },
+    inProgress: { count: inProgress, percentage: total > 0 ? Math.round((inProgress / total) * 100) : 0 },
+    open: { count: open, percentage: total > 0 ? Math.round((open / total) * 100) : 0 }
+  }
+}
 
 const modules = [
   { id: 'dashboard', icon: '📊', title: 'Business Intelligence Dashboard', subtitle: 'OVERVIEW', features: ['Real-time ticket monitoring', 'Team performance metrics', 'SLA breach alerts', 'Executive summary views'], action: 'View Dashboard', color: 'dashboard' },
@@ -14,128 +208,11 @@ const modules = [
   { id: 'admin', icon: '⚙️', title: 'Admin & Settings', subtitle: 'CONFIGURATION', features: ['User & role management', 'Category configuration', 'SLA policy setup', 'System preferences'], action: 'Configure System', color: 'admin' }
 ]
 
-const volumeChartData = {
-  day: [
-    { day: '00:00', value: 5, resolved: 4, pending: 1 },
-    { day: '03:00', value: 3, resolved: 3, pending: 0 },
-    { day: '06:00', value: 8, resolved: 6, pending: 2 },
-    { day: '09:00', value: 15, resolved: 12, pending: 3 },
-    { day: '12:00', value: 22, resolved: 18, pending: 4 },
-    { day: '15:00', value: 19, resolved: 16, pending: 3 },
-    { day: '18:00', value: 17, resolved: 14, pending: 3 },
-    { day: '21:00', value: 11, resolved: 9, pending: 2 }
-  ],
-  week: [
-    { day: 'Mon', value: 32, resolved: 28, pending: 4 },
-    { day: 'Tue', value: 41, resolved: 35, pending: 6 },
-    { day: 'Wed', value: 38, resolved: 32, pending: 6 },
-    { day: 'Thu', value: 45, resolved: 40, pending: 5 },
-    { day: 'Fri', value: 51, resolved: 44, pending: 7 },
-    { day: 'Sat', value: 28, resolved: 25, pending: 3 },
-    { day: 'Sun', value: 24, resolved: 22, pending: 2 }
-  ],
-  month: [
-    { day: 'Wk1', value: 145, resolved: 127, pending: 18 },
-    { day: 'Wk2', value: 168, resolved: 142, pending: 26 },
-    { day: 'Wk3', value: 152, resolved: 135, pending: 17 },
-    { day: 'Wk4', value: 178, resolved: 158, pending: 20 }
-  ]
-}
-
-const propertyData = {
-  'all': { totalTickets: 247, critical: 8, slaCompliance: 94.2, avgResolution: 4.2, csat: 4.7, nps: 68, activeStaff: 42, productivity: 93.2 },
-  'manila': { totalTickets: 98, critical: 3, slaCompliance: 95.1, avgResolution: 3.8, csat: 4.8, nps: 72, activeStaff: 18, productivity: 94.5 },
-  'quezon': { totalTickets: 87, critical: 2, slaCompliance: 93.5, avgResolution: 4.5, csat: 4.6, nps: 65, activeStaff: 15, productivity: 92.1 },
-  'makati': { totalTickets: 62, critical: 3, slaCompliance: 94.0, avgResolution: 4.4, csat: 4.7, nps: 68, activeStaff: 9, productivity: 93.0 }
-}
-
-const departmentData = {
-  'all': { engineering: 92, housekeeping: 96, itSupport: 88, fnbService: 94 },
-  'engineering': { engineering: 92, housekeeping: 0, itSupport: 0, fnbService: 0 },
-  'housekeeping': { engineering: 0, housekeeping: 96, itSupport: 0, fnbService: 0 },
-  'it': { engineering: 0, housekeeping: 0, itSupport: 88, fnbService: 0 },
-  'fnb': { engineering: 0, housekeeping: 0, itSupport: 0, fnbService: 94 }
-}
-
 const dashboardTabs = [
   { id: 'bi', title: 'Business Intelligence Dashboard', description: 'Real-time monitoring and executive insights', icon: '📊' },
   { id: 'yoy', title: 'Year-over-Year Analysis', description: 'Current vs previous year performance', icon: '📈' },
   { id: 'financial', title: 'Financial Dashboard', description: 'Service operations expenses and profitability', icon: '💰' }
 ]
-
-const yoyData = {
-  volumeComparison: [
-    { month: 'Jan', year2025: 235, year2024: 218 },
-    { month: 'Feb', year2025: 268, year2024: 245 },
-    { month: 'Mar', year2025: 312, year2024: 289 },
-    { month: 'Apr', year2025: 295, year2024: 267 },
-    { month: 'May', year2025: 328, year2024: 298 },
-    { month: 'Jun', year2025: 318, year2024: 285 },
-    { month: 'Jul', year2025: 342, year2024: 312 },
-    { month: 'Aug', year2025: 298, year2024: 276 },
-    { month: 'Sep', year2025: 315, year2024: 289 },
-    { month: 'Oct', year2025: 265, year2024: 245 }
-  ],
-  resolutionTime: [
-    { month: 'Jan', year2025: 4.2, year2024: 5.1 },
-    { month: 'Feb', year2025: 4.0, year2024: 5.0 },
-    { month: 'Mar', year2025: 3.9, year2024: 4.9 },
-    { month: 'Apr', year2025: 3.8, year2024: 4.8 },
-    { month: 'May', year2025: 3.7, year2024: 4.9 },
-    { month: 'Jun', year2025: 3.9, year2024: 5.0 },
-    { month: 'Jul', year2025: 4.0, year2024: 5.2 },
-    { month: 'Aug', year2025: 3.8, year2024: 5.1 },
-    { month: 'Sep', year2025: 4.1, year2024: 5.3 },
-    { month: 'Oct', year2025: 3.9, year2024: 5.0 }
-  ],
-  kpiComparison: {
-    sla: { year2025: 94.2, year2024: 87.5, change: 6.7 },
-    csat: { year2025: 4.7, year2024: 4.3, change: 0.4 },
-    response: { year2025: 3.2, year2024: 4.8, change: -33 },
-    resolution: { year2025: 92.8, year2024: 85.2, change: 7.6 }
-  },
-  totals: {
-    volume2025: 2847,
-    volume2024: 2412,
-    volumeChange: 18,
-    resolution2025: 3.8,
-    resolution2024: 4.9,
-    resolutionChange: -22
-  }
-}
-
-const financialData = {
-  kpis: {
-    expenses: { value: 2.45, change: 8.2 },
-    revenue: { value: 3.87, change: 12.4 },
-    netProfit: { value: 1.42, change: 18.5 },
-    margin: { value: 36.7, change: 2.1 }
-  },
-  expensesVsProfit: [
-    { month: 'Jan', expenses: 2.2, profit: 0.9 },
-    { month: 'Feb', expenses: 2.4, profit: 1.1 },
-    { month: 'Mar', expenses: 2.3, profit: 1.0 },
-    { month: 'Apr', expenses: 2.5, profit: 1.2 },
-    { month: 'May', expenses: 2.4, profit: 1.3 },
-    { month: 'Jun', expenses: 2.6, profit: 1.2 },
-    { month: 'Jul', expenses: 2.5, profit: 1.3 },
-    { month: 'Aug', expenses: 2.3, profit: 1.1 },
-    { month: 'Sep', expenses: 2.5, profit: 1.3 },
-    { month: 'Oct', expenses: 2.4, profit: 1.2 }
-  ],
-  expenseBreakdown: [
-    { category: 'Labor', percentage: 51, color: '#EF4444' },
-    { category: 'Materials', percentage: 24, color: '#F59E0B' },
-    { category: 'Utilities', percentage: 16, color: '#6366F1' },
-    { category: 'Other', percentage: 9, color: '#8B5CF6' }
-  ],
-  metrics: {
-    costPerTicket: { value: 992, change: -12 },
-    revenuePerTicket: { value: 1567, change: 8 },
-    profitPerTicket: { value: 575, change: 22 },
-    roi: { value: 58, change: 5 }
-  }
-}
 
 function DashboardSectionA() {
   const navigate = useNavigate()
@@ -236,17 +313,22 @@ function DashboardSectionA() {
     setValidationError('')
   }
 
+  // Compute data from centralized data source
+  const volumeChartData = useMemo(() => computeVolumeChartData(ticketsData), [])
+  const yoyData = useMemo(() => computeYoYData(historicalVolumeData, financialRecords), [])
+  const financialData = useMemo(() => computeFinancialData(financialRecords, expenseCategories), [])
+  const statusDistribution = useMemo(() => computeStatusDistribution(ticketsData), [])
+
   // Compute stats based on selected filters
+  const stats = useMemo(() => computeBIStats(ticketsData, property, department), [property, department])
+  const teamPerf = useMemo(() => computeTeamPerformance(staffData, department), [department])
+  
   const currentChartData = volumeChartData[chartPeriod]
   const chartTotal = currentChartData.reduce((sum, d) => sum + d.value, 0)
   const chartMax = Math.max(...currentChartData.map(d => d.value))
   const chartAvg = Math.round(chartTotal / currentChartData.length)
   const peakDay = currentChartData.reduce((max, d) => d.value > max.value ? d : max, currentChartData[0])
   const selectedDashboardTab = dashboardTabs.find(tab => tab.id === dashboardTab) || dashboardTabs[0]
-  
-  // Get stats based on property filter
-  const stats = propertyData[property]
-  const teamPerf = departmentData[department]
 
   const handleRefreshChart = () => {
     setRefreshing(true)
@@ -614,25 +696,34 @@ function DashboardSectionA() {
                     </div>
                     <div className="flex flex-col items-center">
                       <div className="w-48 h-48 rounded-full relative mx-auto" style={{
-                        background: 'conic-gradient(#10b981 0deg 216deg, #f59e0b 216deg 288deg, #ef4444 288deg 360deg)'
+                        background: `conic-gradient(
+                          #10b981 0deg ${statusDistribution.resolved.percentage * 3.6}deg, 
+                          #f59e0b ${statusDistribution.resolved.percentage * 3.6}deg ${(statusDistribution.resolved.percentage + statusDistribution.inProgress.percentage) * 3.6}deg, 
+                          #ef4444 ${(statusDistribution.resolved.percentage + statusDistribution.inProgress.percentage) * 3.6}deg 360deg
+                        )`
                       }}>
-                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] bg-white rounded-full"></div>
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] bg-white rounded-full flex items-center justify-center">
+                          <div className="text-center">
+                            <div className="text-2xl font-extrabold text-gray-800">{statusDistribution.resolved.count + statusDistribution.inProgress.count + statusDistribution.open.count}</div>
+                            <div className="text-xs text-gray-500">Total</div>
+                          </div>
+                        </div>
                       </div>
                       <div className="flex flex-col gap-3 mt-5 w-full">
                         <div className="flex items-center gap-3">
                           <div className="w-4 h-4 rounded bg-emerald-500"></div>
                           <span className="flex-1 text-[13px] text-gray-500">Resolved</span>
-                          <span className="text-sm font-bold text-gray-800">148 (60%)</span>
+                          <span className="text-sm font-bold text-gray-800">{statusDistribution.resolved.count} ({statusDistribution.resolved.percentage}%)</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <div className="w-4 h-4 rounded bg-amber-500"></div>
                           <span className="flex-1 text-[13px] text-gray-500">In Progress</span>
-                          <span className="text-sm font-bold text-gray-800">74 (30%)</span>
+                          <span className="text-sm font-bold text-gray-800">{statusDistribution.inProgress.count} ({statusDistribution.inProgress.percentage}%)</span>
                         </div>
                         <div className="flex items-center gap-3">
                           <div className="w-4 h-4 rounded bg-red-500"></div>
                           <span className="flex-1 text-[13px] text-gray-500">Open</span>
-                          <span className="text-sm font-bold text-gray-800">25 (10%)</span>
+                          <span className="text-sm font-bold text-gray-800">{statusDistribution.open.count} ({statusDistribution.open.percentage}%)</span>
                         </div>
                       </div>
                     </div>
@@ -885,38 +976,56 @@ function DashboardSectionA() {
                   </div>
 
                   {/* Resolution Time */}
-                  <div className="bg-white rounded-xl p-3 border border-gray-200 lg:col-span-2">
-                    <div className="flex items-center gap-2 mb-3 pb-3 border-b-2 border-gray-100">
+                  <div className="bg-white rounded-xl p-4 border border-gray-200 lg:col-span-2">
+                    <div className="flex items-center gap-2 mb-4 pb-3 border-b-2 border-gray-100">
                       <span className="text-base">⏱️</span>
                       <h3 className="text-sm font-bold text-gray-800">Resolution Time</h3>
                     </div>
                     {(() => {
                       const yMax = 6
                       const yTicks = [0, 1, 2, 3, 4, 5, 6]
-                      const months = yoyData.resolutionTime.map(d => d.month)
-                      const xStep = 100 / (months.length - 1)
-                      const xOffset = 8 // left padding percent for labels
-                      const areaPoints = yoyData.resolutionTime.map((d, i) => {
-                        const x = xOffset + i * xStep
-                        const y = 100 - (d.year2025 / yMax) * 100
-                        return `${x},${y}`
-                      })
-                      const areaPath = `0,100 ${areaPoints.join(' ')} ${xOffset + (months.length - 1) * xStep},100`
+                      const data = yoyData.resolutionTime
+                      const chartWidth = 100
+                      const chartHeight = 100
+                      const padding = { left: 0, right: 0, top: 5, bottom: 5 }
+                      
+                      // Helper function to create smooth bezier curve path
+                      const createSmoothPath = (points, fill = false) => {
+                        if (points.length < 2) return ''
+                        
+                        let path = `M ${points[0].x},${points[0].y}`
+                        
+                        for (let i = 1; i < points.length; i++) {
+                          const prev = points[i - 1]
+                          const curr = points[i]
+                          const cp1x = prev.x + (curr.x - prev.x) * 0.4
+                          const cp2x = prev.x + (curr.x - prev.x) * 0.6
+                          path += ` C ${cp1x},${prev.y} ${cp2x},${curr.y} ${curr.x},${curr.y}`
+                        }
+                        
+                        if (fill) {
+                          path += ` L ${points[points.length - 1].x},${chartHeight} L ${points[0].x},${chartHeight} Z`
+                        }
+                        
+                        return path
+                      }
+                      
+                      // Calculate points for 2025 data
+                      const points2025 = data.map((d, i) => ({
+                        x: (i / (data.length - 1)) * (chartWidth - padding.left - padding.right) + padding.left,
+                        y: chartHeight - padding.bottom - ((d.year2025 / yMax) * (chartHeight - padding.top - padding.bottom))
+                      }))
+                      
+                      // Calculate points for 2024 data
+                      const points2024 = data.map((d, i) => ({
+                        x: (i / (data.length - 1)) * (chartWidth - padding.left - padding.right) + padding.left,
+                        y: chartHeight - padding.bottom - ((d.year2024 / yMax) * (chartHeight - padding.top - padding.bottom))
+                      }))
+                      
                       return (
-                        <div className="relative" style={{ height: '220px' }}>
-                          {/* Grid + y labels */}
-                          <div className="absolute inset-x-3 left-8 top-4 bottom-16 flex flex-col justify-between pointer-events-none">
-                            {yTicks.map((tick) => (
-                              <div key={tick} className="border-t border-gray-100 flex-1"></div>
-                            ))}
-                          </div>
-                          <div className="absolute left-0 top-4 bottom-16 flex flex-col-reverse justify-between text-[10px] font-semibold text-gray-400">
-                            {yTicks.map((tick) => (
-                              <div key={tick} className="-mt-[1px]">{tick}h</div>
-                            ))}
-                          </div>
-                          {/* Legend */}
-                          <div className="absolute left-0 right-0 -top-1 flex justify-center items-center gap-4 text-xs font-semibold text-gray-700">
+                        <div className="relative" style={{ height: '260px' }}>
+                          {/* Legend - positioned at top */}
+                          <div className="flex justify-center items-center gap-6 mb-4 text-xs font-semibold text-gray-600">
                             <div className="flex items-center gap-2">
                               <span className="w-3 h-3 rounded-full bg-emerald-500"></span>
                               <span>2025 (hours)</span>
@@ -926,82 +1035,126 @@ function DashboardSectionA() {
                               <span>2024 (hours)</span>
                             </div>
                           </div>
-                          {/* Lines + area */}
-                          <svg className="absolute left-8 right-3 top-6 bottom-24 w-[calc(100%-44px)] h-[calc(100%-96px)]" viewBox="0 0 100 100" preserveAspectRatio="none">
-                            <polygon
-                              points={areaPath}
-                              fill="rgba(16,185,129,0.08)"
-                              stroke="none"
-                              vectorEffect="non-scaling-stroke"
-                            />
-                            <polyline
-                              fill="none"
-                              stroke="#d1d5db"
-                              strokeWidth="0.8"
-                              strokeDasharray="2,2"
-                              vectorEffect="non-scaling-stroke"
-                              points={yoyData.resolutionTime.map((d, i) => {
-                                const x = xOffset + i * xStep
-                                const y = 100 - (d.year2024 / yMax) * 100
-                                return `${x},${y}`
-                              }).join(' ')}
-                            />
-                            <polyline
-                              fill="none"
-                              stroke="#10b981"
-                              strokeWidth="1.2"
-                              vectorEffect="non-scaling-stroke"
-                              points={yoyData.resolutionTime.map((d, i) => {
-                                const x = xOffset + i * xStep
-                                const y = 100 - (d.year2025 / yMax) * 100
-                                return `${x},${y}`
-                              }).join(' ')}
-                            />
-                          </svg>
-                          {/* Data points overlay */}
-                          <div className="absolute left-8 right-3 top-6 bottom-24" style={{ height: 'calc(100% - 96px)' }}>
-                            {yoyData.resolutionTime.map((d, i) => {
-                              const x = xOffset + i * xStep
-                              const y = 100 - (d.year2025 / yMax) * 100
-                              return (
-                                <div
-                                  key={i}
-                                  className="absolute w-3 h-3 bg-emerald-500 border-2 border-white rounded-full cursor-pointer hover:w-4 hover:h-4 transition-all"
-                                  style={{
-                                    left: `calc(${x}% - 6px)`,
-                                    top: `calc(${y}% - 6px)`
-                                  }}
-                                  onMouseEnter={() => setHoveredResolutionPoint(i)}
-                                  onMouseLeave={() => setHoveredResolutionPoint(null)}
-                                />
-                              )
-                            })}
-                          </div>
-                          {/* Tooltips */}
-                          {hoveredResolutionPoint !== null && (() => {
-                            const d = yoyData.resolutionTime[hoveredResolutionPoint]
-                            const x = xOffset + hoveredResolutionPoint * xStep
-                            const y = 100 - (d.year2025 / yMax) * 100
-                            return (
-                              <div 
-                                className="absolute bg-gray-800 text-white px-3 py-2 rounded-lg shadow-lg z-10 whitespace-nowrap text-xs font-semibold pointer-events-none"
-                                style={{
-                                  left: `${x}%`,
-                                  top: `calc(${y}% - 50px)`,
-                                  transform: 'translateX(-50%)'
-                                }}
-                              >
-                                <div className="mb-1">{d.month}</div>
-                                <div className="text-emerald-400">2025: {d.year2025}h</div>
-                                <div className="text-gray-300">2024: {d.year2024}h</div>
-                                <div className="absolute bottom-[-4px] left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+                          
+                          {/* Chart area */}
+                          <div className="flex h-[180px]">
+                            {/* Y-axis labels */}
+                            <div className="flex flex-col justify-between text-[10px] font-semibold text-gray-400 pr-2 py-1">
+                              {[...yTicks].reverse().map((tick) => (
+                                <div key={tick} className="h-0 leading-none">{tick}h</div>
+                              ))}
+                            </div>
+                            
+                            {/* Chart SVG */}
+                            <div className="flex-1 relative">
+                              {/* Grid lines */}
+                              <div className="absolute inset-0 flex flex-col justify-between pointer-events-none">
+                                {yTicks.map((tick) => (
+                                  <div key={tick} className="border-t border-gray-100 w-full"></div>
+                                ))}
                               </div>
-                            )
-                          })()}
-                          {/* X labels */}
-                          <div className="absolute left-8 right-3 bottom-6 flex justify-between text-[10px] font-semibold text-gray-600">
-                            {months.map((m) => (
-                              <div key={m}>{m}</div>
+                              
+                              <svg 
+                                className="absolute inset-0 w-full h-full" 
+                                viewBox={`0 0 ${chartWidth} ${chartHeight}`} 
+                                preserveAspectRatio="none"
+                              >
+                                {/* 2024 filled area (gray, behind) */}
+                                <path
+                                  d={createSmoothPath(points2024, true)}
+                                  fill="rgba(209, 213, 219, 0.15)"
+                                  stroke="none"
+                                />
+                                
+                                {/* 2025 filled area (green) */}
+                                <path
+                                  d={createSmoothPath(points2025, true)}
+                                  fill="rgba(16, 185, 129, 0.15)"
+                                  stroke="none"
+                                />
+                                
+                                {/* 2024 line (dashed gray) */}
+                                <path
+                                  d={createSmoothPath(points2024)}
+                                  fill="none"
+                                  stroke="#d1d5db"
+                                  strokeWidth="2"
+                                  strokeDasharray="4,4"
+                                  vectorEffect="non-scaling-stroke"
+                                />
+                                
+                                {/* 2025 line (solid green) */}
+                                <path
+                                  d={createSmoothPath(points2025)}
+                                  fill="none"
+                                  stroke="#10b981"
+                                  strokeWidth="3"
+                                  vectorEffect="non-scaling-stroke"
+                                />
+                              </svg>
+                              
+                              {/* Data points for 2025 */}
+                              {data.map((d, i) => {
+                                const xPercent = (i / (data.length - 1)) * 100
+                                const yPercent = 100 - ((d.year2025 / yMax) * 100)
+                                return (
+                                  <div
+                                    key={i}
+                                    className="absolute w-3 h-3 bg-emerald-500 border-2 border-white rounded-full shadow-sm cursor-pointer hover:scale-125 transition-transform z-10"
+                                    style={{
+                                      left: `calc(${xPercent}% - 6px)`,
+                                      top: `calc(${yPercent}% - 6px)`
+                                    }}
+                                    onMouseEnter={() => setHoveredResolutionPoint(i)}
+                                    onMouseLeave={() => setHoveredResolutionPoint(null)}
+                                  />
+                                )
+                              })}
+                              
+                              {/* Data points for 2024 */}
+                              {data.map((d, i) => {
+                                const xPercent = (i / (data.length - 1)) * 100
+                                const yPercent = 100 - ((d.year2024 / yMax) * 100)
+                                return (
+                                  <div
+                                    key={`2024-${i}`}
+                                    className="absolute w-2.5 h-2.5 bg-gray-300 border-2 border-white rounded-full shadow-sm"
+                                    style={{
+                                      left: `calc(${xPercent}% - 5px)`,
+                                      top: `calc(${yPercent}% - 5px)`
+                                    }}
+                                  />
+                                )
+                              })}
+                              
+                              {/* Tooltip */}
+                              {hoveredResolutionPoint !== null && (() => {
+                                const d = data[hoveredResolutionPoint]
+                                const xPercent = (hoveredResolutionPoint / (data.length - 1)) * 100
+                                const yPercent = 100 - ((d.year2025 / yMax) * 100)
+                                return (
+                                  <div 
+                                    className="absolute bg-gray-800 text-white px-3 py-2 rounded-lg shadow-xl z-20 whitespace-nowrap text-xs font-semibold pointer-events-none"
+                                    style={{
+                                      left: `${xPercent}%`,
+                                      top: `calc(${yPercent}% - 65px)`,
+                                      transform: 'translateX(-50%)'
+                                    }}
+                                  >
+                                    <div className="mb-1 text-center border-b border-gray-600 pb-1">{d.month}</div>
+                                    <div className="text-emerald-400">2025: {d.year2025}h</div>
+                                    <div className="text-gray-300">2024: {d.year2024}h</div>
+                                    <div className="absolute bottom-[-6px] left-1/2 transform -translate-x-1/2 w-3 h-3 bg-gray-800 rotate-45"></div>
+                                  </div>
+                                )
+                              })()}
+                            </div>
+                          </div>
+                          
+                          {/* X-axis labels */}
+                          <div className="flex justify-between pl-6 pr-0 mt-2 text-[10px] font-semibold text-gray-500">
+                            {data.map((d) => (
+                              <div key={d.month} className="text-center">{d.month}</div>
                             ))}
                           </div>
                         </div>
@@ -1009,12 +1162,12 @@ function DashboardSectionA() {
                     })()}
                     <div className="flex justify-around pt-4 px-6 mt-2 border-t-2 border-gray-100">
                       <div className="text-center">
-                        <div className="text-[10px] text-gray-500 uppercase mb-1 font-semibold">2025</div>
+                        <div className="text-[10px] text-gray-500 uppercase mb-1 font-semibold">2025 Avg</div>
                         <div className="text-xl font-extrabold text-emerald-500">{yoyData.totals.resolution2025}h</div>
-                        <div className="text-[10px] text-emerald-600 font-semibold mt-0.5">↓ {Math.abs(yoyData.totals.resolutionChange)}%</div>
+                        <div className="text-[10px] text-emerald-600 font-semibold mt-0.5">↓ {Math.abs(yoyData.totals.resolutionChange)}% faster</div>
                       </div>
                       <div className="text-center">
-                        <div className="text-[10px] text-gray-500 uppercase mb-1 font-semibold">2024</div>
+                        <div className="text-[10px] text-gray-500 uppercase mb-1 font-semibold">2024 Avg</div>
                         <div className="text-xl font-extrabold text-gray-500">{yoyData.totals.resolution2024}h</div>
                       </div>
                     </div>
