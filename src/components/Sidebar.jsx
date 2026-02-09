@@ -50,7 +50,7 @@ function Sidebar({ collapsed, onNavigate }) {
           onClick={() => handleNavigate('myview', '/servicedesk')}
           title="My View"
         >
-          <span className="text-lg w-6 text-center flex-shrink-0">📊</span>
+          <span className="text-lg w-6 text-center flex-shrink-0">👁️</span>
           {!collapsed && <span>My View</span>}
         </div>
 
@@ -99,7 +99,7 @@ function Sidebar({ collapsed, onNavigate }) {
           onClick={() => handleNavigate('analytics', '/analytics')} 
           title="Analytics"
         >
-          <span className="text-lg w-6 text-center flex-shrink-0">💳</span>
+          <span className="text-lg w-6 text-center flex-shrink-0"> 📊</span>
           {!collapsed && <span>Analytics</span>}
         </div>
 
