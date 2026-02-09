@@ -120,6 +120,7 @@ const Analytics = () => {
           {/* KPI Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 w-full max-w-7xl">
 
+
             {/* Jobs Completed */}
             <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-red-500 flex flex-col items-center">
               <div className="w-full flex justify-between items-start mb-4">
