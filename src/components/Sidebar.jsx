@@ -92,6 +92,21 @@ function Sidebar({ collapsed, onNavigate }) {
 
         <div 
           className={`flex items-center gap-3 px-5 py-2 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
+            isActive('/analytics') 
+              ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
+              : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'
+          }`}
+          onClick={() => handleNavigate('analytics', '/analytics')} 
+          title="Analytics"
+        >
+          <span className="text-lg w-6 text-center flex-shrink-0">💳</span>
+          {!collapsed && <span>Analytics</span>}
+        </div>
+
+        <div className={`h-px bg-white/[0.15] my-1.5 transition-all duration-300 ${collapsed ? 'mx-3' : 'mx-4'}`}></div>
+
+        <div 
+          className={`flex items-center gap-3 px-5 py-2 text-sm font-medium cursor-pointer border-l-[3px] transition-all ${collapsed ? 'justify-center px-0' : ''} ${
             isActive('/section-e') 
               ? 'text-white border-l-cyan-400 bg-white/[0.12]' 
               : 'text-gray-200 border-transparent hover:bg-white/10 hover:text-white hover:border-l-cyan-400'

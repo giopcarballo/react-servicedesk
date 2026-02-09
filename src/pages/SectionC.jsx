@@ -34,6 +34,7 @@ function SectionC() {
       case 'myview': navigate('/servicedesk'); break
       case 'requests': navigate('/requests'); break
       case 'intake': navigate('/ticket-intake'); break
+      case 'analytics': navigate('/analytics'); break
       case 'financial': navigate('/section-e'); break
       case 'admin': navigate('/admin'); break
       default: break

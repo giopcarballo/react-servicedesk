@@ -299,6 +299,9 @@ function AdminSettings() {
       case "financial":
         navigate("/section-e");
         break;
+      case "analytics":
+        navigate("/analytics");
+        break;
       case "admin":
         navigate("/admin");
         break;

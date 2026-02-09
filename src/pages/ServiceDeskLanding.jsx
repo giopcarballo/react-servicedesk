@@ -57,6 +57,7 @@ function ServiceDeskLanding() {
       case 'intake': navigate('/ticket-intake'); break
       case 'service': navigate('/section-c'); break
       case 'communication': navigate('/section-d'); break
+      case 'analytics': navigate('/analytics'); break
       case 'financial': navigate('/section-e'); break
       case 'admin': navigate('/admin'); break
       default: break
